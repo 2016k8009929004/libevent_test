@@ -13,3 +13,6 @@
 #include <event2/util.h>
 
 #define BUF_SIZE 1024
+
+int client_thread(int argc, char * argv[]);
+int server_thread(int argc, char * argv[]);

@@ -61,7 +61,7 @@ void receive_response_cd(int fd, short events, void * arg){
     
 }
 
-int main(int argc, char * argv[]){
+int client_thread(int argc, char * argv[]){
     int sockfd = connect_server(argv[1], atoi(argv[2]));
 
     if(sockfd == -1){

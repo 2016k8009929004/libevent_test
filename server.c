@@ -73,7 +73,7 @@ void server_process_cb(int fd, short events, void * arg){
     write(fd, reply_msg, strlen(reply_msg));
 }
 
-int main(int argc, char * argv[]){
+int server_thread(int argc, char * argv[]){
     evutil_socket_t sock;
     if((sock = server_init(12345，100)) < 0){
         perror("[SERVER] server init error");
