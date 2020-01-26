@@ -13,7 +13,7 @@ HDRS = ./include/*.h
 
 SRCS = common.c client.c server.c main.c
 
-OBJS = $(patsubst %.c %.o, $(SRCS))
+OBJS = $(patsubst %.c,%.o, $(SRCS))
 
 $(OBJS)  : %.o : %c include/*.h
 		$(CC) -c $(CFLAGS) $< -o $@
