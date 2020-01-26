@@ -5,9 +5,9 @@ CC = gcc
 LD = gcc
 
 CFLAGS = -g -Wall -Iinclude
-LDFLAGS = 
+LDFLAGS = -L/usr/local/lib/ 
 
-LIBS = -lpthread
+LIBS = -lpthread -levent
 
 HDRS = ./include/*.h
 

@@ -66,7 +66,7 @@ void client_thread(int argc, char * argv[]){
 
     if(sockfd == -1){
         perror("[CLIENT]tcp connect error");
-        return -1;
+        exit(1);
     }
 
     printf("[CLIENT] connected to server\n");

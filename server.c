@@ -77,7 +77,7 @@ void server_thread(int argc, char * argv[]){
     evutil_socket_t sock;
     if((sock = server_init(12345, 100)) < 0){
         perror("[SERVER] server init error");
-        return -1;
+        exit(1);
     }
 
     struct event_base * base = event_base_new();
