@@ -7,7 +7,7 @@ evutil_socket_t server_init(int port, int listen_num){
 		return -1;
     }
 
-    evutil_make_listen_socket_reeseable(sock);
+    evutil_make_listen_socket_reuseable(sock);
 
     struct sockaddr_in sin;
     sin.sin_family = AF_INET;
@@ -37,18 +37,18 @@ void accept_cb(int fd, short events, void * arg){
 
     if((s = accept(fd, (struct sockaddr *)&client, &len)) < 0){
         perror("[SERVER] socket accept failed");
-        return -1;
+        exit(1);
     }
 
     evutil_make_socket_nonblocking(s);
 
     struct event_base * base = (struct event_base *)arg;
 
-    struct event * ev = (struct event *)mm_malloc(sizeof(struct event));
+    struct event * ev = (struct event *)malloc(sizeof(struct event));
     
-    if(event_assign(ev, base, s, EV_READ | EV_PERSIST, socket_read_cb, (void *)ev) < 0){
-        perror("[SERVER] event assign socket_read_cb failed");
-        return -1;
+    if(event_assign(ev, base, s, EV_READ | EV_PERSIST, server_process_cb, (void *)ev) < 0){
+        perror("[SERVER] event assign server_process_cb failed");
+        exit(1);
     }
 
     event_add(ev, NULL);
@@ -57,7 +57,7 @@ void accept_cb(int fd, short events, void * arg){
 void server_process_cb(int fd, short events, void * arg){
     char msg[4096];
     struct event * ev = (struct event *)arg;
-    int len = read(fg, msg, sizeof(msg) - 1);
+    int len = read(fd, msg, sizeof(msg) - 1);
 
     if(len <= 0){
         event_free(ev);
@@ -73,9 +73,9 @@ void server_process_cb(int fd, short events, void * arg){
     write(fd, reply_msg, strlen(reply_msg));
 }
 
-int server_thread(int argc, char * argv[]){
+void server_thread(int argc, char * argv[]){
     evutil_socket_t sock;
-    if((sock = server_init(12345，100)) < 0){
+    if((sock = server_init(12345, 100)) < 0){
         perror("[SERVER] server init error");
         return -1;
     }
@@ -88,5 +88,4 @@ int server_thread(int argc, char * argv[]){
 
     event_base_dispatch(base);
 
-    return 0;
 }

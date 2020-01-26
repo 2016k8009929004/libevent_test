@@ -1,7 +1,7 @@
 #include "client.h"
 
 int connect_server(const char * server_ip, int port){
-    int sockfd, status;
+    int sockfd;
     
     struct sockaddr_in server_addr;
 
@@ -61,7 +61,7 @@ void receive_response_cd(int fd, short events, void * arg){
     
 }
 
-int client_thread(int argc, char * argv[]){
+void client_thread(int argc, char * argv[]){
     int sockfd = connect_server(argv[1], atoi(argv[2]));
 
     if(sockfd == -1){
