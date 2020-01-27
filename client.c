@@ -22,64 +22,59 @@ int connect_server(const char * server_ip, int port){
         return -1;
     }
 
-    evutil_make_socket_nonblocking(sockfd);
+//    evutil_make_socket_nonblocking(sockfd);
 
     return sockfd;
 
 }
 
 void send_request(int fd){
-    char buf[BUF_SIZE];
+    char send_buf[BUF_SIZE];
+	char recv_buf[BUF_SIZE + 1];
 
-    FILE * fp = fopen("client-input.dat", "rb");
+	int send_size, recv_size;
 
-    while(!feof(fp)){
-        int size = fread(buf, 1, BUF_SIZE, fp);
-        write(fd, buf, size);
+    FILE * send_fp = fopen("client-input.dat", "rb");
+	FILE * recv_fp = fopen("server-output.dat", "wb");
+
+	printf("[CLIENT] start request\n");
+
+    while(!feof(send_fp)){
+        send_size = fread(send_buf, 1, BUF_SIZE, send_fp);
+
+        if(send(fd, send_buf, send_size, 0) < 0){
+			perror("[CLIENT] send failed");
+			exit(1);
+		}
+		
+		recv_size = recv(fd, recv_buf, sizeof(recv_buf) - 1, 0);
+		if(recv_size <= 0){
+			perror("[CLIENT] receive response fail");
+			exit(1);
+		}
+
+		fwrite(recv_buf, 1, recv_size, recv_fp);
+		fflush(recv_fp);
     }
 
-    fclose(fp);
+	printf("[CLIENT] request complete\n");
+
+    fclose(send_fp);
+	fclose(recv_fp);
     
     close(fd);
 
-}
-
-void receive_response_cd(int fd, short events, void * arg){
-    char buf[BUF_SIZE + 1];
-
-    int len = read(fd, buf, sizeof(buf) - 1);
-
-    if(len <= 0){
-        perror("[CLIENT] receive response fail");
-        exit(1);
-    }
-
-    FILE * fp = *((FILE **)arg);
-
-    fwrite(buf, 1, len, fp);
-    fflush(fp);
-    
 }
 
 void client_thread(int argc, char * argv[]){
     int sockfd = connect_server(argv[1], atoi(argv[2]));
 
     if(sockfd == -1){
-        perror("[CLIENT]tcp connect error");
+        perror("[CLIENT] tcp connect error");
         exit(1);
     }
 
     printf("[CLIENT] connected to server\n");
-
-    FILE * fp = fopen("server-output.dat", "wb");
-    
-    struct event_base * base = event_base_new();
-
-    struct event * ev_sockfd = event_new(base, sockfd, EV_READ | EV_PERSIST, receive_response_cd, (void *)&fp);
-
-    event_add(ev_sockfd, NULL);
-
-    event_base_dispatch(base);
 
     send_request(sockfd);
 
