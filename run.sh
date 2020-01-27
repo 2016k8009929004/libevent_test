@@ -1,5 +1,7 @@
 #!/bin/bash
 
+make clean && make all
+
 server = "server"
 client = "client"
 
