@@ -14,7 +14,8 @@ int main(int argc, char * argv[]){
             arg.ip_addr = &argv[2];
             arg.port = atoi(argv[3]);
 
-            pthread_create(&threads[i], NULL, client_thread, (void *)&arg);
+//            pthread_create(&threads[i], NULL, client_thread, (void *)&arg);
+            pthread_create(&threads[i], NULL, client_thread, (void *)argv);
         }
 
         for(i = 0;i < thread_num;i++){

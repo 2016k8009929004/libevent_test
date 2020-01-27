@@ -18,13 +18,13 @@
 #define PATH_SIZE 1024
 
 #define SWAP(a,b) do{a^=b;b^=a;a^=b;}while(0)
-
+/*
 struct server_node {
     char ** ip_addr;
     int port;
 };
-
-void * client_thread(void * arg);
+*/
+void * client_thread(void * argv);
 void * server_thread(void * arg);
 
 int itoa(int n, char s[]);

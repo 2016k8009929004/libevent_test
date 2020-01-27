@@ -61,10 +61,12 @@ void send_request(int fd){
 
 }
 
-void * client_thread(void * arg){
-    struct server_node * server = (struct server_node *)arg;
+void * client_thread(void * argv){
+//    struct server_node * server = (struct server_node *)arg;
+        char ** arg = (char **)argv;
 
-    int sockfd = connect_server(*(server->ip_addr), server->port);
+//    int sockfd = connect_server(*(server->ip_addr), server->port);
+    int sockfd = connect_server(arg[2], atoi(arg[3]));
     if(sockfd == -1){
         perror("[CLIENT] tcp connect error");
         exit(1);
