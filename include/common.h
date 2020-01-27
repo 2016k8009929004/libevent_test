@@ -15,9 +15,12 @@
 #include <event2/util.h>
 
 #define BUF_SIZE 1024
+#define PATH_SIZE 1024
+
+#define SWAP(a,b) do{a^=b;b^=a;a^=b;}while(0)
 
 struct server_node {
-    char * ip_addr;
+    char * ip_addr[];
     int port;
 };
 
@@ -26,5 +29,7 @@ struct client_arg {
     struct server_node server;
 };
 
-void client_thread(void * arg);
-void server_thread(void * arg);
+void * client_thread(void * arg);
+void * server_thread(void * arg);
+
+int itoa(int n, char s[]);

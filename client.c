@@ -1,6 +1,6 @@
 #include "client.h"
 
-int connect_server(const char * server_ip, int port){
+int connect_server(char * server_ip, int port){
     int sockfd;
     
     struct sockaddr_in server_addr;
@@ -28,14 +28,31 @@ int connect_server(const char * server_ip, int port){
 
 }
 
-void send_request(int fd){
+void send_request(int thread_id, int fd){
     char send_buf[BUF_SIZE];
 	char recv_buf[BUF_SIZE + 1];
 
 	int send_size, recv_size;
 
-    FILE * send_fp = fopen("client-input.dat", "rb");
-	FILE * recv_fp = fopen("server-output.dat", "wb");
+    char send_path[PATH_SIZE], recv_path[PATH_SIZE];
+
+    memset(send_path, 0);
+    itoa(thread_id, send_path);
+
+    strcat(send_path, "/");
+
+    memcpy(recv_path, send_path);
+
+    char * send_file = "client-input.dat";
+    char * recv_file = "server-output.dat";
+
+    strcat(send_path, send_file);
+    strcat(recv_path, recv_file);
+
+    FILE * send_fp = fopen(send_path, "rb");
+	FILE * recv_fp = fopen(recv_path, "wb");
+
+    printf("[CLIENT] thread id: %d, send file path: %s, recv file path: %s\n", thread_id, send_path, recv_path);
 
 	printf("[CLIENT] start request\n");
 
@@ -66,7 +83,7 @@ void send_request(int fd){
 
 }
 
-void client_thread(void * arg){
+void * client_thread(void * arg){
     int thread_id = ((struct client_arg *)arg)->client_thread_id;
     struct server_node * server = &(((struct client_arg *)arg)->server);
 
@@ -78,6 +95,8 @@ void client_thread(void * arg){
 
     printf("[CLIENT] connected to server\n");
 
-    send_request(sockfd);
+    send_request(thread_id, sockfd);
+
+    return NULL;
 
 }

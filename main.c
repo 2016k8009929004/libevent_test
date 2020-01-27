@@ -5,7 +5,7 @@ int main(int argc, char * argv[]){
 //        client_thread(argc, argv);
 
         int thread_num;
-        thread_num = argv[1];
+        thread_num = atoi(argv[1]);
         pthread_t * threads = (pthread_t *)malloc(sizeof(pthread_t) * thread_num);
 
         int i;
@@ -13,8 +13,8 @@ int main(int argc, char * argv[]){
             struct client_arg arg;
             arg.client_thread_id = i;
             arg.server.ip_addr = &argv[2];
-            arg.server.port = atoi(argv[3];
-            
+            arg.server.port = atoi(argv[3]);
+
             pthread_create(&threads[i], NULL, client_thread, (void *)&arg);
         }
 
@@ -24,7 +24,7 @@ int main(int argc, char * argv[]){
     }else{
 //        server_thread(argc, argv);
         int thread_num;
-        thread_num = argv[1];
+        thread_num = atoi(argv[1]);
         pthread_t * threads = (pthread_t *)malloc(sizeof(pthread_t) * thread_num);
 
         int i;

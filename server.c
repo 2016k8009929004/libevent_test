@@ -78,7 +78,7 @@ void server_process_cb(int fd, short events, void * arg){
     send(fd, reply_msg, strlen(reply_msg), 0);
 }
 
-void server_thread(void * arg){
+void * server_thread(void * arg){
     evutil_socket_t sock;
     if((sock = server_init(12345, 100)) < 0){
         perror("[SERVER] server init error");
@@ -92,5 +92,7 @@ void server_thread(void * arg){
     event_add(ev_listen, NULL);
 
     event_base_dispatch(base);
+
+    return NULL;
 
 }
