@@ -24,11 +24,6 @@ struct server_node {
     int port;
 };
 
-struct client_arg {
-    int client_thread_id;
-    struct server_node server;
-};
-
 void * client_thread(void * arg);
 void * server_thread(void * arg);
 

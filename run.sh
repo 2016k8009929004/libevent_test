@@ -12,14 +12,6 @@ if test $1 = $server
 then
     ./libevent_test $2
 else
-    i=0
-    while [ $i -le $2 ]
-    do
-        mkdir $i
-        cd $i
-        ./create_randfile.sh
-        cd ..
-        let i++
-    done
+    ./create_randfile.sh $i
     ./libevent_test $2 $server_ip $server_port
 fi
