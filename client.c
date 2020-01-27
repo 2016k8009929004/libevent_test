@@ -66,7 +66,7 @@ void * client_thread(void * argv){
         char ** arg = (char **)argv;
 
 //    int sockfd = connect_server(*(server->ip_addr), server->port);
-    int sockfd = connect_server(arg[2], atoi(arg[3]));
+    int sockfd = connect_server(arg[3], atoi(arg[4]));
     if(sockfd == -1){
         perror("[CLIENT] tcp connect error");
         exit(1);
