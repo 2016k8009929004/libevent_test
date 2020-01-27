@@ -13,13 +13,13 @@ then
     ./libevent_test $2
 else
     i=0
-    while($i < $2)
+    while [ $i -le $2 ]
     do
         mkdir $i
         cd $i
         ./create_randfile.sh
         cd ..
-        let "i++"
+        let i++
     done
     ./libevent_test $2 $server_ip $server_port
 fi
