@@ -9,10 +9,22 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <pthread.h>
+
 #include <event.h>
 #include <event2/util.h>
 
 #define BUF_SIZE 1024
 
-void client_thread(int argc, char * argv[]);
-void server_thread(int argc, char * argv[]);
+struct server_node {
+    char * ip_addr;
+    int port;
+};
+
+struct client_arg {
+    int client_thread_id;
+    struct server_node server;
+};
+
+void client_thread(void * arg);
+void server_thread(void * arg);
