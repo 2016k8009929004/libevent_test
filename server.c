@@ -55,11 +55,14 @@ void accept_cb(int fd, short events, void * arg){
 }
 
 void server_process_cb(int fd, short events, void * arg){
-    char msg[4096];
-    struct event * ev = (struct event *)arg;
-    int len = read(fd, msg, sizeof(msg) - 1);
+    char msg[BUF_SIZE + 1];
+    
+	struct event * ev = (struct event *)arg;
+    
+	int len = recv(fd, msg, sizeof(msg) - 1, 0);
 
     if(len <= 0){
+		printf("[SERVER] close connection\n");
         event_free(ev);
         close(fd);
         return;
@@ -67,10 +70,12 @@ void server_process_cb(int fd, short events, void * arg){
 
     msg[len] = '\0';
     
-    char reply_msg[4096];
+    char reply_msg[BUF_SIZE + 1];
     strcpy(reply_msg, msg);
 
-    write(fd, reply_msg, strlen(reply_msg));
+	printf("[SERVER] send response\n");
+
+    send(fd, reply_msg, strlen(reply_msg), 0);
 }
 
 void server_thread(int argc, char * argv[]){
