@@ -20,7 +20,7 @@
 #define SWAP(a,b) do{a^=b;b^=a;a^=b;}while(0)
 
 struct server_node {
-    char * ip_addr[];
+    char ** ip_addr;
     int port;
 };
 
