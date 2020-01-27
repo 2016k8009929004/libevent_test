@@ -36,12 +36,12 @@ void send_request(int thread_id, int fd){
 
     char send_path[PATH_SIZE], recv_path[PATH_SIZE];
 
-    memset(send_path, 0);
+    memset(send_path, 0, sizeof(send_path));
     itoa(thread_id, send_path);
 
     strcat(send_path, "/");
 
-    memcpy(recv_path, send_path);
+    memcpy(recv_path, send_path, sizeof(send_path));
 
     char * send_file = "client-input.dat";
     char * recv_file = "server-output.dat";
