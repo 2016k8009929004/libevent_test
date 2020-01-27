@@ -5,7 +5,7 @@ int main(int argc, char * argv[]){
 //        client_thread(argc, argv);
 
         int thread_num;
-        thread_num = atoi(argv[2]);
+        thread_num = atoi(argv[1]);
         pthread_t * threads = (pthread_t *)malloc(sizeof(pthread_t) * thread_num);
 
         int i;
@@ -25,7 +25,7 @@ int main(int argc, char * argv[]){
     }else{
 //        server_thread(argc, argv);
         int thread_num;
-        thread_num = atoi(argv[2]);
+        thread_num = atoi(argv[1]);
         pthread_t * threads = (pthread_t *)malloc(sizeof(pthread_t) * thread_num);
 
         int i;
