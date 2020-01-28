@@ -13,5 +13,5 @@ then
     ./libevent_test $2
 else
     ./create_randfile.sh $i
-    ./libevent_test $2 $3 $4
+    ./libevent_test $2 $server_ip $server_port
 fi

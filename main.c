@@ -10,13 +10,13 @@ int main(int argc, char * argv[]){
 
         int i;
         for(i = 0;i < thread_num;i++){
-/*
+
             struct server_node arg;
             arg.ip_addr = &argv[2];
             arg.port = atoi(argv[3]);
-*/
-//            pthread_create(&threads[i], NULL, client_thread, (void *)&arg);
-            pthread_create(&threads[i], NULL, client_thread, (void *)argv);
+
+            pthread_create(&threads[i], NULL, client_thread, (void *)&arg);
+//            pthread_create(&threads[i], NULL, client_thread, (void *)argv);
         }
 
         for(i = 0;i < thread_num;i++){
