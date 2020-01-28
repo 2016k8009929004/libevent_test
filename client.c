@@ -62,7 +62,7 @@ void send_request(int fd){
 }
 
 void * client_thread(void * argv){
-    struct server_node * server = (struct server_node *)arg;
+    struct server_node * server = (struct server_node *)argv;
 //    char ** arg = (char **)argv;
 
 //    printf("[CLIENT] server ip: %s, server port: %d\n", arg[2], atoi(arg[3]));
