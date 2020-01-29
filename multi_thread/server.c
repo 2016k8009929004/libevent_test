@@ -113,7 +113,7 @@ void response_process_cb(int fd, short events, void * arg){
     char * reply_msg = write_arg->buff;
 
     char msg[BUF_SIZE + 1];
-    sprintf(buffer, "received: %s\n", reply_msg);
+    sprintf(msg, "received: %s\n", reply_msg);
 
     int send_byte_cnt = write(fd, msg, strlen(msg));
 /*
