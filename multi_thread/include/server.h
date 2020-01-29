@@ -1,4 +1,5 @@
 #include "common.h"
+#include "evallib.h"
 
 struct sock_ev_read {
     struct event_base * base;
