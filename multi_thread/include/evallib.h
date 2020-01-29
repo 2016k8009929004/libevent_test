@@ -1,3 +1,6 @@
+#include <sys/time.h>
+#include "log.h"
+
 #define REAL_TIME_STATS
 
 struct timeval start, end, time1, time2;

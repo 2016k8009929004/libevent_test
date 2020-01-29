@@ -1,6 +1,5 @@
 #include "common.h"
 #include "evallib.h"
-#include "log.h"
 
 struct sock_ev_read {
     struct event_base * base;
