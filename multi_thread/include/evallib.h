@@ -7,11 +7,11 @@
 
 struct timeval start, end, time1, time2;
 
-int start_flag = 0;
+static int start_flag = 0;
 
-int handle_request_cnt = 0;
+static int handle_request_cnt = 0;
 
-int byte_sent = 0;
+static int byte_sent = 0;
 
 float elapsed_time;
 
