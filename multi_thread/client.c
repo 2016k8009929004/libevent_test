@@ -35,7 +35,7 @@ void send_request(int fd){
 	int send_size, recv_size;
 
     FILE * send_fp = fopen("client-input.dat", "rb");
-    FILE * recv_fp = fopen("server-ouput.dat", "wb");
+//    FILE * recv_fp = fopen("server-ouput.dat", "wb");
 
 //	printf("[CLIENT] start request\n");
 
@@ -46,7 +46,7 @@ void send_request(int fd){
 			perror("[CLIENT] send failed");
 			exit(1);
 		}
-		
+/*
 		recv_size = recv(fd, recv_buf, sizeof(recv_buf) - 1, 0);
 		if(recv_size < 0){
 			perror("[CLIENT] receive response fail");
@@ -55,16 +55,49 @@ void send_request(int fd){
 
         fwrite(recv_buf, recv_size, 1, recv_fp);
         fflush(recv_fp);
+*/
+
 
     }
 
 	printf("[CLIENT] request complete\n");
 
     fclose(send_fp);
-    fclose(recv_fp);
+//    fclose(recv_fp);
     
     close(fd);
 
+}
+
+void response_process(int sock，short event, void * arg){
+    char recv_buf[BUF_SIZE + 1];
+    memset(recv_buf, 0, sizeof(recv_buf));
+
+    int recv_size = read(sock, recv_buf, BUF_SIZE);
+    
+    printf("receive reply: %s\n", recv_buf);
+}
+
+void * create_response_process(void * arg){
+    int sock = (int)arg;
+
+    struct event_base * base = event_base_new();
+
+    struct event * read_ev = (struct event *)malloc(sizeof(struct event));
+
+    event_set(read_ev, sock, EV_READ|EV_PERSIST, response_process, read_ev);
+
+    event_base_set(base, read_ev);
+
+    event_add(read_ev, NULL);
+
+    event_base_dispatch(base);
+}
+
+void receive_response_thread(int sockfd){
+    pthread_t thread;
+    pthread_create(&thread, NULL, create_response_process, (void *)&sockfd);
+    pthread_detach(thread);
 }
 
 void * client_thread(void * argv){
@@ -81,6 +114,8 @@ void * client_thread(void * argv){
     }
 
 //    printf("[CLIENT] connected to server\n");
+
+    receive_response_thread(sockfd);
 
     send_request(sockfd);
 
