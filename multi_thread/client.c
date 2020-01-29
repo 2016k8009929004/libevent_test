@@ -65,7 +65,7 @@ void send_request(int fd){
     fclose(send_fp);
 //    fclose(recv_fp);
     
-    close(fd);
+//    close(fd);
 
 }
 
@@ -74,6 +74,11 @@ void response_process(int sock, short event, void * arg){
     memset(recv_buf, 0, sizeof(recv_buf));
 
     int recv_size = read(sock, recv_buf, BUF_SIZE);
+
+    if(recv_size == 0){
+        printf("[CLIENT] close connection\n");
+        close(sock);
+    }
     
     printf("receive reply: %s\n", recv_buf);
 }
