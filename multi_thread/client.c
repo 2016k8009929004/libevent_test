@@ -47,7 +47,7 @@ void send_request(int fd){
 		}
 		
 		recv_size = recv(fd, recv_buf, sizeof(recv_buf) - 1, 0);
-		if(recv_size <= 0){
+		if(recv_size < 0){
 			perror("[CLIENT] receive response fail");
 			exit(1);
 		}
