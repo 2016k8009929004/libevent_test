@@ -79,6 +79,8 @@ void request_process_cb(int fd, short events, void * arg){
 
     msg[len] = '\0';
 
+    printf("%s\n", msg);
+
     char * reply_msg = (char *)malloc(BUF_SIZE + 1);
     strcpy(reply_msg, msg);
 
@@ -110,7 +112,7 @@ void response_process_cb(int fd, short events, void * arg){
 
     char * reply_msg = write_arg->buff;
 
-    printf("%s\n", reply_msg);
+//    printf("%s\n", reply_msg);
 
     int send_byte_cnt = send(fd, reply_msg, strlen(reply_msg), 0);
 
