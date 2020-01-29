@@ -11,7 +11,7 @@ LIBS = -lpthread -levent
 
 HDRS = ./include/*.h
 
-SRCS = common.c client.c server.c main.c
+SRCS = common.c evallib.c client.c server.c main.c
 
 OBJS = $(patsubst %.c,%.o, $(SRCS))
 
