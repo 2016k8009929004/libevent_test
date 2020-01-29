@@ -1,4 +1,6 @@
 #include <sys/time.h>
+#include <stdio.h>
+
 #include "log.h"
 
 #define REAL_TIME_STATS
