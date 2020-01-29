@@ -69,7 +69,7 @@ void send_request(int fd){
 
 }
 
-void response_process(int sock，short event, void * arg){
+void response_process(int sock, short event, void * arg){
     char recv_buf[BUF_SIZE + 1];
     memset(recv_buf, 0, sizeof(recv_buf));
 
