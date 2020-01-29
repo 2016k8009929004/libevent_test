@@ -71,7 +71,8 @@ void request_process_cb(int fd, short events, void * arg){
 
     if(len <= 0){
 		printf("[SERVER] close connection\n");
-        close_read_event(read_arg);
+//        close_read_event(read_arg);
+        event_delete(read_arg->read_ev);
 #ifdef REAL_TIME_STATS
         request_end(&elapsed_time);
 #endif
