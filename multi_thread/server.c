@@ -131,8 +131,8 @@ void * server_thread(void * arg){
         exit(1);
     }
 
-    pthread_mutex_init(&request_end_lock);
-    pthread_mutex_init(&send_lock);
+    pthread_mutex_init(&request_end_lock, NULL);
+    pthread_mutex_init(&send_lock, NULL);
 
     struct event_base * base = event_base_new();
 
