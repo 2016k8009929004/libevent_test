@@ -6,6 +6,11 @@ struct sock_ev_read {
     struct event * read_ev;
 };
 
+struct sock_ev_write {
+    struct event * write_ev;
+    char * buff;
+};
+
 evutil_socket_t server_init(int port, int listen_num);
 
 void accept_cb(int fd, short events, void * arg);
@@ -14,4 +19,4 @@ void * server_process(void * arg);
 
 void request_process_cb(int fd, short events, void * arg);
 
-void close_read_event(struct sock_ev_read * arg);
+void response_process_cb(int fd, short events, void * arg);

@@ -2,6 +2,8 @@
 
 int connect_cnt = 0;
 
+extern int byte_sent;
+
 evutil_socket_t server_init(int port, int listen_num){
     evutil_socket_t sock;
     if((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
@@ -52,31 +54,19 @@ void accept_cb(int fd, short events, void * arg){
     pthread_detach(thread);
 }
 
-void close_read_event(struct sock_ev_read * arg){
-    event_del(arg->read_ev);
-    event_base_loopexit(arg->base, NULL);
-    
-    if(arg->read_ev != NULL){
-        free(arg->read_ev);
-    }
-
-    event_base_free(arg->base);
-    free(arg);
-}
-
 void request_process_cb(int fd, short events, void * arg){
 #ifdef REAL_TIME_STATS
     request_start();
 #endif
     struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
-    char msg[BUF_SIZE + 1];
+//    char msg[BUF_SIZE + 1];
+    char * msg = (char *)malloc(BUF_SIZE + 1);
 
 	int len = recv(fd, msg, sizeof(msg) - 1, 0);
 
     if(len <= 0){
 		printf("[SERVER] close connection\n");
-//        close_read_event(read_arg);
         event_del(read_arg->read_ev);
         pthread_mutex_lock(&request_end_lock);
 #ifdef REAL_TIME_STATS
@@ -88,17 +78,43 @@ void request_process_cb(int fd, short events, void * arg){
     }
 
     msg[len] = '\0';
-    
-    char reply_msg[BUF_SIZE + 1];
-    strcpy(reply_msg, msg);
 
 //	printf("[SERVER] send response\n");
+/*
+    int send_byte_cnt = send(fd, reply_msg, strlen(reply_msg), 0);
+
+    pthread_mutex_lock(&send_lock);
+    byte_sent += send_byte_cnt;
+    pthread_mutex_unlock(&send_lock);
+*/
+
+    struct event * write_ev = (struct event *)malloc(sizeof(struct event));
+
+    struct sock_ev_write * write_arg = (struct sock_ev_write *)malloc(sizeof(struct sock_ev_write));
+    write_arg->write_ev = write_ev;
+    write_arg->buff = msgs;
+
+    event_set(write_ev, sock, EV_WRITE, response_process_cb, write_arg);
+
+    event_base_set(read_arg->base, write_ev);
+
+    event_add(write_ev, NULL);
+
+}
+
+void response_process_cb(int fd, short events, void * arg){
+    struct sock_ev_write * write_arg = (struct sock_ev_write *)arg;
+
+    char * reply_msg = (char *)malloc(BUF_SIZE + 1);
+    strcpy(reply_msg, write_arg->buff);
 
     int send_byte_cnt = send(fd, reply_msg, strlen(reply_msg), 0);
 
     pthread_mutex_lock(&send_lock);
     byte_sent += send_byte_cnt;
     pthread_mutex_unlock(&send_lock);
+
+    event_del(write_arg->write_ev);
 }
 
 void * server_process(void * arg){
