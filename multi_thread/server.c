@@ -114,7 +114,7 @@ void response_process_cb(int fd, short events, void * arg){
     byte_sent += send_byte_cnt;
     pthread_mutex_unlock(&send_lock);
 
-    event_del(write_arg->write_ev);
+//    event_del(write_arg->write_ev);
 }
 
 void * server_process(void * arg){
