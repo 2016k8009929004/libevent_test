@@ -36,7 +36,7 @@ void send_request(int fd){
 
     FILE * send_fp = fopen("client-input.dat", "rb");
 
-	printf("[CLIENT] start request\n");
+//	printf("[CLIENT] start request\n");
 
     while(!feof(send_fp)){
         send_size = fread(send_buf, 1, BUF_SIZE, send_fp);
@@ -53,7 +53,7 @@ void send_request(int fd){
 		}
     }
 
-	printf("[CLIENT] request complete\n");
+//	printf("[CLIENT] request complete\n");
 
     fclose(send_fp);
     
@@ -74,7 +74,7 @@ void * client_thread(void * argv){
         exit(1);
     }
 
-    printf("[CLIENT] connected to server\n");
+//    printf("[CLIENT] connected to server\n");
 
     send_request(sockfd);
 

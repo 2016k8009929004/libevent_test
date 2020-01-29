@@ -84,7 +84,7 @@ void request_process_cb(int fd, short events, void * arg){
     char reply_msg[BUF_SIZE + 1];
     strcpy(reply_msg, msg);
 
-	printf("[SERVER] send response\n");
+//	printf("[SERVER] send response\n");
 
     int send_byte_cnt = send(fd, reply_msg, strlen(reply_msg), 0);
 
