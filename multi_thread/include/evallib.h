@@ -1,5 +1,6 @@
 #include <sys/time.h>
 #include <stdio.h>
+#include <pthread.h>
 
 #include "log.h"
 
@@ -9,7 +10,11 @@ struct timeval start, end, time1, time2;
 
 static int start_flag = 0;
 
+pthread_mutex_t request_end_lock;
+
 static int handle_request_cnt = 0;
+
+pthread_mutex_t send_lock;
 
 static int byte_sent = 0;
 

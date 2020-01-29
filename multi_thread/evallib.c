@@ -1,5 +1,7 @@
 #include "evallib.h"
 
+extern int byte_sent;
+
 void request_start(){
     if(!start_flag){
         gettimeofday(&start, &tz);
@@ -9,8 +11,6 @@ void request_start(){
 
 void request_end(){
     int sec, usec;
-
-    handle_request_cnt++;
 
     gettimeofday(&end, &tz);
 
@@ -25,6 +25,8 @@ void request_end(){
 
     float tps = (float)handle_request_cnt / elapsed_time;
     float thruput = (float)byte_sent / elapsed_time;
+
+    handle_request_cnt++;
 
     log(INFO, "elapsed time: %f, handle request: %d, tps: %f, byte sent: %d, throughput: %f", 
             elapsed_time, handle_request_cnt, tps, byte_sent, thruput);

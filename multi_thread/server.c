@@ -78,9 +78,11 @@ void request_process_cb(int fd, short events, void * arg){
 		printf("[SERVER] close connection\n");
 //        close_read_event(read_arg);
         event_del(read_arg->read_ev);
+        pthread_mutex_lock(&request_end_lock);
 #ifdef REAL_TIME_STATS
         request_end(&elapsed_time);
 #endif
+        pthread_mutex_unlock(&request_end_lock);
         close(fd);
         return;
     }
@@ -94,9 +96,11 @@ void request_process_cb(int fd, short events, void * arg){
 
     int send_byte_cnt = send(fd, reply_msg, strlen(reply_msg), 0);
 
+    pthread_mutex_lock(&send_lock);
     byte_sent += send_byte_cnt;
 
     printf("[SERVER] send byte: %d, byte sent: %d\n", send_byte_cnt, byte_sent);
+    pthread_mutex_unlock(&send_lock);
 }
 
 void * server_process(void * arg){
@@ -126,6 +130,9 @@ void * server_thread(void * arg){
         perror("[SERVER] server init error");
         exit(1);
     }
+
+    pthread_mutex_init(&request_end_lock);
+    pthread_mutex_init(&send_lock);
 
     struct event_base * base = event_base_new();
 
