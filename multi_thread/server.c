@@ -105,6 +105,8 @@ void request_process_cb(int fd, short events, void * arg){
 void response_process_cb(int fd, short events, void * arg){
     struct sock_ev_write * write_arg = (struct sock_ev_write *)arg;
 
+    printf("%s\n", write_arg->buff);
+
     char * reply_msg = (char *)malloc(BUF_SIZE + 1);
     strcpy(reply_msg, write_arg->buff);
 
