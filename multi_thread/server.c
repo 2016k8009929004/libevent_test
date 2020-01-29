@@ -92,9 +92,9 @@ void request_process_cb(int fd, short events, void * arg){
 
     struct sock_ev_write * write_arg = (struct sock_ev_write *)malloc(sizeof(struct sock_ev_write));
     write_arg->write_ev = write_ev;
-    write_arg->buff = msgs;
+    write_arg->buff = msg;
 
-    event_set(write_ev, sock, EV_WRITE, response_process_cb, write_arg);
+    event_set(write_ev, fd, EV_WRITE, response_process_cb, write_arg);
 
     event_base_set(read_arg->base, write_ev);
 

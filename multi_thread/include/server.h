@@ -11,6 +11,10 @@ struct sock_ev_write {
     char * buff;
 };
 
+pthread_mutex_t send_lock;
+
+static int byte_sent = 0;
+
 evutil_socket_t server_init(int port, int listen_num);
 
 void accept_cb(int fd, short events, void * arg);
