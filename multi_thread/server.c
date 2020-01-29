@@ -1,5 +1,7 @@
 #include "server.h"
 
+int connect_cnt = 0;
+
 evutil_socket_t server_init(int port, int listen_num){
     evutil_socket_t sock;
     if((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
@@ -41,6 +43,9 @@ void accept_cb(int fd, short events, void * arg){
     }
 
     evutil_make_socket_nonblocking(s);
+
+    connect_cnt++;
+    log(INFO, "connect count: %d", connect_cnt);
 
     pthread_t thread;
     pthread_create(&thread, NULL, server_process, (void *)&s);
