@@ -1,5 +1,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
@@ -16,6 +17,8 @@
 
 #define BUF_SIZE 1024
 #define PATH_SIZE 1024
+
+#define REAL_TIME_STATS
 
 #define SWAP(a,b) do{a^=b;b^=a;a^=b;}while(0)
 
