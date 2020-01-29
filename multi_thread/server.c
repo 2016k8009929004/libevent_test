@@ -112,10 +112,8 @@ void response_process_cb(int fd, short events, void * arg){
 
     char * reply_msg = write_arg->buff;
 
-    char msg[BUF_SIZE + 1];
-    sprintf(msg, "received: %s\n", reply_msg);
+    int send_byte_cnt = write(fd, reply_msg, strlen(reply_msg));
 
-    int send_byte_cnt = write(fd, msg, strlen(msg));
 /*
     pthread_mutex_lock(&send_lock);
     byte_sent += send_byte_cnt;

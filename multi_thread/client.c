@@ -42,8 +42,6 @@ void send_request(int fd){
     while(!feof(send_fp)){
         send_size = fread(send_buf, 1, BUF_SIZE, send_fp);
 
-        printf("send msg: %s\n", send_buf);
-
         if(send(fd, send_buf, send_size, 0) < 0){
 			perror("[CLIENT] send failed");
 			exit(1);
@@ -60,7 +58,7 @@ void send_request(int fd){
 
     }
 
-//	printf("[CLIENT] request complete\n");
+	printf("[CLIENT] request complete\n");
 
     fclose(send_fp);
     fclose(recv_fp);
