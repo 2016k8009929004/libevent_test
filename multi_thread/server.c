@@ -63,7 +63,7 @@ void request_process_cb(int fd, short events, void * arg){
 //    char msg[BUF_SIZE + 1];
     char * msg = (char *)malloc(BUF_SIZE + 1);
 
-	int len = recv(fd, msg, sizeof(msg) - 1, 0);
+	int len = read(fd, msg, sizeof(msg) - 1);
 
     if(len <= 0){
 		printf("[SERVER] close connection\n");
@@ -92,7 +92,7 @@ void request_process_cb(int fd, short events, void * arg){
     byte_sent += send_byte_cnt;
     pthread_mutex_unlock(&send_lock);
 */
-/*
+
     struct event * write_ev = (struct event *)malloc(sizeof(struct event));
 
     struct sock_ev_write * write_arg = (struct sock_ev_write *)malloc(sizeof(struct sock_ev_write));
@@ -104,7 +104,7 @@ void request_process_cb(int fd, short events, void * arg){
     event_base_set(read_arg->base, write_ev);
 
     event_add(write_ev, NULL);
-*/
+
 }
 
 void response_process_cb(int fd, short events, void * arg){
@@ -112,9 +112,7 @@ void response_process_cb(int fd, short events, void * arg){
 
     char * reply_msg = write_arg->buff;
 
-//    printf("%s\n", reply_msg);
-
-    int send_byte_cnt = send(fd, reply_msg, strlen(reply_msg), 0);
+    int send_byte_cnt = write(fd, reply_msg, strlen(reply_msg));
 
     pthread_mutex_lock(&send_lock);
     byte_sent += send_byte_cnt;
