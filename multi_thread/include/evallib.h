@@ -1,3 +1,5 @@
+#define REAL_TIME_STATS
+
 struct timeval start, end, time1, time2;
 
 int start_flag = 0;
