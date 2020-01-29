@@ -1,3 +1,6 @@
+#ifndef __COMMON_H__
+#define __COMMON_H__
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/time.h>
@@ -47,3 +50,5 @@ struct timezone tz;
 
 void request_start();
 void request_end();
+
+#endif
