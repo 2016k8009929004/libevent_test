@@ -95,6 +95,8 @@ void request_process_cb(int fd, short events, void * arg){
     int send_byte_cnt = send(fd, reply_msg, strlen(reply_msg), 0);
 
     byte_sent += send_byte_cnt;
+
+    printf("[SERVER] send byte: %d, byte sent: %d\n", send_byte_cnt, byte_sent);
 }
 
 void * server_process(void * arg){
