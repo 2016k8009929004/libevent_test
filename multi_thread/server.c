@@ -92,7 +92,7 @@ void request_process_cb(int fd, short events, void * arg){
     byte_sent += send_byte_cnt;
     pthread_mutex_unlock(&send_lock);
 */
-
+/*
     struct event * write_ev = (struct event *)malloc(sizeof(struct event));
 
     struct sock_ev_write * write_arg = (struct sock_ev_write *)malloc(sizeof(struct sock_ev_write));
@@ -104,7 +104,7 @@ void request_process_cb(int fd, short events, void * arg){
     event_base_set(read_arg->base, write_ev);
 
     event_add(write_ev, NULL);
-
+*/
 }
 
 void response_process_cb(int fd, short events, void * arg){
