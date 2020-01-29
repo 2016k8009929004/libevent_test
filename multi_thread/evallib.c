@@ -26,6 +26,6 @@ void request_end(){
     float tps = (float)handle_request_cnt / elapsed_time;
     float thruput = (float)byte_sent / elapsed_time;
 
-    log(INFO, "elapsed time: %f, handle request: %d, tps: %f, throughput: %f", 
-            elapsed_time, handle_request_cnt, tps, thruput);
+    log(INFO, "elapsed time: %f, handle request: %d, tps: %f, byte sent: %d, throughput: %f", 
+            elapsed_time, handle_request_cnt, tps, byte_sent, thruput);
 }

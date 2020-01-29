@@ -35,7 +35,7 @@ void send_request(int fd){
 	int send_size, recv_size;
 
     FILE * send_fp = fopen("client-input.dat", "rb");
-    FILE * recv_fp = fopen("server-ouput.dat", "wb");
+//    FILE * recv_fp = fopen("server-ouput.dat", "wb");
 
 //	printf("[CLIENT] start request\n");
 
@@ -53,15 +53,15 @@ void send_request(int fd){
 			exit(1);
 		}
 
-        fwrite(recv_buf, recv_size, 1, recv_fp);
-        fflush(recv_fp);
+//        fwrite(recv_buf, recv_size, 1, recv_fp);
+//        fflush(recv_fp);
 
     }
 
 //	printf("[CLIENT] request complete\n");
 
     fclose(send_fp);
-    fclose(recv_fp);
+//    fclose(recv_fp);
     
     close(fd);
 
