@@ -1,7 +1,5 @@
 #include "evallib.h"
 
-extern int byte_sent;
-
 void request_start(){
     if(!start_flag){
         gettimeofday(&start, &tz);
@@ -9,7 +7,7 @@ void request_start(){
     }
 }
 
-void request_end(){
+void request_end(int byte_sent){
     int sec, usec;
 
     gettimeofday(&end, &tz);
