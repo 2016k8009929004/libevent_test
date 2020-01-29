@@ -79,7 +79,7 @@ void request_process_cb(int fd, short events, void * arg){
 
     msg[len] = '\0';
 
-    printf("%s\n", msg);
+    printf("len: %d, msg: %s\n", len, msg);
 
     char * reply_msg = (char *)malloc(BUF_SIZE + 1);
     strcpy(reply_msg, msg);
