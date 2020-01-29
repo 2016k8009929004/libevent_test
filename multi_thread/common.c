@@ -1,5 +1,8 @@
 #include "common.h"
 
+extern int handle_request_cnt;
+extern int byte_sent;
+
 void request_start(){
     if(!start_flag){
         gettimeofday(&start, &tz);

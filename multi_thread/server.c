@@ -43,7 +43,7 @@ void accept_cb(int fd, short events, void * arg){
     evutil_make_socket_nonblocking(s);
 
     pthread_t thread;
-    pthread_create(&thread, NULL, server_process, (void *)s);
+    pthread_create(&thread, NULL, server_process, (void *)&s);
     pthread_detach(thread);
 }
 
@@ -92,7 +92,7 @@ void request_process_cb(int fd, short events, void * arg){
 }
 
 void * server_process(void * arg){
-    evutil_socket_t fd = (evutil_socket_t)arg;
+    evutil_socket_t fd = *((evutil_socket_t *)arg);
 
     struct event_base * base = event_base_new();
     struct event * read_ev = (struct event *)malloc(sizeof(struct event));
