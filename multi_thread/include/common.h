@@ -18,8 +18,6 @@
 #include <event.h>
 #include <event2/util.h>
 
-#include "log.h"
-
 #define BUF_SIZE 1024
 #define REAL_TIME_STATS
 
