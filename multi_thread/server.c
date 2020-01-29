@@ -111,13 +111,13 @@ void response_process_cb(int fd, short events, void * arg){
     struct sock_ev_write * write_arg = (struct sock_ev_write *)arg;
 
     char * reply_msg = write_arg->buff;
-
+/*
     int send_byte_cnt = write(fd, reply_msg, strlen(reply_msg));
 
     pthread_mutex_lock(&send_lock);
     byte_sent += send_byte_cnt;
     pthread_mutex_unlock(&send_lock);
-
+*/
 //    event_del(write_arg->write_ev);
 }
 
