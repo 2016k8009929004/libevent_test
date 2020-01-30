@@ -63,13 +63,12 @@ void * send_request(void * arg){
 
     }
 
-	printf("[CLIENT] request complete, sent byte: %d\n", sent_byte);
+	printf("[CLIENT %d] request complete, sent byte: %d\n", fd, sent_byte);
 
     fclose(send_fp);
 //    fclose(recv_fp);
     
 //    close(fd);
-    while(1);
 
 }
 
@@ -104,7 +103,7 @@ void response_process(int sock, short event, void * arg){
 //    printf("receive reply: %s\n", recv_buf);
 
     if(recv_byte == sent_byte){
-        printf("[CLIENT] close connection\n");
+        printf("[CLIENT %d] receive reply complete, close connection\n", sock);
 
         pthread_mutex_lock(&fin_client_thread_lock);
         fin_client_thread++;
