@@ -1,10 +1,19 @@
 #include "common.h"
 
+#define RECEIVE_DEBUG
+
 int sent_byte = 0;
 
 pthread_mutex_t recv_lock;
 
 int recv_byte = 0;
+
+int work_done_flag = 0;
+
+struct response_process_arg {
+    struct event * read_ev;
+    FILE * fp;
+};
 
 int connect_server(char * server_ip, int port);
 

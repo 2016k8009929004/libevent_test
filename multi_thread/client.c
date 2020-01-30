@@ -74,6 +74,14 @@ void * send_request(void * arg){
 }
 
 void response_process(int sock, short event, void * arg){
+#ifdef RECEIVE_DEBUG
+    struct response_process_arg * response_arg = (struct response_process_arg *)arg;
+    struct event * read_ev = response_arg->read_ev;
+    FILE * fp = response_arg->fp;
+#elif
+    struct event * read_ev = (struct event *)arg;
+#endif
+
     char recv_buf[BUF_SIZE + 1];
     memset(recv_buf, 0, sizeof(recv_buf));
 
@@ -84,13 +92,23 @@ void response_process(int sock, short event, void * arg){
         close(sock);
     }
 
+#ifdef RECEIVE_DEBUG
+    fwrite(recv_buf, recv_size, 1, fp);
+    fflush(fp);
+#endif
+
     pthread_mutex_lock(&recv_lock);
     recv_byte += recv_size;
     pthread_mutex_unlock(&recv_lock);
     
-    printf("receive reply: %s\n", recv_buf);
+//    printf("receive reply: %s\n", recv_buf);
 
     if(recv_byte == sent_byte){
+        work_done_flag = 1;
+        event_del(read_ev);
+#ifdef RECEIVE_DEBUG
+        close(fp);
+#endif
         close(sock);
     }
 }
@@ -102,7 +120,21 @@ void * create_response_process(void * arg){
 
     struct event * read_ev = (struct event *)malloc(sizeof(struct event));
 
+#ifdef RECEIVE_DEBUG
+
+    FILE * recv_fp = fopen("server-ouput.dat", "wb");
+
+    struct response_process_arg * response_arg = (struct response_process_arg *)malloc(sizeof(struct response_process_arg));
+    response_arg->read_ev = read_ev;
+    response_arg->fp = recv_fp;
+
+    event_set(read_ev, sock, EV_READ|EV_PERSIST, response_process, response_arg);
+
+#elif
+
     event_set(read_ev, sock, EV_READ|EV_PERSIST, response_process, read_ev);
+
+#endif
 
     event_base_set(base, read_ev);
 
@@ -146,7 +178,7 @@ void * client_thread(void * argv){
 
 //    send_request(sockfd);
 
-    while(1);
+    while(!work_done_flag);
 
     return NULL;
 
