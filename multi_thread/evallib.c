@@ -3,9 +3,7 @@
 void request_start(){
     if(!start_flag){
         gettimeofday(&start, &tz);
-        float start_time = (float)start.tv_sec + ((float)start.tv_usec/(float)1000000.0);
         start_flag = 1;
-        log(INFO, "start time: %f", start_time);
     }
 }
 
@@ -16,6 +14,9 @@ void request_end(int byte_sent){
     int sec, usec;
 
     gettimeofday(&end, &tz);
+
+    log(DEBUG, "start sec: %ld, usec: %ld  end sec: %ld, usec: %ld", 
+            start.tv_sec, start.tv_usec, end.tv_sec, end.tv_usec);
 
     if(end.tv_usec < start.tv_usec){
         end.tv_usec += 1000000;
