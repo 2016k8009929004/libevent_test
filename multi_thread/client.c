@@ -174,7 +174,9 @@ void * client_thread(void * argv){
 
 //    send_request(sockfd);
 
-    while(!work_done_flag);
+//    while(!work_done_flag);
+
+    while(1);
 
     return NULL;
 
