@@ -30,7 +30,7 @@ int connect_server(char * server_ip, int port){
 
 void * send_request(void * arg){
     int fd = *((int *)arg);
-    
+
     char send_buf[BUF_SIZE];
 	char recv_buf[BUF_SIZE + 1];
 
@@ -111,15 +111,15 @@ void * create_response_process(void * arg){
     event_base_dispatch(base);
 }
 
-void receive_response_thread(int sockfd){
+void receive_response_thread(int fd){
     pthread_t thread;
-    pthread_create(&thread, NULL, create_response_process, (void *)&sockfd);
+    pthread_create(&thread, NULL, create_response_process, (void *)&fd);
     pthread_detach(thread);
 }
 
 void send_request_thread(int fd){
     pthread_t thread;
-    pthread_create(&thread, NULL, send_request, (void *)&sockfd);
+    pthread_create(&thread, NULL, send_request, (void *)&fd);
     pthread_detach(thread);
 }
 
