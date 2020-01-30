@@ -37,9 +37,11 @@ void accept_cb(int fd, short events, void * arg){
     struct sockaddr_in client;
     socklen_t len = sizeof(client);
 
-    evutil_socket_t s;
+//    evutil_socket_t s;
 
-    if((s = accept(fd, (struct sockaddr *)&client, &len)) < 0){
+    evutil_socket_t * s = (evutil_socket_t *)malloc(sizeof(evutil_socket_t)); 
+
+    if((*s = accept(fd, (struct sockaddr *)&client, &len)) < 0){
         perror("[SERVER] socket accept failed");
         exit(1);
     }
@@ -47,10 +49,10 @@ void accept_cb(int fd, short events, void * arg){
     evutil_make_socket_nonblocking(s);
 
     connect_cnt++;
-    log(INFO, "connect count: %d, fd: %d", connect_cnt, s);
+    log(INFO, "connect count: %d, fd: %d", connect_cnt, *s);
 
     pthread_t thread;
-    pthread_create(&thread, NULL, server_process, (void *)&s);
+    pthread_create(&thread, NULL, server_process, (void *)s);
     pthread_detach(thread);
 }
 
