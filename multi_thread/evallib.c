@@ -25,17 +25,17 @@ void request_end(int byte_sent){
 */
     sec = end.tv_sec - start.tv_sec;
     usec = end.tv_usec - start.tv_usec;
-/*
-    float start_time = (float)start.tv_sec + ((float)start.tv_usec/(float)1000000.0);
-    float end_time = (float)end.tv_sec + ((float)end.tv_usec/(float)1000000.0);
 
+    double start_time = (double)start.tv_sec + ((double)start.tv_usec/(double)1000000);
+    double end_time = (double)end.tv_sec + ((double)end.tv_usec/(double)1000000);
+/*
     elapsed_time = (float)sec + ((float)usec/(float)1000000.0);
 
     float tps = (float)handle_request_cnt / elapsed_time;
 //    float thruput = (float)byte_sent / elapsed_time;
 */
 
-    unsigned long start = 1000000 * start.tv_sec + 
+//    unsigned long start = 1000000 * start.tv_sec + 
 
     handle_request_cnt++;
 /*
@@ -49,10 +49,10 @@ void request_end(int byte_sent){
 
     char buff[1024];
 
-    printf("start:%f end:%f tot_request: %d tot_byte:%d\n", 
+    printf("start:%lf end:%lf tot_request: %d tot_byte:%d\n", 
             start_time, end_time, handle_request_cnt, byte_sent);
 
-    sprintf(buff, "start:%f end:%f tot_request: %d tot_byte:%d\n", 
+    sprintf(buff, "start:%lf end:%lf tot_request: %d tot_byte:%d\n", 
             start_time, end_time, handle_request_cnt, byte_sent);
     
     fwrite(buff, strlen(buff), 1, fp);
