@@ -105,6 +105,7 @@ void response_process(int sock, short event, void * arg){
 
     if(recv_byte == sent_byte){
         work_done_flag = 1;
+        printf("[CLIENT] close connection\n");
         event_del(read_ev);
 #ifdef RECEIVE_DEBUG
         fclose(fp);
@@ -174,9 +175,9 @@ void * client_thread(void * argv){
 
 //    send_request(sockfd);
 
-//    while(!work_done_flag);
+    while(!work_done_flag);
 
-    while(1);
+//    while(1);
 
     return NULL;
 
