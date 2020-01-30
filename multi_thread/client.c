@@ -104,8 +104,16 @@ void response_process(int sock, short event, void * arg){
 //    printf("receive reply: %s\n", recv_buf);
 
     if(recv_byte == sent_byte){
-        work_done_flag = 1;
         printf("[CLIENT] close connection\n");
+
+        pthread_mutex_lock(&fin_client_thread_lock);
+        fin_client_thread++;
+        pthread_mutex_unlock(&fin_client_thread_lock);
+
+        if(fin_client_thread == client_thread_num){
+            work_done_flag = 1;
+        }
+
         event_del(read_ev);
 #ifdef RECEIVE_DEBUG
         fclose(fp);

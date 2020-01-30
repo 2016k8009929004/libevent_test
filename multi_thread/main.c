@@ -4,12 +4,16 @@ int main(int argc, char * argv[]){
     if(argc == 4){
 //        client_thread(argc, argv);
 
-        int thread_num;
-        thread_num = atoi(argv[1]);
-        pthread_t * threads = (pthread_t *)malloc(sizeof(pthread_t) * thread_num);
+        client_thread_num = atoi(argv[1]);
+
+        pthread_mutex_init(&fin_client_thread_lock, NULL);
+
+//        thread_num = atoi(argv[1]);
+
+        pthread_t * threads = (pthread_t *)malloc(sizeof(pthread_t) * client_thread_num);
 
         int i;
-        for(i = 0;i < thread_num;i++){
+        for(i = 0;i < client_thread_num;i++){
 
             struct server_node arg;
             arg.ip_addr = &argv[2];
@@ -19,7 +23,7 @@ int main(int argc, char * argv[]){
 //            pthread_create(&threads[i], NULL, client_thread, (void *)argv);
         }
 
-        for(i = 0;i < thread_num;i++){
+        for(i = 0;i < client_thread_num;i++){
             pthread_join(threads[i], NULL);
         }
     }else{
