@@ -8,7 +8,9 @@ int recv_byte = 0;
 
 int connect_server(char * server_ip, int port);
 
-void send_request(int fd);
+void send_request_thread(int fd);
+
+void * send_request(int fd);
 
 void receive_response_thread(int sockfd);
 

@@ -28,7 +28,9 @@ int connect_server(char * server_ip, int port){
 
 }
 
-void send_request(int fd){
+void * send_request(void * arg){
+    int fd = *((int *)arg);
+    
     char send_buf[BUF_SIZE];
 	char recv_buf[BUF_SIZE + 1];
 
@@ -61,7 +63,7 @@ void send_request(int fd){
 
     }
 
-	printf("[CLIENT] request complete\n");
+	printf("[CLIENT] request complete, sent byte: %d\n", sent_byte);
 
     fclose(send_fp);
 //    fclose(recv_fp);
@@ -115,6 +117,12 @@ void receive_response_thread(int sockfd){
     pthread_detach(thread);
 }
 
+void send_request_thread(int fd){
+    pthread_t thread;
+    pthread_create(&thread, NULL, send_request, (void *)&sockfd);
+    pthread_detach(thread);
+}
+
 void * client_thread(void * argv){
     struct server_node * server = (struct server_node *)argv;
 //    char ** arg = (char **)argv;
@@ -134,7 +142,9 @@ void * client_thread(void * argv){
 
     receive_response_thread(sockfd);
 
-    send_request(sockfd);
+    send_request_thread(sockfd);
+
+//    send_request(sockfd);
 
     return NULL;
 
