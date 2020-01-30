@@ -47,7 +47,7 @@ void send_request(int fd){
 			exit(1);
 		}
 
-        send_byte += send_size;
+        sent_byte += send_size;
 /*
 		recv_size = recv(fd, recv_buf, sizeof(recv_buf) - 1, 0);
 		if(recv_size < 0){
@@ -87,7 +87,7 @@ void response_process(int sock, short event, void * arg){
     
     printf("receive reply: %s\n", recv_buf);
 
-    if(recv_byte == send_byte){
+    if(recv_byte == sent_byte){
         close(sock);
     }
 }
