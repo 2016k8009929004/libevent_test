@@ -29,7 +29,7 @@ void request_end(int byte_sent){
     elapsed_time = (float)sec + ((float)usec/(float)1000000.0);
 
     float tps = (float)handle_request_cnt / elapsed_time;
-    float thruput = (float)byte_sent / elapsed_time;
+//    float thruput = (float)byte_sent / elapsed_time;
 
     handle_request_cnt++;
 /*

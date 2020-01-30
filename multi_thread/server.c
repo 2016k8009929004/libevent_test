@@ -2,7 +2,7 @@
 
 int connect_cnt = 0;
 
-extern int byte_sent;
+//extern int byte_sent;
 
 evutil_socket_t server_init(int port, int listen_num){
     evutil_socket_t sock;
@@ -69,7 +69,9 @@ void request_process_cb(int fd, short events, void * arg){
     if(len <= 0){
         pthread_mutex_lock(&request_end_lock);
 #ifdef REAL_TIME_STATS
+        pthread_mutex_lock(&send_lock);
         request_end(byte_sent);
+        pthread_mutex_unlock(&send_lock);
 #endif
         pthread_mutex_unlock(&request_end_lock);
 
@@ -118,6 +120,10 @@ void response_process_cb(int fd, short events, void * arg){
     strcpy(reply_msg, msg);
 
     int send_byte_cnt = write(fd, reply_msg, strlen(reply_msg));
+
+    pthread_mutex_lock(&send_lock);
+    byte_sent += send_byte_cnt;
+    pthread_mutex_unlock(&send_lock);
 
 }
 
