@@ -67,6 +67,7 @@ void send_request(int fd){
 //    fclose(recv_fp);
     
 //    close(fd);
+    while(1);
 
 }
 
