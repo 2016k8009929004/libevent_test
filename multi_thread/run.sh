@@ -10,6 +10,7 @@ server_port=12345
 
 if test $1 = $server
 then
+    rm record.txt
     ./libevent_test $2
 else
     ./create_randfile.sh $i

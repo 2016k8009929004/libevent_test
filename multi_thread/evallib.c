@@ -48,10 +48,10 @@ void request_end(int byte_sent){
 */
 
     char buff[1024];
-
+/*
     printf("start:%lf end:%lf tot_request: %d tot_byte:%d\n", 
             start_time, end_time, handle_request_cnt, byte_sent);
-
+*/
     sprintf(buff, "start:%lf end:%lf tot_request: %d tot_byte:%d\n", 
             start_time, end_time, handle_request_cnt, byte_sent);
     
