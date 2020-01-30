@@ -96,7 +96,7 @@ void response_process(int sock, short event, void * arg){
 }
 
 void * create_response_process(void * arg){
-    int sock = (int)arg;
+    int sock = *((int *)arg);
 
     struct event_base * base = event_base_new();
 
