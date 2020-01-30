@@ -127,6 +127,8 @@ void response_process_cb(int fd, short events, void * arg){
 void * server_process(void * arg){
     evutil_socket_t fd = *((evutil_socket_t *)arg);
 
+    printf("[SERVER] server process start, sockfd: %d\n", fd);
+
     struct event_base * base = event_base_new();
     struct event * read_ev = (struct event *)malloc(sizeof(struct event));
 
