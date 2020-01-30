@@ -38,13 +38,13 @@ void request_end(int byte_sent){
 
 
     log(INFO, "start:%f end:%f tot_request: %d tot_byte:%d\n", 
-            start_time, end_time, handle_request, byte_sent);
+            start_time, end_time, handle_request_cnt, byte_sent);
 */
 
-    char buff[BUF_SIZE];
+    char buff[1024];
 
     sprintf(buff, "start:%f end:%f tot_request: %d tot_byte:%d\n", 
-            start_time, end_time, handle_request, byte_sent);
+            start_time, end_time, handle_request_cnt, byte_sent);
     
     fwrite(buff, strlen(buff), 1, fp);
 
