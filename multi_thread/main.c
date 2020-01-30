@@ -1,5 +1,9 @@
 #include "common.h"
 
+extern int client_thread_num;
+
+extern pthread_mutex_t fin_client_thread_lock;
+
 int main(int argc, char * argv[]){
     if(argc == 4){
 //        client_thread(argc, argv);

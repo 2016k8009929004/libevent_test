@@ -26,11 +26,6 @@ struct server_node {
     int port;
 };
 
-int client_thread_num;
-
-pthread_mutex_t fin_client_thread_lock;
-int fin_client_thread = 0;
-
 void * client_thread(void * argv);
 void * server_thread(void * arg);
 

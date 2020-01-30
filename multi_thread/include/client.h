@@ -10,6 +10,11 @@ int recv_byte = 0;
 
 int work_done_flag = 0;
 
+int client_thread_num;
+
+pthread_mutex_t fin_client_thread_lock;
+int fin_client_thread = 0;
+
 struct response_process_arg {
     struct event * read_ev;
     FILE * fp;
