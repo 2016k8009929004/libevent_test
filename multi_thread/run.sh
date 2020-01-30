@@ -10,7 +10,7 @@ server_port=12345
 
 if test $1 = $server
 then
-    if [ ! -f "record.txt" ];then
+    if [ -f "record.txt" ];then
        rm record.txt
     fi
     ./libevent_test $2
