@@ -105,7 +105,7 @@ void response_process(int sock, short event, void * arg){
 
     if(recv_byte == sent_byte){
         work_done_flag = 1;
-//        event_del(read_ev);
+        event_del(read_ev);
 #ifdef RECEIVE_DEBUG
         fclose(fp);
 #endif

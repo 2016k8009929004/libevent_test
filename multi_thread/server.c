@@ -66,7 +66,7 @@ void request_process_cb(int fd, short events, void * arg){
 
     if(len <= 0){
 		printf("[SERVER] close connection\n");
-        event_del(read_arg->read_ev);
+//        event_del(read_arg->read_ev);
         pthread_mutex_lock(&request_end_lock);
 #ifdef REAL_TIME_STATS
         request_end(byte_sent);
