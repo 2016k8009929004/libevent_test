@@ -46,7 +46,7 @@ void accept_cb(int fd, short events, void * arg){
         exit(1);
     }
 
-    evutil_make_socket_nonblocking(s);
+    evutil_make_socket_nonblocking(*s);
 
     connect_cnt++;
     log(INFO, "connect count: %d, fd: %d", connect_cnt, *s);
