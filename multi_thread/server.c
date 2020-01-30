@@ -58,7 +58,9 @@ void accept_cb(int fd, short events, void * arg){
 
 void request_process_cb(int fd, short events, void * arg){
 #ifdef REAL_TIME_STATS
+    pthread_mutex_lock(&record_lock);
     request_start();
+    pthread_mutex_unlock(&record_lock);
 #endif
     struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
@@ -70,7 +72,9 @@ void request_process_cb(int fd, short events, void * arg){
         pthread_mutex_lock(&request_end_lock);
 #ifdef REAL_TIME_STATS
         pthread_mutex_lock(&send_lock);
+        pthread_mutex_lock(&record_lock);
         request_end(byte_sent);
+        pthread_mutex_unlock(&record_lock);
         pthread_mutex_unlock(&send_lock);
 #endif
         pthread_mutex_unlock(&request_end_lock);
@@ -84,18 +88,6 @@ void request_process_cb(int fd, short events, void * arg){
     }
 
     msg[len] = '\0';
-/*
-    char * reply_msg = (char *)malloc(BUF_SIZE + 1);
-    strcpy(reply_msg, msg);
-*/
-//	printf("[SERVER] send response\n");
-/*
-    int send_byte_cnt = send(fd, reply_msg, strlen(reply_msg), 0);
-
-    pthread_mutex_lock(&send_lock);
-    byte_sent += send_byte_cnt;
-    pthread_mutex_unlock(&send_lock);
-*/
 
     struct event * write_ev = (struct event *)malloc(sizeof(struct event));
 
@@ -159,6 +151,10 @@ void * server_thread(void * arg){
 
     pthread_mutex_init(&request_end_lock, NULL);
     pthread_mutex_init(&send_lock, NULL);
+
+#ifdef REAL_TIME_STATS
+    pthread_mutex_init(&record_lock, NULL);
+#endif
 
     struct event_base * base = event_base_new();
 

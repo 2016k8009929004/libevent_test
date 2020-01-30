@@ -1,6 +1,10 @@
 #include "common.h"
 #include "evallib.h"
 
+#ifdef REAL_TIME_STATS
+pthread_mutex_t record_lock;
+#endif
+
 struct sock_ev_read {
     struct event_base * base;
     struct event * read_ev;

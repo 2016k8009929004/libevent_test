@@ -3,7 +3,9 @@
 void request_start(){
     if(!start_flag){
         gettimeofday(&start, &tz);
+        float start_time = (float)start.tv_sec + ((float)start.tv_usec/(float)1000000.0);
         start_flag = 1;
+        log(INFO, "start time: %f", start_time);
     }
 }
 
