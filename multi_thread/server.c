@@ -47,7 +47,7 @@ void accept_cb(int fd, short events, void * arg){
     evutil_make_socket_nonblocking(s);
 
     connect_cnt++;
-    log(INFO, "connect count: %d, fd: %d", connect_cnt, fd);
+    log(INFO, "connect count: %d, fd: %d", connect_cnt, s);
 
     pthread_t thread;
     pthread_create(&thread, NULL, server_process, (void *)&s);
@@ -66,7 +66,7 @@ void request_process_cb(int fd, short events, void * arg){
 
     if(len <= 0){
 		printf("[SERVER] close connection, fd: %d\n", fd);
-//        event_del(read_arg->read_ev);
+        event_del(read_arg->read_ev);
         pthread_mutex_lock(&request_end_lock);
 #ifdef REAL_TIME_STATS
         request_end(byte_sent);
