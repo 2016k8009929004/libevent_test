@@ -86,17 +86,18 @@ void response_process(int sock, short event, void * arg){
     struct debug_response_arg * debug_arg = (struct debug_response_arg *)arg;
 
     struct event * read_ev = debug_arg->read_ev;
+    struct send_info * info = debug_arg->info;
     FILE * fp = debug_arg->fp;
 #else
     struct response_arg * response_process_arg = (struct response_arg *)arg;
 
     struct event * read_ev = response_process_arg->read_ev;
     struct send_info * info = response_process_arg->info;
+#endif
 
     pthread_mutex_t * recv_lock = info->recv_lock;
     int * recv_byte = info->recv_byte;
     int * send_byte = info->send_byte;
-#endif
 
     char recv_buf[BUF_SIZE + 1];
     memset(recv_buf, 0, sizeof(recv_buf));
@@ -152,6 +153,7 @@ void * create_response_process(void * arg){
 
     struct debug_response_arg * debug_arg = (struct debug_response_arg *)malloc(sizeof(struct debug_response_arg));
     debug_arg->read_ev = read_ev;
+    debug_arg->info = info;
     debug_arg->fp = recv_fp;
 
     event_set(read_ev, fd, EV_READ|EV_PERSIST, response_process, debug_arg);
