@@ -1,5 +1,11 @@
 #include "common.h"
 
+int sent_byte = 0;
+
+pthread_mutex_t recv_lock;
+
+int recv_byte = 0;
+
 int connect_server(char * server_ip, int port);
 
 void send_request(int fd);

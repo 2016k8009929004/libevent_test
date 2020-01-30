@@ -46,6 +46,8 @@ void send_request(int fd){
 			perror("[CLIENT] send failed");
 			exit(1);
 		}
+
+        send_byte += send_size;
 /*
 		recv_size = recv(fd, recv_buf, sizeof(recv_buf) - 1, 0);
 		if(recv_size < 0){
@@ -57,7 +59,6 @@ void send_request(int fd){
         fflush(recv_fp);
 */
 
-
     }
 
 	printf("[CLIENT] request complete\n");
@@ -66,7 +67,6 @@ void send_request(int fd){
 //    fclose(recv_fp);
     
 //    close(fd);
-    while(1);
 
 }
 
@@ -80,8 +80,16 @@ void response_process(int sock, short event, void * arg){
         printf("[CLIENT] close connection\n");
         close(sock);
     }
+
+    pthread_mutex_lock(&recv_lock);
+    recv_byte += recv_size;
+    pthread_mutex_unlock(&recv_lock);
     
     printf("receive reply: %s\n", recv_buf);
+
+    if(recv_byte == send_byte){
+        close(sock);
+    }
 }
 
 void * create_response_process(void * arg){
@@ -118,6 +126,8 @@ void * client_thread(void * argv){
         perror("[CLIENT] tcp connect error");
         exit(1);
     }
+
+    pthread_mutex_init(&recv_lock, NULL);
 
 //    printf("[CLIENT] connected to server\n");
 
