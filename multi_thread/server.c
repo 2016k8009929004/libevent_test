@@ -48,8 +48,8 @@ void accept_cb(int fd, short events, void * arg){
 
     evutil_make_socket_nonblocking(*s);
 
-    connect_cnt++;
-    log(INFO, "connect count: %d, fd: %d", connect_cnt, *s);
+//    connect_cnt++;
+//    log(INFO, "connect count: %d, fd: %d", connect_cnt, *s);
 
     pthread_t thread;
     pthread_create(&thread, NULL, server_process, (void *)s);
@@ -67,14 +67,17 @@ void request_process_cb(int fd, short events, void * arg){
 	int len = read(fd, msg, sizeof(msg) - 1);
 
     if(len <= 0){
-		printf("[SERVER sock: %d] close connection\n", fd);
-        event_del(read_arg->read_ev);
         pthread_mutex_lock(&request_end_lock);
 #ifdef REAL_TIME_STATS
         request_end(byte_sent);
 #endif
         pthread_mutex_unlock(&request_end_lock);
+
+		printf("[SERVER sock: %d] close connection\n", fd);
+
+        event_del(read_arg->read_ev);
         close(fd);
+
         return;
     }
 
@@ -114,15 +117,7 @@ void response_process_cb(int fd, short events, void * arg){
     char * reply_msg = (char *)malloc(BUF_SIZE + 1);
     strcpy(reply_msg, msg);
 
-//    printf("[SERVER sock: %d] reply msg: %s\n", fd, reply_msg);
-
     int send_byte_cnt = write(fd, reply_msg, strlen(reply_msg));
-
-/*
-    pthread_mutex_lock(&send_lock);
-    byte_sent += send_byte_cnt;
-    pthread_mutex_unlock(&send_lock);
-*/
 
 }
 
