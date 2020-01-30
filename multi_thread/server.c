@@ -60,7 +60,6 @@ void request_process_cb(int fd, short events, void * arg){
 #endif
     struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
-//    char msg[BUF_SIZE + 1];
     char * msg = (char *)malloc(BUF_SIZE + 1);
 
 	int len = read(fd, msg, sizeof(msg) - 1);
@@ -78,12 +77,10 @@ void request_process_cb(int fd, short events, void * arg){
     }
 
     msg[len] = '\0';
-
-    printf("len: %d, msg: %s\n", len, msg);
-
+/*
     char * reply_msg = (char *)malloc(BUF_SIZE + 1);
     strcpy(reply_msg, msg);
-
+*/
 //	printf("[SERVER] send response\n");
 /*
     int send_byte_cnt = send(fd, reply_msg, strlen(reply_msg), 0);
@@ -97,7 +94,7 @@ void request_process_cb(int fd, short events, void * arg){
 
     struct sock_ev_write * write_arg = (struct sock_ev_write *)malloc(sizeof(struct sock_ev_write));
     write_arg->write_ev = write_ev;
-    write_arg->buff = reply_msg;
+    write_arg->buff = msg;
 
     event_set(write_ev, fd, EV_WRITE, response_process_cb, write_arg);
 
@@ -110,7 +107,10 @@ void request_process_cb(int fd, short events, void * arg){
 void response_process_cb(int fd, short events, void * arg){
     struct sock_ev_write * write_arg = (struct sock_ev_write *)arg;
 
-    char * reply_msg = write_arg->buff;
+    char * msg = write_arg->buff;
+
+    char * reply_msg = (char *)malloc(BUF_SIZE + 1);
+    strcpy(reply_msg, msg);
 
     int send_byte_cnt = write(fd, reply_msg, strlen(reply_msg));
 

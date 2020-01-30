@@ -1,6 +1,6 @@
 #include "common.h"
 
-//#define RECEIVE_DEBUG
+#define RECEIVE_DEBUG
 
 int sent_byte = 0;
 
