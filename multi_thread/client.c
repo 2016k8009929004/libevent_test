@@ -146,6 +146,8 @@ void * client_thread(void * argv){
 
 //    send_request(sockfd);
 
+    while(1);
+
     return NULL;
 
 }
