@@ -114,7 +114,7 @@ void response_process_cb(int fd, short events, void * arg){
     char * reply_msg = (char *)malloc(BUF_SIZE + 1);
     strcpy(reply_msg, msg);
 
-    printf("[SERVER sock: %d] reply msg: %s\n", fd, reply_msg);
+//    printf("[SERVER sock: %d] reply msg: %s\n", fd, reply_msg);
 
     int send_byte_cnt = write(fd, reply_msg, strlen(reply_msg));
 
@@ -129,7 +129,7 @@ void response_process_cb(int fd, short events, void * arg){
 void * server_process(void * arg){
     evutil_socket_t fd = *((evutil_socket_t *)arg);
 
-    printf("[SERVER] server process start, sockfd: %d\n", fd);
+//    printf("[SERVER] server process start, sockfd: %d\n", fd);
 
     struct event_base * base = event_base_new();
     struct event * read_ev = (struct event *)malloc(sizeof(struct event));

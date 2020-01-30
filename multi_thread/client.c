@@ -118,7 +118,7 @@ void response_process(int sock, short event, void * arg){
     (*recv_byte) += recv_size;
     pthread_mutex_unlock(recv_lock);
     
-    printf("[CLIENT %d] receive reply: %s\n", sock, recv_buf);
+//    printf("[CLIENT %d] receive reply: %s\n", sock, recv_buf);
 
     if((*recv_byte) == (*send_byte)){
         printf("[CLIENT %d] receive reply complete, close connection\n", sock);
