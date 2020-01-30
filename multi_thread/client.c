@@ -78,7 +78,7 @@ void response_process(int sock, short event, void * arg){
     struct response_process_arg * response_arg = (struct response_process_arg *)arg;
     struct event * read_ev = response_arg->read_ev;
     FILE * fp = response_arg->fp;
-#elif
+#else
     struct event * read_ev = (struct event *)arg;
 #endif
 
@@ -107,7 +107,7 @@ void response_process(int sock, short event, void * arg){
         work_done_flag = 1;
         event_del(read_ev);
 #ifdef RECEIVE_DEBUG
-        close(fp);
+        fclose(fp);
 #endif
         close(sock);
     }
@@ -121,7 +121,6 @@ void * create_response_process(void * arg){
     struct event * read_ev = (struct event *)malloc(sizeof(struct event));
 
 #ifdef RECEIVE_DEBUG
-
     FILE * recv_fp = fopen("server-ouput.dat", "wb");
 
     struct response_process_arg * response_arg = (struct response_process_arg *)malloc(sizeof(struct response_process_arg));
@@ -129,11 +128,8 @@ void * create_response_process(void * arg){
     response_arg->fp = recv_fp;
 
     event_set(read_ev, sock, EV_READ|EV_PERSIST, response_process, response_arg);
-
-#elif
-
+#else
     event_set(read_ev, sock, EV_READ|EV_PERSIST, response_process, read_ev);
-
 #endif
 
     event_base_set(base, read_ev);
