@@ -14,18 +14,18 @@ void request_end(int byte_sent){
     int sec, usec;
 
     gettimeofday(&end, &tz);
-
+/*
     log(DEBUG, "start sec: %ld, usec: %ld  end sec: %ld, usec: %ld, byte sent: %d", 
             start.tv_sec, start.tv_usec, end.tv_sec, end.tv_usec, byte_sent);
-/*
+
     if(end.tv_usec < start.tv_usec){
         end.tv_usec += 1000000;
         end.tv_sec -= 1;
     }
-*/
+
     sec = end.tv_sec - start.tv_sec;
     usec = end.tv_usec - start.tv_usec;
-
+*/
     double start_time = (double)start.tv_sec + ((double)start.tv_usec/(double)1000000);
     double end_time = (double)end.tv_sec + ((double)end.tv_usec/(double)1000000);
 /*
