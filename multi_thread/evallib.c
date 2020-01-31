@@ -52,7 +52,7 @@ void request_end(int byte_sent){
     printf("start:%lf end:%lf tot_request: %d tot_byte:%d\n", 
             start_time, end_time, handle_request_cnt, byte_sent);
 */
-    sprintf(buff, "start:%lf end:%lf tot_request: %d tot_byte:%d\n", 
+    sprintf(buff, "start:%lf end:%lf tot_request:%d tot_byte:%d\n", 
             start_time, end_time, handle_request_cnt, byte_sent);
     
     fwrite(buff, strlen(buff), 1, fp);
