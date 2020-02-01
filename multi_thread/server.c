@@ -79,7 +79,7 @@ void request_process_cb(int fd, short events, void * arg){
 #endif
         pthread_mutex_unlock(&request_end_lock);
 
-		printf("[SERVER sock: %d] close connection\n", fd);
+//		printf("[SERVER sock: %d] close connection\n", fd);
 
         event_del(read_arg->read_ev);
         close(fd);
