@@ -143,6 +143,34 @@ void * server_process(void * arg){
 }
 
 void * server_thread(void * arg){
+    int * thread_id = (int *)arg;
+
+    cpu_set_t core_set, get_core;
+
+    printf("[SERVER] thread id: %d\n", *thread_id);
+    CPU_ZERO(&core_set);
+    CPU_SET(*thread_id, &core_set);
+
+    if(sched_setaffinity(0, sizeof(core_set), &core_set) < 0){
+        printf("[SERVER] could not set CPU affinity\n");
+        exit(1);
+    }
+
+    CPU_ZERO(&get_core);
+    if(sched_getaffinity(0, sizeof(get_core), &get_core) < 0){
+        printf("[SERVER] could not get thread affinity\n");
+        exit(1);
+    }
+
+    int core_num = sysconf(_SC_NPROCESSORS_CONF);
+    
+    int i;
+    for(i = 0;i < core_num;i++){
+        if(CPU_ISSET(i, &get_core)){
+            printf("[SERVER] thread %d is running on processor %d\n", *thread_id, i);
+        }
+    }
+
     evutil_socket_t sock;
     if((sock = server_init(12345, 100)) < 0){
         perror("[SERVER] server init error");
