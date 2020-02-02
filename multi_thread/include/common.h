@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+#define __USE_GNU
 #include <sched.h>
 #include <pthread.h>
 
