@@ -13,7 +13,7 @@ then
     if [ -f "record.txt" ];then
        rm record.txt
     fi
-    ./libevent_test
+    ./libevent_test $2
 else
     ./create_randfile.sh $i
     ./libevent_test $2 $server_ip $server_port
