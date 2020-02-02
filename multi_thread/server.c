@@ -143,6 +143,7 @@ void * server_process(void * arg){
 }
 
 void * server_thread(void * arg){
+#if 0
     int * thread_id = (int *)arg;
 
     cpu_set_t core_set, get_core;
@@ -170,6 +171,7 @@ void * server_thread(void * arg){
             printf("[SERVER] thread %d is running on processor %d\n", *thread_id, i);
         }
     }
+#endif
 
     evutil_socket_t sock;
     if((sock = server_init(12345, 100)) < 0){

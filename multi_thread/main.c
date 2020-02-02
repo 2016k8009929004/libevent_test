@@ -32,7 +32,7 @@ int main(int argc, char * argv[]){
         }
     }else{
 //        server_thread(argc, argv);
-/*
+
         int thread_num;
         thread_num = atoi(argv[1]);
         pthread_t * threads = (pthread_t *)malloc(sizeof(pthread_t) * thread_num);
@@ -45,7 +45,8 @@ int main(int argc, char * argv[]){
         for(i = 0;i < thread_num;i++){
             pthread_join(threads[i], NULL);
         }
-*/
+
+#if 0
         int cpu_num = sysconf(_SC_NPROCESSORS_CONF);
         printf("[SERVER] server has %d processor(s)\n", cpu_num);
 
@@ -62,5 +63,5 @@ int main(int argc, char * argv[]){
             pthread_join(threads[i], NULL);
         }
     }
-
+#endif
 }
