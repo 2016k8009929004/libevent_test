@@ -1,3 +1,3 @@
-git add record.txt && \
-git commit -m "[Test result] $1" && \
+git add *.txt && \
+git commit -m "[Test result]" && \
 git push origin master
