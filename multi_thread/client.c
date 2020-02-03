@@ -58,27 +58,11 @@ void * send_request(void * arg){
         pthread_mutex_lock(send_lock);
         (*send_byte) += send_size;
         pthread_mutex_unlock(send_lock);
-
-/*
-		recv_size = recv(fd, recv_buf, sizeof(recv_buf) - 1, 0);
-		if(recv_size < 0){
-			perror("[CLIENT] receive response fail");
-			exit(1);
-		}
-
-        fwrite(recv_buf, recv_size, 1, recv_fp);
-        fflush(recv_fp);
-*/
-
     }
 
 	printf("[CLIENT %d] request complete, send byte: %d\n", fd, *send_byte);
 
     fclose(send_fp);
-//    fclose(recv_fp);
-    
-//    close(fd);
-
 }
 
 void response_process(int sock, short event, void * arg){
@@ -128,7 +112,9 @@ void response_process(int sock, short event, void * arg){
         pthread_mutex_unlock(&fin_client_thread_lock);
 
         if(fin_client_thread == client_thread_num){
+            pthread_mutex_lock(&work_done_lock);
             work_done_flag = 1;
+            pthread_mutex_unlock(&work_done_lock);
         }
 
         event_del(read_ev);
@@ -193,6 +179,8 @@ void * client_thread(void * argv){
     pthread_mutex_t send_lock, recv_lock;
     pthread_mutex_init(&send_lock, NULL);
     pthread_mutex_init(&recv_lock, NULL);
+    
+    pthred_mutex_init(&work_done_lock, NULL);
 
     int sockfd = connect_server(*(server->ip_addr), server->port);
     if(sockfd == -1){

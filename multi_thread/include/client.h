@@ -2,6 +2,7 @@
 
 #define RECEIVE_DEBUG
 
+pthread_mutex_t work_done_lock;
 int work_done_flag = 0;
 
 int client_thread_num;
