@@ -36,7 +36,7 @@ evutil_socket_t server_init(int port, int listen_num){
 void accept_cb(int fd, short events, void * arg){
 
 #ifdef __EVAL_CB__
-    struct timeval start, end;
+    struct timeval start, accept_time, end;
 
     FILE * fp = fopen("accept_cb.txt", "a+");
     fseek(fp, 0, SEEK_END);
@@ -58,6 +58,10 @@ void accept_cb(int fd, short events, void * arg){
 
     evutil_make_socket_nonblocking(*s);
 
+#ifdef __EVAL_CB__
+    gettimeofday(&accept_time, NULL);
+#endif
+
 //    connect_cnt++;
 //    log(INFO, "connect count: %d, fd: %d", connect_cnt, *s);
 
@@ -69,16 +73,23 @@ void accept_cb(int fd, short events, void * arg){
 
     char buff[1024];
 
-    long elapsed_time;
+    long accept_elapsed_time, total_elapsed_time;
     
     if(start.tv_usec > end.tv_usec){
         end.tv_usec += 1000000;
         end.tv_sec -= 1;
     }
 
-    elapsed_time = end.tv_usec - start.tv_usec;
+    if(start.tv_usec > accept_time.tv_usec){
+        accept_time.tv_usec += 1000000;
+        accept_time.tv_sec -= 1;
+    }
 
-    sprintf(buff, "elapsed_time:%ld\n", elapsed_time);
+    accept_elapsed_time = accept_time.tv_usec - start.tv_usec;
+
+    total_elapsed_time = end.tv_usec - start.tv_usec;
+
+    sprintf(buff, "accept_time:%ld, total_elapsed_time:%ld\n", accept_elapsed_time, total_elapsed_time);
     
     fwrite(buff, strlen(buff), 1, fp);
 
