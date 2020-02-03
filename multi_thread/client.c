@@ -38,14 +38,10 @@ void * send_request(void * arg){
     int * send_byte = info->send_byte;
 
     char send_buf[BUF_SIZE];
-	char recv_buf[BUF_SIZE + 1];
 
 	int send_size, recv_size;
 
     FILE * send_fp = fopen("client-input.dat", "rb");
-//    FILE * recv_fp = fopen("server-ouput.dat", "wb");
-
-//	printf("[CLIENT] start request\n");
 
     while(!feof(send_fp)){
         send_size = fread(send_buf, 1, BUF_SIZE, send_fp);
@@ -200,6 +196,8 @@ void * client_thread(void * argv){
     send_request_thread(info);
 
     while(!work_done_flag);
+
+    free(info);
 
     return NULL;
 
