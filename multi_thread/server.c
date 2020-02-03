@@ -34,6 +34,16 @@ evutil_socket_t server_init(int port, int listen_num){
 }
 
 void accept_cb(int fd, short events, void * arg){
+
+#ifdef __EVAL_CB__
+    struct timeval start, end;
+
+    FILE * fp = fopen("accept_cb.txt", "a+");
+    fseek(fp, 0, SEEK_END);
+
+    gettimeofday(&start, NULL);
+#endif
+
     struct sockaddr_in client;
     socklen_t len = sizeof(client);
 
@@ -54,9 +64,31 @@ void accept_cb(int fd, short events, void * arg){
     pthread_t thread;
     pthread_create(&thread, NULL, server_process, (void *)s);
     pthread_detach(thread);
+#ifdef __EVAL_CB__
+    gettimeofday(&end, NULL);
+
+    char buff[1024];
+
+    long elapsed_time = start.tv_usec - end.tv_usec;
+
+    sprintf(buff, "elapsed_time:%ld\n", elapsed_time);
+    
+    fwrite(buff, strlen(buff), 1, fp);
+
+    fclose(fp);
+#endif
 }
 
 void request_process_cb(int fd, short events, void * arg){
+#ifdef __EVAL_CB__
+    struct timeval start, end;
+
+    FILE * fp = fopen("request_process_cb.txt", "a+");
+    fseek(fp, 0, SEEK_END);
+
+    gettimeofday(&start, NULL);
+#endif
+
 #ifdef REAL_TIME_STATS
     pthread_mutex_lock(&record_lock);
     request_start();
@@ -100,10 +132,30 @@ void request_process_cb(int fd, short events, void * arg){
     event_base_set(read_arg->base, write_ev);
 
     event_add(write_ev, NULL);
+#ifdef __EVAL_CB__
+    gettimeofday(&end, NULL);
 
+    char buff[1024];
+
+    long elapsed_time = start.tv_usec - end.tv_usec;
+
+    sprintf(buff, "elapsed_time:%ld\n", elapsed_time);
+    
+    fwrite(buff, strlen(buff), 1, fp);
+
+    fclose(fp);
+#endif
 }
 
 void response_process_cb(int fd, short events, void * arg){
+#ifdef __EVAL_CB__
+    struct timeval start, end;
+
+    FILE * fp = fopen("response_process_cb.txt", "a+");
+    fseek(fp, 0, SEEK_END);
+
+    gettimeofday(&start, NULL);
+#endif
     struct sock_ev_write * write_arg = (struct sock_ev_write *)arg;
 
     char * msg = write_arg->buff;
@@ -116,13 +168,23 @@ void response_process_cb(int fd, short events, void * arg){
     pthread_mutex_lock(&send_lock);
     byte_sent += send_byte_cnt;
     pthread_mutex_unlock(&send_lock);
+#ifdef __EVAL_CB__
+    gettimeofday(&end, NULL);
 
+    char buff[1024];
+
+    long elapsed_time = start.tv_usec - end.tv_usec;
+
+    sprintf(buff, "elapsed_time:%ld\n", elapsed_time);
+    
+    fwrite(buff, strlen(buff), 1, fp);
+
+    fclose(fp);
+#endif
 }
 
 void * server_process(void * arg){
     evutil_socket_t fd = *((evutil_socket_t *)arg);
-
-//    printf("[SERVER] server process start, sockfd: %d\n", fd);
 
     struct event_base * base = event_base_new();
     struct event * read_ev = (struct event *)malloc(sizeof(struct event));
@@ -143,36 +205,6 @@ void * server_process(void * arg){
 }
 
 void * server_thread(void * arg){
-#if 0
-    int * thread_id = (int *)arg;
-
-    cpu_set_t core_set, get_core;
-
-    printf("[SERVER] thread id: %d\n", *thread_id);
-    CPU_ZERO(&core_set);
-    CPU_SET(*thread_id, &core_set);
-
-    if(sched_setaffinity(0, sizeof(core_set), &core_set) < 0){
-        printf("[SERVER] could not set CPU affinity\n");
-        exit(1);
-    }
-
-    CPU_ZERO(&get_core);
-    if(sched_getaffinity(0, sizeof(get_core), &get_core) < 0){
-        printf("[SERVER] could not get thread affinity\n");
-        exit(1);
-    }
-
-    int core_num = sysconf(_SC_NPROCESSORS_CONF);
-    
-    int i;
-    for(i = 0;i < core_num;i++){
-        if(CPU_ISSET(i, &get_core)){
-            printf("[SERVER] thread %d is running on processor %d\n", *thread_id, i);
-        }
-    }
-#endif
-
     evutil_socket_t sock;
     if((sock = server_init(12345, 100)) < 0){
         perror("[SERVER] server init error");
