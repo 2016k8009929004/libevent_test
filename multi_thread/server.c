@@ -34,7 +34,7 @@ evutil_socket_t server_init(int port, int listen_num){
 }
 
 void accept_cb(int fd, short events, void * arg){
-    printf("------enter accept_cb function------\n");
+//    printf("------enter accept_cb function------\n");
 
 #ifdef __EVAL_CB__
     struct timeval start, accept_time, end;
@@ -96,7 +96,7 @@ void accept_cb(int fd, short events, void * arg){
 
     fclose(fp);
 #endif
-    printf("------leave accept_cb function------\n");
+//    printf("------leave accept_cb function------\n");
 }
 
 void request_process_cb(int fd, short events, void * arg){
