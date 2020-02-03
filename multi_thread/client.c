@@ -180,7 +180,7 @@ void * client_thread(void * argv){
     pthread_mutex_init(&send_lock, NULL);
     pthread_mutex_init(&recv_lock, NULL);
     
-    pthred_mutex_init(&work_done_lock, NULL);
+    pthread_mutex_init(&work_done_lock, NULL);
 
     int sockfd = connect_server(*(server->ip_addr), server->port);
     if(sockfd == -1){
