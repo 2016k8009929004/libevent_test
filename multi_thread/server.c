@@ -69,7 +69,14 @@ void accept_cb(int fd, short events, void * arg){
 
     char buff[1024];
 
-    long elapsed_time = start.tv_usec - end.tv_usec;
+    long elapsed_time;
+    
+    if(start.tv_usec > end.tv_usec){
+        end.tv_usec += 1000000;
+        end.tv_sec -= 1;
+    }
+
+    elapsed_time = end.tv_usec - start.tv_usec;
 
     sprintf(buff, "elapsed_time:%ld\n", elapsed_time);
     
@@ -180,7 +187,14 @@ void response_process_cb(int fd, short events, void * arg){
 
     char buff[1024];
 
-    long elapsed_time = start.tv_usec - end.tv_usec;
+    long elapsed_time;
+    
+    if(start.tv_usec > end.tv_usec){
+        end.tv_usec += 1000000;
+        end.tv_sec -= 1;
+    }
+
+    elapsed_time = end.tv_usec - start.tv_usec;
 
     sprintf(buff, "elapsed_time:%ld\n", elapsed_time);
     
