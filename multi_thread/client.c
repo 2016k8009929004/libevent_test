@@ -37,7 +37,7 @@ void * send_request(void * arg){
 
     int * send_byte = info->send_byte;
 
-    char send_buf[BUF_SIZE];
+    char send_buf[buf_size];
 
 	int send_size, recv_size;
 
@@ -79,7 +79,7 @@ void response_process(int sock, short event, void * arg){
     int * recv_byte = info->recv_byte;
     int * send_byte = info->send_byte;
 
-    char recv_buf[BUF_SIZE + 1];
+    char recv_buf[buf_size + 1];
     memset(recv_buf, 0, sizeof(recv_buf));
 
     int recv_size = read(sock, recv_buf, buf_size);
@@ -169,7 +169,7 @@ void send_request_thread(struct send_info * info){
 void * client_thread(void * argv){
     struct client_arg * server = (struct client_arg *)argv;
 
-    buf_size = server.buf_size;
+    buf_size = server->buf_size;
     
     int send_byte, recv_byte;
     send_byte = recv_byte = 0;
