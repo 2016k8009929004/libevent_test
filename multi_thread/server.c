@@ -1,5 +1,7 @@
 #include "server.h"
 
+#define __NR_gettid 186
+
 int connect_cnt = 0;
 
 //extern int byte_sent;
