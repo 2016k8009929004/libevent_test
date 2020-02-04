@@ -38,7 +38,7 @@ evutil_socket_t server_init(int port, int listen_num){
 void accept_cb(int fd, short events, void * arg){
 //    printf("------enter accept_cb function------\n");
     
-    printf("[accept_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
+//    printf("[accept_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
 #ifdef __EVAL_CB__
     struct timeval start, accept_time, end;
@@ -116,7 +116,7 @@ void accept_cb(int fd, short events, void * arg){
 }
 
 void request_process_cb(int fd, short events, void * arg){
-    printf("[request_process_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
+//    printf("[request_process_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
 #ifdef __EVAL_CB__
     struct timeval start, end;
@@ -193,7 +193,7 @@ void request_process_cb(int fd, short events, void * arg){
 }
 
 void response_process_cb(int fd, short events, void * arg){
-    printf("[response_process_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
+//    printf("[response_process_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
 #ifdef __EVAL_CB__
     struct timeval start, end;
@@ -259,7 +259,30 @@ void * server_process(void * arg){
 }
 
 void * server_thread(void * arg){
-    printf("[server_thread] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
+//    printf("[server_thread] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
+
+    cpu_set_t core_set, get_core;
+
+    CPU_ZERO(&core_set);
+    CPU_SET(0, &core_set);
+
+    if (sched_setaffinity(0, sizeof(core_set), &core_set) == -1){
+        printf("warning: could not set CPU affinity, continuing...\n");
+    }
+
+    CPU_ZERO(&get_core);
+
+    if (sched_getaffinity(0, sizeof(get_core), &get_core) == -1){
+        printf("warning: cound not get thread affinity, continuing...\n");
+    }
+
+    int i;
+    int num = sysconf(_SC_NPROCESSORS_CONF);
+    for(i = 0;i < num;i++){
+        if(CPU_ISSET(i, &get_core)){
+            printf("this thread %d is running processor : %d\n", i,i);
+        }
+    }
 
     evutil_socket_t sock;
     if((sock = server_init(12345, 100)) < 0){
