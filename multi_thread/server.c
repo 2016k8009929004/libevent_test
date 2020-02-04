@@ -35,6 +35,8 @@ evutil_socket_t server_init(int port, int listen_num){
 
 void accept_cb(int fd, short events, void * arg){
 //    printf("------enter accept_cb function------\n");
+    
+    printf("[accept_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
 #ifdef __EVAL_CB__
     struct timeval start, accept_time, end;
@@ -112,6 +114,8 @@ void accept_cb(int fd, short events, void * arg){
 }
 
 void request_process_cb(int fd, short events, void * arg){
+    printf("[request_process_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
+
 #ifdef __EVAL_CB__
     struct timeval start, end;
 
@@ -187,6 +191,8 @@ void request_process_cb(int fd, short events, void * arg){
 }
 
 void response_process_cb(int fd, short events, void * arg){
+    printf("[response_process_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
+
 #ifdef __EVAL_CB__
     struct timeval start, end;
 
@@ -251,6 +257,8 @@ void * server_process(void * arg){
 }
 
 void * server_thread(void * arg){
+    printf("[server_thread] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
+
     evutil_socket_t sock;
     if((sock = server_init(12345, 100)) < 0){
         perror("[SERVER] server init error");
