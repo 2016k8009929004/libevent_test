@@ -88,9 +88,9 @@ void accept_cb(int fd, short events, void * arg){
     }
 */
 
-    if(accept_time.tv_usec > end_time.tv_usec){
-        end_time.tv_usec += 1000000;
-        end_time.tv_sec -= 1;
+    if(accept_time.tv_usec > end.tv_usec){
+        end.tv_usec += 1000000;
+        end.tv_sec -= 1;
     }
 /*
     accept_elapsed_time = end_time.tv_usec - accept_time.tv_usec;
