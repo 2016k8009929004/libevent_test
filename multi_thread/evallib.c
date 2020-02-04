@@ -7,7 +7,7 @@ void request_start(){
     }
 }
 
-void request_end(int byte_sent){
+void request_end(int byte_sent, int request_cnt){
     FILE * fp = fopen("record.txt", "a+");
     fseek(fp, 0, SEEK_END);
 
@@ -21,7 +21,7 @@ void request_end(int byte_sent){
     char buff[1024];
 
     sprintf(buff, "start:%lf end:%lf tot_request:%d tot_byte:%d\n", 
-            start_time, end_time, handle_request_cnt, byte_sent);
+            start_time, end_time, request_cnt, byte_sent);
     
     fwrite(buff, strlen(buff), 1, fp);
 

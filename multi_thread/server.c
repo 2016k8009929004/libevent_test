@@ -4,7 +4,7 @@
 
 int connect_cnt = 0;
 
-extern int handle_request_cnt;
+int request_cnt = 0;
 
 //extern int byte_sent;
 
@@ -144,7 +144,9 @@ void request_process_cb(int fd, short events, void * arg){
 #ifdef REAL_TIME_STATS
         pthread_mutex_lock(&send_lock);
         pthread_mutex_lock(&record_lock);
-        request_end(byte_sent);
+        pthread_mutex_lock(&request_lock);
+        request_end(byte_sent, request_cnt);
+        pthread_mutex_unlock(&request_lock);
         pthread_mutex_unlock(&record_lock);
         pthread_mutex_unlock(&send_lock);
 #endif
@@ -170,6 +172,12 @@ void request_process_cb(int fd, short events, void * arg){
     event_base_set(read_arg->base, write_ev);
 
     event_add(write_ev, NULL);
+
+    pthread_mutex_lock(&request_lock);
+    request_cnt++;
+    prinftf("receive request cnt: %d\n", handle_request_cnt);
+    pthread_mutex_unlock(&request_lock);
+
 #ifdef __EVAL_CB__
     gettimeofday(&end, NULL);
 
@@ -215,11 +223,6 @@ void response_process_cb(int fd, short events, void * arg){
     pthread_mutex_lock(&send_lock);
     byte_sent += send_byte_cnt;
     pthread_mutex_unlock(&send_lock);
-
-    pthread_mutex_lock(&handle_request_lock);
-    handle_request_cnt++;
-    prinftf("handle request cnt: %d\n", handle_request_cnt);
-    pthread_mutex_unlock(&handle_request_lock);
 
 #ifdef __EVAL_CB__
     gettimeofday(&end, NULL);
@@ -296,7 +299,7 @@ void * server_thread(void * arg){
         exit(1);
     }
 
-    pthread_mutex_init(&handle_request_lock, NULL);
+    pthread_mutex_init(&request_lock, NULL);
     pthread_mutex_init(&send_lock, NULL);
 
 #ifdef REAL_TIME_STATS
