@@ -4,6 +4,8 @@
 
 int connect_cnt = 0;
 
+extern int handle_request_cnt;
+
 //extern int byte_sent;
 
 evutil_socket_t server_init(int port, int listen_num){
@@ -216,6 +218,7 @@ void response_process_cb(int fd, short events, void * arg){
 
     pthread_mutex_lock(&handle_request_lock);
     handle_request_cnt++;
+    prinftf("handle request cnt: %d\n", handle_request_cnt);
     pthread_mutex_unlock(&handle_request_lock);
 
 #ifdef __EVAL_CB__

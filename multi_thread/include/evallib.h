@@ -13,7 +13,7 @@ static int start_flag = 0;
 
 pthread_mutex_t handle_request_lock;
 
-static int handle_request_cnt = 0;
+int handle_request_cnt = 0;
 
 float elapsed_time;
 
