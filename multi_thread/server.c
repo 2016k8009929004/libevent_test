@@ -175,7 +175,7 @@ void request_process_cb(int fd, short events, void * arg){
 
     pthread_mutex_lock(&request_lock);
     request_cnt++;
-    prinftf("receive request cnt: %d\n", request_cnt);
+    printf("receive request cnt: %d\n", request_cnt);
     pthread_mutex_unlock(&request_lock);
 
 #ifdef __EVAL_CB__
