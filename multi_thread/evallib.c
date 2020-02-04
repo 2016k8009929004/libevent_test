@@ -20,7 +20,7 @@ void request_end(int byte_sent, int request_cnt){
 
     char buff[1024];
 
-    sprintf(buff, "start:%lf end:%lf tot_request:%d tot_byte:%d\n", 
+    sprintf(buff, "start %lf end %lf tot_request %d tot_byte %d\n", 
             start_time, end_time, request_cnt, byte_sent);
     
     fwrite(buff, strlen(buff), 1, fp);
