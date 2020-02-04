@@ -74,8 +74,9 @@ void accept_cb(int fd, short events, void * arg){
 
     char buff[1024];
 
-    long accept_elapsed_time, total_elapsed_time;
-    
+//    long accept_elapsed_time, total_elapsed_time;
+    long pthread_elapsed_time;
+/*    
     if(start.tv_usec > end.tv_usec){
         end.tv_usec += 1000000;
         end.tv_sec -= 1;
@@ -85,12 +86,23 @@ void accept_cb(int fd, short events, void * arg){
         accept_time.tv_usec += 1000000;
         accept_time.tv_sec -= 1;
     }
+*/
 
-    accept_elapsed_time = accept_time.tv_usec - start.tv_usec;
+    if(accept_time.tv_usec > end_time.tv_usec){
+        end_time.tv_usec += 1000000;
+        end_time.tv_sec -= 1;
+    }
+/*
+    accept_elapsed_time = end_time.tv_usec - accept_time.tv_usec;
 
     total_elapsed_time = end.tv_usec - start.tv_usec;
+*/
 
-    sprintf(buff, "accept_time:%ld, total_elapsed_time:%ld\n", accept_elapsed_time, total_elapsed_time);
+    pthread_elapsed_time = end.tv_usec - accept_time.tv_usec;
+
+//    sprintf(buff, "accept_time:%ld, total_elapsed_time:%ld\n", accept_elapsed_time, total_elapsed_time);
+
+    sprintf(buff, "pthread_create_time %ld\n", pthread_elapsed_time);
     
     fwrite(buff, strlen(buff), 1, fp);
 
