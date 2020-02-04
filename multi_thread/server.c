@@ -143,15 +143,13 @@ void request_process_cb(int fd, short events, void * arg){
     if(len <= 0){
 #ifdef REAL_TIME_STATS
         pthread_mutex_lock(&send_lock);
-        pthread_mutex_lock(&record_lock);
         pthread_mutex_lock(&request_lock);
+        pthread_mutex_lock(&record_lock);
         request_end(byte_sent, request_cnt);
-        pthread_mutex_unlock(&request_lock);
         pthread_mutex_unlock(&record_lock);
+        pthread_mutex_unlock(&request_lock);
         pthread_mutex_unlock(&send_lock);
 #endif
-
-//		printf("[SERVER sock: %d] close connection\n", fd);
 
         event_del(read_arg->read_ev);
         close(fd);
@@ -175,7 +173,6 @@ void request_process_cb(int fd, short events, void * arg){
 
     pthread_mutex_lock(&request_lock);
     request_cnt++;
-    printf("receive request cnt: %d\n", request_cnt);
     pthread_mutex_unlock(&request_lock);
 
 #ifdef __EVAL_CB__
