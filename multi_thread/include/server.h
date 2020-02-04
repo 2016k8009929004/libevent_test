@@ -8,6 +8,8 @@ pthread_mutex_t record_lock;
 //#define __EVAL_CB__
 #define __EVAL_PTHREAD__
 
+#define BUF_SIZE 1024
+
 struct sock_ev_read {
     struct event_base * base;
     struct event * read_ev;

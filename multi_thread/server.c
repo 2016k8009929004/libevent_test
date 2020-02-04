@@ -134,7 +134,7 @@ void request_process_cb(int fd, short events, void * arg){
 #endif
     struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
-    char msg[1024];
+    char * msg = (char *)malloc(BUF_SIZE + 1);
 
 	int len = read(fd, msg, sizeof(msg) - 1);
 
@@ -205,7 +205,7 @@ void response_process_cb(int fd, short events, void * arg){
 
     char * msg = write_arg->buff;
 
-    char reply_msg[1024];
+    char * reply_msg = (char *)malloc(BUF_SIZE + 1);
     strcpy(reply_msg, msg);
 
     int send_byte_cnt = write(fd, reply_msg, strlen(reply_msg));
