@@ -13,6 +13,9 @@ then
     if [ -f "record.txt" ];then
        rm record.txt
     fi
+    if [ -f "accept_cb.txt" ];then
+       rm accept_cb.txt
+    fi
     ./libevent_test $2
 else
     ./create_randfile.sh $i

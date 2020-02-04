@@ -5,7 +5,8 @@
 pthread_mutex_t record_lock;
 #endif
 
-#define __EVAL_CB__
+//#define __EVAL_CB__
+#define __EVAL_PTHREAD__
 
 struct sock_ev_read {
     struct event_base * base;

@@ -36,27 +36,11 @@ evutil_socket_t server_init(int port, int listen_num){
 }
 
 void accept_cb(int fd, short events, void * arg){
-    cpu_set_t get_core;
-
-    CPU_ZERO(&get_core);
-
-    if (sched_getaffinity(0, sizeof(get_core), &get_core) == -1){
-        printf("warning: cound not get thread affinity, continuing...\n");
-    }
-
-    int i;
-    int num = sysconf(_SC_NPROCESSORS_CONF);
-    for(i = 0;i < num;i++){
-        if(CPU_ISSET(i, &get_core)){
-            printf("[accept_cb] this thread %d is running processor : %d\n", i,i);
-        }
-    }
-
 //    printf("------enter accept_cb function------\n");
     
 //    printf("[accept_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
-#ifdef __EVAL_CB__
+#ifdef __EVAL_PTHREAD__
     struct timeval start, accept_time, end;
 
     FILE * fp = fopen("accept_cb.txt", "a+");
@@ -79,7 +63,7 @@ void accept_cb(int fd, short events, void * arg){
 
     evutil_make_socket_nonblocking(*s);
 
-#ifdef __EVAL_CB__
+#ifdef __EVAL_PTHREAD__
     gettimeofday(&accept_time, NULL);
 #endif
 
@@ -89,7 +73,7 @@ void accept_cb(int fd, short events, void * arg){
     pthread_t thread;
     pthread_create(&thread, NULL, server_process, (void *)s);
     pthread_detach(thread);
-#ifdef __EVAL_CB__
+#ifdef __EVAL_PTHREAD__
     gettimeofday(&end, NULL);
 
     char buff[1024];
