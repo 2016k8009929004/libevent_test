@@ -36,6 +36,22 @@ evutil_socket_t server_init(int port, int listen_num){
 }
 
 void accept_cb(int fd, short events, void * arg){
+    cpu_set_t get_core;
+
+    CPU_ZERO(&get_core);
+
+    if (sched_getaffinity(0, sizeof(get_core), &get_core) == -1){
+        printf("warning: cound not get thread affinity, continuing...\n");
+    }
+
+    int i;
+    int num = sysconf(_SC_NPROCESSORS_CONF);
+    for(i = 0;i < num;i++){
+        if(CPU_ISSET(i, &get_core)){
+            printf("[accept_cb] this thread %d is running processor : %d\n", i,i);
+        }
+    }
+
 //    printf("------enter accept_cb function------\n");
     
 //    printf("[accept_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
@@ -275,7 +291,7 @@ void * server_thread(void * arg){
     if (sched_getaffinity(0, sizeof(get_core), &get_core) == -1){
         printf("warning: cound not get thread affinity, continuing...\n");
     }
-
+/*
     int i;
     int num = sysconf(_SC_NPROCESSORS_CONF);
     for(i = 0;i < num;i++){
@@ -283,7 +299,7 @@ void * server_thread(void * arg){
             printf("this thread %d is running processor : %d\n", i,i);
         }
     }
-
+*/
     evutil_socket_t sock;
     if((sock = server_init(12345, 100)) < 0){
         perror("[SERVER] server init error");
