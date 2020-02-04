@@ -5,7 +5,7 @@ extern int client_thread_num;
 extern pthread_mutex_t fin_client_thread_lock;
 
 int main(int argc, char * argv[]){
-    if(argc == 4){
+    if(argc == 5){
 //        client_thread(argc, argv);
 
         client_thread_num = atoi(argv[1]);
@@ -19,9 +19,10 @@ int main(int argc, char * argv[]){
         int i;
         for(i = 0;i < client_thread_num;i++){
 
-            struct server_node arg;
+            struct client_arg arg;
             arg.ip_addr = &argv[2];
             arg.port = atoi(argv[3]);
+            arg.buf_size = atoi(argv[4]);
 
             pthread_create(&threads[i], NULL, client_thread, (void *)&arg);
 //            pthread_create(&threads[i], NULL, client_thread, (void *)argv);

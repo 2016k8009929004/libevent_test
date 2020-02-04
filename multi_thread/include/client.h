@@ -2,6 +2,8 @@
 
 #define RECEIVE_DEBUG
 
+int buf_size;
+
 pthread_mutex_t work_done_lock;
 int work_done_flag = 0;
 

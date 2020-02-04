@@ -20,13 +20,14 @@
 #include <event.h>
 #include <event2/util.h>
 
-#define BUF_SIZE 256
+//#define BUF_SIZE 256
 
 #define SWAP(a,b) do{a^=b;b^=a;a^=b;}while(0)
 
-struct server_node {
+struct client_arg {
     char ** ip_addr;
     int port;
+    int buf_size;
 };
 
 void * client_thread(void * argv);

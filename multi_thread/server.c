@@ -139,7 +139,6 @@ void request_process_cb(int fd, short events, void * arg){
 	int len = read(fd, msg, sizeof(msg) - 1);
 
     if(len <= 0){
-        pthread_mutex_lock(&request_end_lock);
 #ifdef REAL_TIME_STATS
         pthread_mutex_lock(&send_lock);
         pthread_mutex_lock(&record_lock);
@@ -147,7 +146,6 @@ void request_process_cb(int fd, short events, void * arg){
         pthread_mutex_unlock(&record_lock);
         pthread_mutex_unlock(&send_lock);
 #endif
-        pthread_mutex_unlock(&request_end_lock);
 
 //		printf("[SERVER sock: %d] close connection\n", fd);
 
@@ -215,6 +213,11 @@ void response_process_cb(int fd, short events, void * arg){
     pthread_mutex_lock(&send_lock);
     byte_sent += send_byte_cnt;
     pthread_mutex_unlock(&send_lock);
+
+    pthread_mutex_lock(&handle_request_lock);
+    handle_request_cnt++;
+    pthread_mutex_unlock(&handle_request_lock);
+
 #ifdef __EVAL_CB__
     gettimeofday(&end, NULL);
 
@@ -290,7 +293,7 @@ void * server_thread(void * arg){
         exit(1);
     }
 
-    pthread_mutex_init(&request_end_lock, NULL);
+    pthread_mutex_init(&handle_request_lock, NULL);
     pthread_mutex_init(&send_lock, NULL);
 
 #ifdef REAL_TIME_STATS

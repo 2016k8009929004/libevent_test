@@ -44,7 +44,7 @@ void * send_request(void * arg){
     FILE * send_fp = fopen("client-input.dat", "rb");
 
     while(!feof(send_fp)){
-        send_size = fread(send_buf, 1, BUF_SIZE, send_fp);
+        send_size = fread(send_buf, 1, buf_size, send_fp);
 
         if(send(fd, send_buf, send_size, 0) < 0){
 			perror("[CLIENT] send failed");
@@ -82,7 +82,7 @@ void response_process(int sock, short event, void * arg){
     char recv_buf[BUF_SIZE + 1];
     memset(recv_buf, 0, sizeof(recv_buf));
 
-    int recv_size = read(sock, recv_buf, BUF_SIZE);
+    int recv_size = read(sock, recv_buf, buf_size);
 
     if(recv_size == 0){
         printf("[CLIENT] close connection\n");
@@ -167,7 +167,9 @@ void send_request_thread(struct send_info * info){
 }
 
 void * client_thread(void * argv){
-    struct server_node * server = (struct server_node *)argv;
+    struct client_arg * server = (struct client_arg *)argv;
+
+    buf_size = server.buf_size;
     
     int send_byte, recv_byte;
     send_byte = recv_byte = 0;
