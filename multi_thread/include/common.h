@@ -20,7 +20,7 @@
 #include <event.h>
 #include <event2/util.h>
 
-#define BUF_SIZE 1024
+#define BUF_SIZE 256
 
 #define SWAP(a,b) do{a^=b;b^=a;a^=b;}while(0)
 
