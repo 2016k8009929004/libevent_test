@@ -18,6 +18,5 @@ then
     fi
     ./libevent_test $2
 else
-    ./create_randfile.sh $i
     ./libevent_test $2 $server_ip $server_port $3
 fi
