@@ -9,7 +9,7 @@ pthread_mutex_t record_lock;
 #define __GET_CORE__
 
 #define __EVAL_CB__
-//#define __EVAL_PTHREAD__
+#define __EVAL_PTHREAD__
 
 #define BUF_SIZE 1024
 
