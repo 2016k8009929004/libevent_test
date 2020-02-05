@@ -6,7 +6,7 @@ pthread_mutex_t record_lock;
 #endif
 
 #define __BIND_CORE__
-#define __GET_CORE__
+//#define __GET_CORE__
 
 #define __EVAL_CB__
 #define __EVAL_PTHREAD__
