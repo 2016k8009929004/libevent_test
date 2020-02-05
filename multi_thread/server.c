@@ -284,8 +284,7 @@ void response_process_cb(int fd, short events, void * arg){
 }
 
 void * server_process(void * arg){
-    printf("------server process thread------\n");
-    
+
     struct server_process_arg * thread_arg = (struct server_process_arg *)arg;
     evutil_socket_t fd = *(thread_arg->fd);
     int sequence = thread_arg->sequence;
@@ -300,13 +299,13 @@ void * server_process(void * arg){
     CPU_ZERO(&core_set);
     CPU_SET(core_sequence, &core_set);
 
-    if (pthread_setaffinity_np(0, sizeof(core_set), &core_set) == -1){
+    if (pthread_setaffinity_np(pthread_self(), sizeof(core_set), &core_set) == -1){
         printf("warning: could not set CPU affinity, continuing...\n");
     }
 
     CPU_ZERO(&get_core);
 
-    if (pthread_getaffinity_np(0, sizeof(get_core), &get_core) == -1){
+    if (pthread_getaffinity_np(pthread_self(), sizeof(get_core), &get_core) == -1){
         printf("warning: cound not get thread affinity, continuing...\n");
     }
 
