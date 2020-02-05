@@ -2,8 +2,6 @@
 
 #define __NR_gettid 186
 
-int connect_cnt = 0;
-
 int request_cnt = 0;
 
 //extern int byte_sent;
@@ -40,7 +38,18 @@ evutil_socket_t server_init(int port, int listen_num){
 void accept_cb(int fd, short events, void * arg){
 //    printf("------enter accept_cb function------\n");
     
-//    printf("[accept_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
+    printf("[accept_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
+
+#if 0
+    cpu_set_t core_set;
+
+    CPU_ZERO(&core_set);
+    CPU_SET(0, &core_set);
+
+    if (sched_setaffinity(0, sizeof(core_set), &core_set) == -1){
+        printf("warning: could not set CPU affinity, continuing...\n");
+    }
+#endif
 
 #ifdef __EVAL_PTHREAD__
     struct timeval start, accept_time, end;
@@ -53,8 +62,6 @@ void accept_cb(int fd, short events, void * arg){
 
     struct sockaddr_in client;
     socklen_t len = sizeof(client);
-
-//    evutil_socket_t s;
 
     evutil_socket_t * s = (evutil_socket_t *)malloc(sizeof(evutil_socket_t)); 
 
@@ -69,44 +76,32 @@ void accept_cb(int fd, short events, void * arg){
     gettimeofday(&accept_time, NULL);
 #endif
 
-//    connect_cnt++;
+    struct server_process_arg * thread_arg = (struct server_process_arg *)malloc(SERVER_PROCESS_ARG_SIZE);
+    thread_arg->fd = s;
+    
+    pthread_mutex_lock(&connect_cnt_lock);
+    thread_arg->sequence = connect_cnt;
+    connect_cnt++;
+    pthread_mutex_unlock(&connect_cnt_lock);
+
 //    log(INFO, "connect count: %d, fd: %d", connect_cnt, *s);
 
     pthread_t thread;
-    pthread_create(&thread, NULL, server_process, (void *)s);
+    pthread_create(&thread, NULL, server_process, (void *)thread_arg);
     pthread_detach(thread);
 #ifdef __EVAL_PTHREAD__
     gettimeofday(&end, NULL);
 
     char buff[1024];
 
-//    long accept_elapsed_time, total_elapsed_time;
     long pthread_elapsed_time;
-/*    
-    if(start.tv_usec > end.tv_usec){
-        end.tv_usec += 1000000;
-        end.tv_sec -= 1;
-    }
-
-    if(start.tv_usec > accept_time.tv_usec){
-        accept_time.tv_usec += 1000000;
-        accept_time.tv_sec -= 1;
-    }
-*/
 
     if(accept_time.tv_usec > end.tv_usec){
         end.tv_usec += 1000000;
         end.tv_sec -= 1;
     }
-/*
-    accept_elapsed_time = end_time.tv_usec - accept_time.tv_usec;
-
-    total_elapsed_time = end.tv_usec - start.tv_usec;
-*/
 
     pthread_elapsed_time = end.tv_usec - accept_time.tv_usec;
-
-//    sprintf(buff, "accept_time:%ld, total_elapsed_time:%ld\n", accept_elapsed_time, total_elapsed_time);
 
     sprintf(buff, "pthread_create_time %ld\n", pthread_elapsed_time);
     
@@ -114,11 +109,29 @@ void accept_cb(int fd, short events, void * arg){
 
     fclose(fp);
 #endif
-//    printf("------leave accept_cb function------\n");
 }
 
 void request_process_cb(int fd, short events, void * arg){
-//    printf("[request_process_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
+#if 1
+    cpu_set_t get_core;
+
+    CPU_ZERO(&get_core);
+
+    if (sched_getaffinity(0, sizeof(get_core), &get_core) == -1){
+        printf("warning: cound not get thread affinity, continuing...\n");
+    }
+
+    int i, num, run_core;
+    num = sysconf(_SC_NPROCESSORS_CONF);
+
+    for(i = 0;i < num;i++){
+        if(CPU_ISSET(i, &get_core)){
+            run_core = i;
+        }
+    }
+
+    printf("[request_process_cb] core: %d, pid: %d, tid: %ld, self: %ld\n", run_core, getpid(), (long int)syscall(__NR_gettid), pthread_self());
+#endif
 
 #ifdef __EVAL_CB__
     struct timeval start, end;
@@ -189,7 +202,7 @@ void request_process_cb(int fd, short events, void * arg){
 
     elapsed_time = end.tv_usec - start.tv_usec;
 
-    sprintf(buff, "elapsed_time:%ld\n", elapsed_time);
+    sprintf(buff, "elapsed_time %ld\n", elapsed_time);
     
     fwrite(buff, strlen(buff), 1, fp);
 
@@ -198,7 +211,27 @@ void request_process_cb(int fd, short events, void * arg){
 }
 
 void response_process_cb(int fd, short events, void * arg){
-//    printf("[response_process_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
+
+#if 1
+    cpu_set_t get_core;
+
+    CPU_ZERO(&get_core);
+
+    if (sched_getaffinity(0, sizeof(get_core), &get_core) == -1){
+        printf("warning: cound not get thread affinity, continuing...\n");
+    }
+
+    int i, num, run_core;
+    num = sysconf(_SC_NPROCESSORS_CONF);
+
+    for(i = 0;i < num;i++){
+        if(CPU_ISSET(i, &get_core)){
+            run_core = i;
+        }
+    }
+
+    printf("[response_process_cb] core: %d, pid: %d, tid: %ld, self: %ld\n", run_core, getpid(), (long int)syscall(__NR_gettid), pthread_self());
+#endif
 
 #ifdef __EVAL_CB__
     struct timeval start, end;
@@ -235,7 +268,7 @@ void response_process_cb(int fd, short events, void * arg){
 
     elapsed_time = end.tv_usec - start.tv_usec;
 
-    sprintf(buff, "elapsed_time:%ld\n", elapsed_time);
+    sprintf(buff, "elapsed_time %ld\n", elapsed_time);
     
     fwrite(buff, strlen(buff), 1, fp);
 
@@ -244,7 +277,24 @@ void response_process_cb(int fd, short events, void * arg){
 }
 
 void * server_process(void * arg){
-    evutil_socket_t fd = *((evutil_socket_t *)arg);
+    struct server_process_arg * thread_arg = (struct server_process_arg *)arg;
+    evutil_socket_t fd = *(thread_arg->fd);
+    int sequence = thread_arg->sequence;
+    
+//    evutil_socket_t fd = *((evutil_socket_t *)arg);
+
+#if 1
+    int core_sequence = (sequence % 46) + 1;
+
+    cpu_set_t core_set;
+
+    CPU_ZERO(&core_set);
+    CPU_SET(core_sequence, &core_set);
+
+    if (sched_setaffinity(0, sizeof(core_set), &core_set) == -1){
+        printf("warning: could not set CPU affinity, continuing...\n");
+    }
+#endif
 
     struct event_base * base = event_base_new();
     struct event * read_ev = (struct event *)malloc(sizeof(struct event));
@@ -266,7 +316,7 @@ void * server_process(void * arg){
 
 void * server_thread(void * arg){
 //    printf("[server_thread] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
-
+#if 1
     cpu_set_t core_set, get_core;
 
     CPU_ZERO(&core_set);
@@ -275,26 +325,15 @@ void * server_thread(void * arg){
     if (sched_setaffinity(0, sizeof(core_set), &core_set) == -1){
         printf("warning: could not set CPU affinity, continuing...\n");
     }
+#endif
 
-    CPU_ZERO(&get_core);
-
-    if (sched_getaffinity(0, sizeof(get_core), &get_core) == -1){
-        printf("warning: cound not get thread affinity, continuing...\n");
-    }
-/*
-    int i;
-    int num = sysconf(_SC_NPROCESSORS_CONF);
-    for(i = 0;i < num;i++){
-        if(CPU_ISSET(i, &get_core)){
-            printf("this thread %d is running processor : %d\n", i,i);
-        }
-    }
-*/
     evutil_socket_t sock;
     if((sock = server_init(12345, 100)) < 0){
         perror("[SERVER] server init error");
         exit(1);
     }
+
+    pthread_mutex_init(&connect_cnt_lock, NULL);
 
     pthread_mutex_init(&request_lock, NULL);
     pthread_mutex_init(&send_lock, NULL);

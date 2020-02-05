@@ -6,7 +6,7 @@ pthread_mutex_t record_lock;
 #endif
 
 //#define __EVAL_CB__
-#define __EVAL_PTHREAD__
+//#define __EVAL_PTHREAD__
 
 #define BUF_SIZE 1024
 
@@ -19,6 +19,16 @@ struct sock_ev_write {
     struct event * write_ev;
     char * buff;
 };
+
+pthread_mutex_t connect_cnt_lock;
+int connect_cnt = 0;
+
+struct server_process_arg {
+    evutil_socket_t * fd;
+    int sequence;
+};
+
+#define SERVER_PROCESS_ARG_SIZE sizeof(struct server_process_arg)
 
 pthread_mutex_t send_lock;
 
