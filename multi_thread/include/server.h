@@ -1,11 +1,14 @@
 #include "common.h"
 #include "evallib.h"
 
-#ifdef REAL_TIME_STATS
+#ifdef __REAL_TIME_STATS__
 pthread_mutex_t record_lock;
 #endif
 
-//#define __EVAL_CB__
+#define __BIND_CORE__
+//#define __GET_CORE__
+
+#define __EVAL_CB__
 //#define __EVAL_PTHREAD__
 
 #define BUF_SIZE 1024

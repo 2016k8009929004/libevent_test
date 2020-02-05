@@ -38,7 +38,7 @@ evutil_socket_t server_init(int port, int listen_num){
 void accept_cb(int fd, short events, void * arg){
 //    printf("------enter accept_cb function------\n");
 
-#if 1
+#ifdef __GET_CORE__
     cpu_set_t get_core;
 
     CPU_ZERO(&get_core);
@@ -120,7 +120,7 @@ void accept_cb(int fd, short events, void * arg){
 }
 
 void request_process_cb(int fd, short events, void * arg){
-#if 1
+#ifdef __GET_CORE__
     cpu_set_t get_core;
 
     CPU_ZERO(&get_core);
@@ -150,7 +150,7 @@ void request_process_cb(int fd, short events, void * arg){
     gettimeofday(&start, NULL);
 #endif
 
-#ifdef REAL_TIME_STATS
+#ifdef __REAL_TIME_STATS__
     pthread_mutex_lock(&record_lock);
     request_start();
     pthread_mutex_unlock(&record_lock);
@@ -162,7 +162,7 @@ void request_process_cb(int fd, short events, void * arg){
 	int len = read(fd, msg, sizeof(msg) - 1);
 
     if(len <= 0){
-#ifdef REAL_TIME_STATS
+#ifdef __REAL_TIME_STATS__
         pthread_mutex_lock(&send_lock);
         pthread_mutex_lock(&request_lock);
         pthread_mutex_lock(&record_lock);
@@ -219,7 +219,7 @@ void request_process_cb(int fd, short events, void * arg){
 }
 
 void response_process_cb(int fd, short events, void * arg){
-#if 1
+#ifdef __GET_CORE__
     cpu_set_t get_core;
 
     CPU_ZERO(&get_core);
@@ -291,7 +291,7 @@ void * server_process(void * arg){
     
 //    evutil_socket_t fd = *((evutil_socket_t *)arg);
 
-#if 1
+#ifdef __BIND_CORE__
     int core_sequence = (sequence % 46) + 1;
 
     cpu_set_t core_set, get_core;
@@ -302,7 +302,9 @@ void * server_process(void * arg){
     if (pthread_setaffinity_np(pthread_self(), sizeof(core_set), &core_set) == -1){
         printf("warning: could not set CPU affinity, continuing...\n");
     }
+#endif
 
+#ifdef __GET_CORE__
     CPU_ZERO(&get_core);
 
     if (pthread_getaffinity_np(pthread_self(), sizeof(get_core), &get_core) == -1){
@@ -319,8 +321,8 @@ void * server_process(void * arg){
     }
 
     printf("[server_thread] core: %d, pid: %d, tid: %ld, self: %ld\n", run_core, getpid(), (long int)syscall(__NR_gettid), pthread_self());
-
 #endif
+
 
     struct event_base * base = event_base_new();
     struct event * read_ev = (struct event *)malloc(sizeof(struct event));
@@ -342,7 +344,7 @@ void * server_process(void * arg){
 
 void * server_thread(void * arg){
 //    printf("[server_thread] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
-#if 1
+#ifdef __BIND_CORE__
     cpu_set_t core_set, get_core;
 
     CPU_ZERO(&core_set);
@@ -351,7 +353,9 @@ void * server_thread(void * arg){
     if (sched_setaffinity(0, sizeof(core_set), &core_set) == -1){
         printf("warning: could not set CPU affinity, continuing...\n");
     }
+#endif
 
+#ifdef __GET_CORE__
     CPU_ZERO(&get_core);
 
     if (sched_getaffinity(0, sizeof(get_core), &get_core) == -1){
@@ -368,7 +372,6 @@ void * server_thread(void * arg){
     }
 
     printf("[server_thread] core: %d, pid: %d, tid: %ld, self: %ld\n", run_core, getpid(), (long int)syscall(__NR_gettid), pthread_self());
-
 #endif
 
     evutil_socket_t sock;
@@ -382,7 +385,7 @@ void * server_thread(void * arg){
     pthread_mutex_init(&request_lock, NULL);
     pthread_mutex_init(&send_lock, NULL);
 
-#ifdef REAL_TIME_STATS
+#ifdef __REAL_TIME_STATS__
     pthread_mutex_init(&record_lock, NULL);
 #endif
 

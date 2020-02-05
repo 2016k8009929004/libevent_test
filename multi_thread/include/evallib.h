@@ -5,7 +5,7 @@
 
 #include "log.h"
 
-//#define REAL_TIME_STATS
+//#define __REAL_TIME_STATS__
 
 struct timeval start, end, time1, time2;
 

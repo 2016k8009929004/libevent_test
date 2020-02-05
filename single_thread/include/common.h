@@ -18,7 +18,7 @@
 #define BUF_SIZE 1024
 #define PATH_SIZE 1024
 
-#define REAL_TIME_STATS
+#define __REAL_TIME_STATS__
 
 #define SWAP(a,b) do{a^=b;b^=a;a^=b;}while(0)
 
