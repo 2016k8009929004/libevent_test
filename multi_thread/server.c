@@ -37,18 +37,26 @@ evutil_socket_t server_init(int port, int listen_num){
 
 void accept_cb(int fd, short events, void * arg){
 //    printf("------enter accept_cb function------\n");
-    
-    printf("[accept_cb] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
-#if 0
-    cpu_set_t core_set;
+#if 1
+    cpu_set_t get_core;
 
-    CPU_ZERO(&core_set);
-    CPU_SET(0, &core_set);
+    CPU_ZERO(&get_core);
 
-    if (sched_setaffinity(0, sizeof(core_set), &core_set) == -1){
-        printf("warning: could not set CPU affinity, continuing...\n");
+    if (sched_getaffinity(0, sizeof(get_core), &get_core) == -1){
+        printf("warning: cound not get thread affinity, continuing...\n");
     }
+
+    int i, num, run_core;
+    num = sysconf(_SC_NPROCESSORS_CONF);
+
+    for(i = 0;i < num;i++){
+        if(CPU_ISSET(i, &get_core)){
+            run_core = i;
+        }
+    }
+
+    printf("[accept_cb] core: %d, pid: %d, tid: %ld, self: %ld\n", run_core, getpid(), (long int)syscall(__NR_gettid), pthread_self());
 #endif
 
 #ifdef __EVAL_PTHREAD__
@@ -211,7 +219,6 @@ void request_process_cb(int fd, short events, void * arg){
 }
 
 void response_process_cb(int fd, short events, void * arg){
-
 #if 1
     cpu_set_t get_core;
 
@@ -284,16 +291,24 @@ void * server_process(void * arg){
 //    evutil_socket_t fd = *((evutil_socket_t *)arg);
 
 #if 1
-    int core_sequence = (sequence % 46) + 1;
+    cpu_set_t get_core;
 
-    cpu_set_t core_set;
+    CPU_ZERO(&get_core);
 
-    CPU_ZERO(&core_set);
-    CPU_SET(core_sequence, &core_set);
-
-    if (sched_setaffinity(0, sizeof(core_set), &core_set) == -1){
-        printf("warning: could not set CPU affinity, continuing...\n");
+    if (sched_getaffinity(0, sizeof(get_core), &get_core) == -1){
+        printf("warning: cound not get thread affinity, continuing...\n");
     }
+
+    int i, num, run_core;
+    num = sysconf(_SC_NPROCESSORS_CONF);
+
+    for(i = 0;i < num;i++){
+        if(CPU_ISSET(i, &get_core)){
+            run_core = i;
+        }
+    }
+
+    printf("[server_process] core: %d, pid: %d, tid: %ld, self: %ld\n", run_core, getpid(), (long int)syscall(__NR_gettid), pthread_self());
 #endif
 
     struct event_base * base = event_base_new();
@@ -325,6 +340,24 @@ void * server_thread(void * arg){
     if (sched_setaffinity(0, sizeof(core_set), &core_set) == -1){
         printf("warning: could not set CPU affinity, continuing...\n");
     }
+
+    CPU_ZERO(&get_core);
+
+    if (sched_getaffinity(0, sizeof(get_core), &get_core) == -1){
+        printf("warning: cound not get thread affinity, continuing...\n");
+    }
+
+    int i, num, run_core;
+    num = sysconf(_SC_NPROCESSORS_CONF);
+
+    for(i = 0;i < num;i++){
+        if(CPU_ISSET(i, &get_core)){
+            run_core = i;
+        }
+    }
+
+    printf("[server_thread] core: %d, pid: %d, tid: %ld, self: %ld\n", run_core, getpid(), (long int)syscall(__NR_gettid), pthread_self());
+
 #endif
 
     evutil_socket_t sock;
