@@ -284,6 +284,8 @@ void response_process_cb(int fd, short events, void * arg){
 }
 
 void * server_process(void * arg){
+    printf("------server process thread------\n");
+    
     struct server_process_arg * thread_arg = (struct server_process_arg *)arg;
     evutil_socket_t fd = *(thread_arg->fd);
     int sequence = thread_arg->sequence;
