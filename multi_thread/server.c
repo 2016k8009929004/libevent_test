@@ -291,11 +291,20 @@ void * server_process(void * arg){
 //    evutil_socket_t fd = *((evutil_socket_t *)arg);
 
 #if 1
-    cpu_set_t get_core;
+    int core_sequence = (sequence % 46) + 1;
+
+    cpu_set_t core_set, get_core;
+
+    CPU_ZERO(&core_set);
+    CPU_SET(core_sequence, &core_set);
+
+    if (pthread_setaffinity_np(0, sizeof(core_set), &core_set) == -1){
+        printf("warning: could not set CPU affinity, continuing...\n");
+    }
 
     CPU_ZERO(&get_core);
 
-    if (sched_getaffinity(0, sizeof(get_core), &get_core) == -1){
+    if (pthread_getaffinity_np(0, sizeof(get_core), &get_core) == -1){
         printf("warning: cound not get thread affinity, continuing...\n");
     }
 
@@ -308,7 +317,8 @@ void * server_process(void * arg){
         }
     }
 
-    printf("[server_process] core: %d, pid: %d, tid: %ld, self: %ld\n", run_core, getpid(), (long int)syscall(__NR_gettid), pthread_self());
+    printf("[server_thread] core: %d, pid: %d, tid: %ld, self: %ld\n", run_core, getpid(), (long int)syscall(__NR_gettid), pthread_self());
+
 #endif
 
     struct event_base * base = event_base_new();
