@@ -36,11 +36,11 @@ struct server_process_arg {
 
 #define SERVER_PROCESS_ARG_SIZE sizeof(struct server_process_arg)
 
-pthread_mutex_t send_lock;
+pthread_mutex_t server_send_lock;
 
 static int byte_sent = 0;
 
-pthread_mutex_t request_lock;
+pthread_mutex_t server_request_lock;
 
 evutil_socket_t server_init(int port, int listen_num);
 

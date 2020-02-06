@@ -1,5 +1,8 @@
 #include "evallib.h"
 
+extern pthread_mutex_t server_send_lock;
+extern pthread_mutex_t server_request_lock;
+
 void request_start(){
     if(!start_flag){
         gettimeofday(&start, &tz);
@@ -24,8 +27,14 @@ void request_end(int core_sequence, int byte_sent, int request_cnt){
 
     char buff[1024];
 
+    pthread_mutex_lock(&server_send_lock);
+    pthread_mutex_lock(&server_request_lock);
+
     sprintf(buff, "start %lf end %lf tot_request %d tot_byte %d\n", 
             start_time, end_time, request_cnt, byte_sent);
+
+    pthread_mutex_unlock(&server_request_lock);
+    pthread_mutex_unlock(&server_send_lock);
     
     fwrite(buff, strlen(buff), 1, fp);
 

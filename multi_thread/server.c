@@ -163,8 +163,6 @@ void request_process_cb(int fd, short events, void * arg){
 
     if(len <= 0){
 #ifdef __REAL_TIME_STATS__
-        pthread_mutex_lock(&send_lock);
-        pthread_mutex_lock(&request_lock);
         pthread_mutex_lock(&record_lock);
 #ifdef __BIND_CORE__
         request_end(read_arg->core_sequence, byte_sent, request_cnt);
@@ -172,8 +170,6 @@ void request_process_cb(int fd, short events, void * arg){
         request_end(0, byte_sent, request_cnt);
 #endif
         pthread_mutex_unlock(&record_lock);
-        pthread_mutex_unlock(&request_lock);
-        pthread_mutex_unlock(&send_lock);
 #endif
 
         event_del(read_arg->read_ev);
@@ -196,9 +192,9 @@ void request_process_cb(int fd, short events, void * arg){
 
     event_add(write_ev, NULL);
 
-    pthread_mutex_lock(&request_lock);
+    pthread_mutex_lock(&server_request_lock);
     request_cnt++;
-    pthread_mutex_unlock(&request_lock);
+    pthread_mutex_unlock(&server_request_lock);
 
 #ifdef __EVAL_CB__
     gettimeofday(&end, NULL);
@@ -261,9 +257,9 @@ void response_process_cb(int fd, short events, void * arg){
 
     int send_byte_cnt = write(fd, reply_msg, strlen(reply_msg));
 
-    pthread_mutex_lock(&send_lock);
+    pthread_mutex_lock(&server_send_lock);
     byte_sent += send_byte_cnt;
-    pthread_mutex_unlock(&send_lock);
+    pthread_mutex_unlock(&server_send_lock);
 
 #ifdef __EVAL_CB__
     gettimeofday(&end, NULL);
@@ -387,8 +383,8 @@ void * server_thread(void * arg){
 
     pthread_mutex_init(&connect_cnt_lock, NULL);
 
-    pthread_mutex_init(&request_lock, NULL);
-    pthread_mutex_init(&send_lock, NULL);
+    pthread_mutex_init(&server_request_lock, NULL);
+    pthread_mutex_init(&server_send_lock, NULL);
 
 #ifdef __REAL_TIME_STATS__
     pthread_mutex_init(&record_lock, NULL);
