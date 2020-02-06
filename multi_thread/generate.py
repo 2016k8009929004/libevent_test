@@ -9,7 +9,7 @@ for file in fileList:
     result = re.match(r'record(.*)', fileName)
     if result:
         fp = open(file, "r")
-        recordFile = open("record.txt", "a+")
+        recordFile = open("perform.txt", "a+")
         context = fp.read()
         recordFile.write(context)
         fp.close()
