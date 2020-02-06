@@ -350,8 +350,7 @@ void * server_process(void * arg){
 }
 
 void * server_thread(void * arg){
-#ifdef __BIND_CORE__
-    cpu_set_t core_set, get_core;
+    cpu_set_t core_set;
 
     CPU_ZERO(&core_set);
     CPU_SET(0, &core_set);
@@ -359,9 +358,9 @@ void * server_thread(void * arg){
     if (sched_setaffinity(0, sizeof(core_set), &core_set) == -1){
         printf("warning: could not set CPU affinity, continuing...\n");
     }
-#endif
 
 #ifdef __GET_CORE__
+    cpu_set_t get_core;
     CPU_ZERO(&get_core);
 
     if (sched_getaffinity(0, sizeof(get_core), &get_core) == -1){
