@@ -30,11 +30,6 @@ struct client_arg {
     int buf_size;
 };
 
-struct time_record {
-    struct timeval time;
-    int flag;
-};
-
 void * client_thread(void * argv);
 void * server_thread(void * arg);
 
