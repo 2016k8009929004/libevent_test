@@ -1,7 +1,7 @@
 import os
 import re
 
-fileList = os.listdir("~/yangyihan/libevent_test/multi_thread/")
+fileList = os.listdir("./")
 
 for file in fileList:
     splitFile = os.path.splitext(file)
