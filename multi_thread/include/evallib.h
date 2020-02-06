@@ -16,4 +16,4 @@ float elapsed_time;
 struct timezone tz;
 
 void request_start();
-void request_end(int byte_sent, int request_cnt);
+void request_end(int core_sequence, int byte_sent, int request_cnt);

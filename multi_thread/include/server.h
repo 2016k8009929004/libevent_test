@@ -16,6 +16,9 @@ pthread_mutex_t record_lock;
 struct sock_ev_read {
     struct event_base * base;
     struct event * read_ev;
+#ifdef __BIND_CORE__
+    int core_sequence;
+#endif
 };
 
 struct sock_ev_write {

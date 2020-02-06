@@ -7,8 +7,12 @@ void request_start(){
     }
 }
 
-void request_end(int byte_sent, int request_cnt){
-    FILE * fp = fopen("record.txt", "a+");
+void request_end(int core_sequence, int byte_sent, int request_cnt){
+    char file_name[1024];
+    sprintf(file_name, "record_core_%d.txt", core_sequence);
+
+//    FILE * fp = fopen("record.txt", "a+");
+    FILE * fp = fopen(file_name, "a+");
     fseek(fp, 0, SEEK_END);
 
     int sec, usec;
