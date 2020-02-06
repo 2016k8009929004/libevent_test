@@ -10,7 +10,7 @@ server_port=12345
 
 if test $1 = $server
 then
-    rm *.txt
+    rm record_core_*.txt
     ./libevent_test $2
 else
     ./libevent_test $2 $server_ip $server_port $3
