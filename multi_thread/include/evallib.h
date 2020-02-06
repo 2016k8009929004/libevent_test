@@ -11,9 +11,6 @@
 
 //static int start_flag = 0;
 
-float elapsed_time;
+//void request_start(struct time_record * record);
 
-struct timezone tz;
-
-void request_start(struct time_record * record);
 void request_end(int core_sequence, struct timeval start, int byte_sent, int request_cnt);

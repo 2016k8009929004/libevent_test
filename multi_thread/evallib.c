@@ -1,12 +1,12 @@
 #include "evallib.h"
-
+/*
 void request_start(struct time_record * record){
     if(!record->flag){
         gettimeofday(&record->time, NULL);
         record->flag = 1;
     }
 }
-
+*/
 void request_end(int core_sequence, struct timeval start, int byte_sent, int request_cnt){
     char file_name[1024];
     sprintf(file_name, "record_core_%d.txt", core_sequence);
