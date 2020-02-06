@@ -332,7 +332,7 @@ void * server_process(void * arg){
     struct sock_ev_read * read_arg = (struct sock_ev_read *)malloc(sizeof(struct sock_ev_read));
     read_arg->base = base;
     read_arg->read_ev = read_ev;
-    read_arg->core_sequence = core_sequence;
+    read_arg->core_sequence = sequence;
 
     event_set(read_ev, fd, EV_READ | EV_PERSIST, request_process_cb, read_arg);
 
