@@ -247,7 +247,7 @@ void response_process_cb(int fd, short events, void * arg){
 #endif
 
 #ifdef __EVAL_CB__
-    struct timeval start, end;
+    struct timeval start end;
 
     FILE * fp = fopen("response_process_cb.txt", "a+");
     fseek(fp, 0, SEEK_END);

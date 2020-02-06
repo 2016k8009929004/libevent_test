@@ -33,11 +33,6 @@ struct sock_ev_write {
 //pthread_mutex_t connect_cnt_lock;
 int connect_cnt = 0;
 
-struct time_record {
-    struct timeval time;
-    int flag;
-};
-
 struct server_process_arg {
     evutil_socket_t * fd;
     int sequence;

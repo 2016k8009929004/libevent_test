@@ -17,6 +17,7 @@ void request_end(int core_sequence, struct timeval start, int byte_sent, int req
 
     int sec, usec;
 
+    struct timeval end;
     gettimeofday(&end, NULL);
 
     double start_time = (double)start.tv_sec + ((double)start.tv_usec/(double)1000000);
