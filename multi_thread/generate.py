@@ -1,0 +1,16 @@
+import os
+import re
+
+fileList = os.listdir(r'~/yangyihan/libevent_test/multi_thread')
+
+for file in fileList:
+    splitFile = os.path.splitext(file)
+    fileName,fileType = splitFile
+    result = re.match(r'record(.*)', fileName)
+    if result:
+        fp = open(file, "r")
+        recordFile = open("record.txt", "a+")
+        context = fp.read()
+        recordFile.write(context)
+        fp.close()
+        recordFile.close()
