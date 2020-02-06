@@ -19,11 +19,14 @@ struct sock_ev_read {
 #ifdef __BIND_CORE__
     int core_sequence;
 #endif
+    int * byte_sent;
+    int * request_cnt;
 };
 
 struct sock_ev_write {
     struct event * write_ev;
     char * buff;
+    int * byte_sent;
 };
 
 pthread_mutex_t connect_cnt_lock;
@@ -32,6 +35,8 @@ int connect_cnt = 0;
 struct server_process_arg {
     evutil_socket_t * fd;
     int sequence;
+    int * byte_sent;
+    int * request_cnt;
 };
 
 #define SERVER_PROCESS_ARG_SIZE sizeof(struct server_process_arg)

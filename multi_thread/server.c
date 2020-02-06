@@ -86,6 +86,10 @@ void accept_cb(int fd, short events, void * arg){
 
     struct server_process_arg * thread_arg = (struct server_process_arg *)malloc(SERVER_PROCESS_ARG_SIZE);
     thread_arg->fd = s;
+    thread_arg->byte_sent = (int *)malloc(sizeof(int));
+    *(thread_arg->byte_sent) = 0;
+    thread_arg->request_cnt = (int *)malloc(sizeof(int));
+    *(thread_arg->request_cnt) = 0;
     
     pthread_mutex_lock(&connect_cnt_lock);
     thread_arg->sequence = connect_cnt;
@@ -165,9 +169,9 @@ void request_process_cb(int fd, short events, void * arg){
 #ifdef __REAL_TIME_STATS__
         pthread_mutex_lock(&record_lock);
 #ifdef __BIND_CORE__
-        request_end(read_arg->core_sequence, byte_sent, request_cnt);
+        request_end(read_arg->core_sequence, *(read_arg->byte_sent), *(read_arg->request_cnt));
 #else
-        request_end(0, byte_sent, request_cnt);
+        request_end(0, *(read_arg->byte_sent), *(read_arg->request_cnt));
 #endif
         pthread_mutex_unlock(&record_lock);
 #endif
@@ -185,16 +189,20 @@ void request_process_cb(int fd, short events, void * arg){
     struct sock_ev_write * write_arg = (struct sock_ev_write *)malloc(sizeof(struct sock_ev_write));
     write_arg->write_ev = write_ev;
     write_arg->buff = msg;
+    write_arg->byte_sent = read_arg->byte_sent;
 
     event_set(write_ev, fd, EV_WRITE, response_process_cb, write_arg);
 
     event_base_set(read_arg->base, write_ev);
 
     event_add(write_ev, NULL);
-
+/*
     pthread_mutex_lock(&server_request_lock);
     request_cnt++;
     pthread_mutex_unlock(&server_request_lock);
+*/
+
+    (*(read_arg->request_cnt))++;
 
 #ifdef __EVAL_CB__
     gettimeofday(&end, NULL);
@@ -256,10 +264,14 @@ void response_process_cb(int fd, short events, void * arg){
     strcpy(reply_msg, msg);
 
     int send_byte_cnt = write(fd, reply_msg, strlen(reply_msg));
-
+/*
     pthread_mutex_lock(&server_send_lock);
     byte_sent += send_byte_cnt;
     pthread_mutex_unlock(&server_send_lock);
+*/
+
+    *(write_arg->byte_sent) += send_byte_cnt;
+
 
 #ifdef __EVAL_CB__
     gettimeofday(&end, NULL);
@@ -329,6 +341,8 @@ void * server_process(void * arg){
     struct sock_ev_read * read_arg = (struct sock_ev_read *)malloc(sizeof(struct sock_ev_read));
     read_arg->base = base;
     read_arg->read_ev = read_ev;
+    read_arg->byte_sent = thread_arg->byte_sent;
+    read_arg->request_cnt = thread_arg->request_cnt;
     
 #ifdef __BIND_CORE__
     read_arg->core_sequence = sequence;
