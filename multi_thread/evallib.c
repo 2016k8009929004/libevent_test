@@ -1,16 +1,13 @@
 #include "evallib.h"
 
-extern pthread_mutex_t server_send_lock;
-extern pthread_mutex_t server_request_lock;
-
-void request_start(){
-    if(!start_flag){
-        gettimeofday(&start, &tz);
-        start_flag = 1;
+void request_start(struct time_record * record){
+    if(!record->flag){
+        gettimeofday(&record->time, NULL);
+        record->flag = 1;
     }
 }
 
-void request_end(int core_sequence, int byte_sent, int request_cnt){
+void request_end(int core_sequence, struct timeval start, int byte_sent, int request_cnt){
     char file_name[1024];
     sprintf(file_name, "record_core_%d.txt", core_sequence);
 
@@ -20,21 +17,15 @@ void request_end(int core_sequence, int byte_sent, int request_cnt){
 
     int sec, usec;
 
-    gettimeofday(&end, &tz);
+    gettimeofday(&end, NULL);
 
     double start_time = (double)start.tv_sec + ((double)start.tv_usec/(double)1000000);
     double end_time = (double)end.tv_sec + ((double)end.tv_usec/(double)1000000);
 
     char buff[1024];
 
-    pthread_mutex_lock(&server_send_lock);
-    pthread_mutex_lock(&server_request_lock);
-
     sprintf(buff, "start %lf end %lf tot_request %d tot_byte %d\n", 
             start_time, end_time, request_cnt, byte_sent);
-
-    pthread_mutex_unlock(&server_request_lock);
-    pthread_mutex_unlock(&server_send_lock);
     
     fwrite(buff, strlen(buff), 1, fp);
 

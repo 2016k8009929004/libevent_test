@@ -7,13 +7,13 @@
 
 #define __REAL_TIME_STATS__
 
-struct timeval start, end, time1, time2;
+//struct timeval start, end, time1, time2;
 
-static int start_flag = 0;
+//static int start_flag = 0;
 
 float elapsed_time;
 
 struct timezone tz;
 
-void request_start();
-void request_end(int core_sequence, int byte_sent, int request_cnt);
+void request_start(struct time_record * record);
+void request_end(int core_sequence, struct timeval start, int byte_sent, int request_cnt);

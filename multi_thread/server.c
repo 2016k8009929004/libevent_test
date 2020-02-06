@@ -90,11 +90,13 @@ void accept_cb(int fd, short events, void * arg){
     *(thread_arg->byte_sent) = 0;
     thread_arg->request_cnt = (int *)malloc(sizeof(int));
     *(thread_arg->request_cnt) = 0;
+    thread_arg->start = (struct time_record *)malloc(sizeof(struct time_record));
+    thread_arg->start->flag = 0;
     
-    pthread_mutex_lock(&connect_cnt_lock);
+//    pthread_mutex_lock(&connect_cnt_lock);
     thread_arg->sequence = connect_cnt;
     connect_cnt++;
-    pthread_mutex_unlock(&connect_cnt_lock);
+//    pthread_mutex_unlock(&connect_cnt_lock);
 
 //    log(INFO, "connect count: %d, fd: %d", connect_cnt, *s);
 
@@ -154,12 +156,13 @@ void request_process_cb(int fd, short events, void * arg){
     gettimeofday(&start, NULL);
 #endif
 
+    struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
+
 #ifdef __REAL_TIME_STATS__
     pthread_mutex_lock(&record_lock);
-    request_start();
+    request_start(read_arg->start);
     pthread_mutex_unlock(&record_lock);
 #endif
-    struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
     char * msg = (char *)malloc(BUF_SIZE + 1);
 
@@ -169,9 +172,9 @@ void request_process_cb(int fd, short events, void * arg){
 #ifdef __REAL_TIME_STATS__
         pthread_mutex_lock(&record_lock);
 #ifdef __BIND_CORE__
-        request_end(read_arg->core_sequence, *(read_arg->byte_sent), *(read_arg->request_cnt));
+        request_end(read_arg->core_sequence, read_arg->start->time, *(read_arg->byte_sent), *(read_arg->request_cnt));
 #else
-        request_end(0, *(read_arg->byte_sent), *(read_arg->request_cnt));
+        request_end(0, read_arg->start->time, *(read_arg->byte_sent), *(read_arg->request_cnt));
 #endif
         pthread_mutex_unlock(&record_lock);
 #endif
@@ -196,11 +199,6 @@ void request_process_cb(int fd, short events, void * arg){
     event_base_set(read_arg->base, write_ev);
 
     event_add(write_ev, NULL);
-/*
-    pthread_mutex_lock(&server_request_lock);
-    request_cnt++;
-    pthread_mutex_unlock(&server_request_lock);
-*/
 
     (*(read_arg->request_cnt))++;
 
@@ -264,11 +262,6 @@ void response_process_cb(int fd, short events, void * arg){
     strcpy(reply_msg, msg);
 
     int send_byte_cnt = write(fd, reply_msg, strlen(reply_msg));
-/*
-    pthread_mutex_lock(&server_send_lock);
-    byte_sent += send_byte_cnt;
-    pthread_mutex_unlock(&server_send_lock);
-*/
 
     *(write_arg->byte_sent) += send_byte_cnt;
 
@@ -343,6 +336,7 @@ void * server_process(void * arg){
     read_arg->read_ev = read_ev;
     read_arg->byte_sent = thread_arg->byte_sent;
     read_arg->request_cnt = thread_arg->request_cnt;
+    read_arg->start = thread_arg->start;
     
 #ifdef __BIND_CORE__
     read_arg->core_sequence = sequence;
@@ -395,10 +389,7 @@ void * server_thread(void * arg){
         exit(1);
     }
 
-    pthread_mutex_init(&connect_cnt_lock, NULL);
-
-    pthread_mutex_init(&server_request_lock, NULL);
-    pthread_mutex_init(&server_send_lock, NULL);
+//    pthread_mutex_init(&connect_cnt_lock, NULL);
 
 #ifdef __REAL_TIME_STATS__
     pthread_mutex_init(&record_lock, NULL);

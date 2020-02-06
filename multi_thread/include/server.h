@@ -21,6 +21,7 @@ struct sock_ev_read {
 #endif
     int * byte_sent;
     int * request_cnt;
+    struct time_record * start;
 };
 
 struct sock_ev_write {
@@ -29,23 +30,23 @@ struct sock_ev_write {
     int * byte_sent;
 };
 
-pthread_mutex_t connect_cnt_lock;
+//pthread_mutex_t connect_cnt_lock;
 int connect_cnt = 0;
+
+struct time_record {
+    struct timeval time;
+    int flag;
+};
 
 struct server_process_arg {
     evutil_socket_t * fd;
     int sequence;
     int * byte_sent;
     int * request_cnt;
+    struct time_record * start;
 };
 
 #define SERVER_PROCESS_ARG_SIZE sizeof(struct server_process_arg)
-
-pthread_mutex_t server_send_lock;
-
-static int byte_sent = 0;
-
-pthread_mutex_t server_request_lock;
 
 evutil_socket_t server_init(int port, int listen_num);
 
