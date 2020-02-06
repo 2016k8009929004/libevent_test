@@ -166,9 +166,11 @@ void request_process_cb(int fd, short events, void * arg){
         pthread_mutex_lock(&send_lock);
         pthread_mutex_lock(&request_lock);
         pthread_mutex_lock(&record_lock);
-
+#ifdef __BIND_CORE__
         request_end(read_arg->core_sequence, byte_sent, request_cnt);
-
+#else
+        request_end(0, byte_sent, request_cnt);
+#endif
         pthread_mutex_unlock(&record_lock);
         pthread_mutex_unlock(&request_lock);
         pthread_mutex_unlock(&send_lock);
@@ -331,7 +333,10 @@ void * server_process(void * arg){
     struct sock_ev_read * read_arg = (struct sock_ev_read *)malloc(sizeof(struct sock_ev_read));
     read_arg->base = base;
     read_arg->read_ev = read_ev;
+    
+#ifdef __BIND_CORE__
     read_arg->core_sequence = sequence;
+#endif
 
     event_set(read_ev, fd, EV_READ | EV_PERSIST, request_process_cb, read_arg);
 
@@ -345,7 +350,6 @@ void * server_process(void * arg){
 }
 
 void * server_thread(void * arg){
-//    printf("[server_thread] pid: %d, tid: %ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 #ifdef __BIND_CORE__
     cpu_set_t core_set, get_core;
 
