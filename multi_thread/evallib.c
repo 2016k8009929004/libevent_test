@@ -11,7 +11,6 @@ void request_start(){
 }
 
 void request_end(int core_sequence, int byte_sent, int request_cnt){
-/*
     char file_name[1024];
     sprintf(file_name, "record_core_%d.txt", core_sequence);
 
@@ -40,13 +39,4 @@ void request_end(int core_sequence, int byte_sent, int request_cnt){
     fwrite(buff, strlen(buff), 1, fp);
 
     fclose(fp);
-*/
-    int sec, usec;
-
-    gettimeofday(&end, &tz);
-
-    double start_time = (double)start.tv_sec + ((double)start.tv_usec/(double)1000000);
-    double end_time = (double)end.tv_sec + ((double)end.tv_usec/(double)1000000);
-
-    printf("start %lf end %lf\n", start_time, end_time);
 }
