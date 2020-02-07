@@ -49,7 +49,7 @@ int main(int argc, char * argv[]){
         if(pid == 0){
             cpu_set_t mask;
             CPU_ZERO(&mask);
-            CPU_SET(i, &mask);
+            CPU_SET(i % 46, &mask);
 
             if (sched_setaffinity(0, sizeof(mask), &mask) == -1){
                 printf("warning: could not set CPU affinity, continuing...\n");
