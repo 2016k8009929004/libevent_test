@@ -165,13 +165,13 @@ void * client_thread(void * argv){
     
     int send_byte, recv_byte;
     send_byte = recv_byte = 0;
-
+/*
     pthread_mutex_t send_lock, recv_lock;
     pthread_mutex_init(&send_lock, NULL);
     pthread_mutex_init(&recv_lock, NULL);
     
     pthread_mutex_init(&work_done_lock, NULL);
-
+*/
     int sockfd = connect_server(*(server->ip_addr), server->port);
     if(sockfd == -1){
         perror("[CLIENT] tcp connect error");
