@@ -363,7 +363,7 @@ void * server_thread(void * arg){
     CPU_ZERO(&core_set);
     CPU_SET(0, &core_set);
 
-    if (sched_setaffinity(0, sizeof(core_set), &core_set) == -1){
+    if (pthread_setaffinity_np(pthread_self(), sizeof(core_set), &core_set) == -1){
         printf("warning: could not set CPU affinity, continuing...\n");
     }
 

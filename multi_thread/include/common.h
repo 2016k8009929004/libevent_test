@@ -28,7 +28,6 @@ struct client_arg {
     char ** ip_addr;
     int port;
     int buf_size;
-    int sequence;
 };
 
 void * client_thread(void * argv);

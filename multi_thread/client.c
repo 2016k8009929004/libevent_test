@@ -169,17 +169,6 @@ void send_request_thread(struct send_info * info){
 void * client_thread(void * argv){
     struct client_arg * server = (struct client_arg *)argv;
 
-    int core_sequence = server->sequence % 45;
-
-    cpu_set_t core_set;
-
-    CPU_ZERO(&core_set);
-    CPU_SET(core_sequence, &core_set);
-
-    if (pthread_setaffinity_np(pthread_self(), sizeof(core_set), &core_set) == -1){
-        printf("warning: could not set CPU affinity, continuing...\n");
-    }
-
     buf_size = server->buf_size;
     
     int send_byte, recv_byte;
