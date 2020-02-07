@@ -4,12 +4,12 @@
 
 int buf_size;
 
-pthread_mutex_t work_done_lock;
+//pthread_mutex_t work_done_lock;
 int work_done_flag = 0;
 
 int client_thread_num;
 
-pthread_mutex_t fin_client_thread_lock;
+//pthread_mutex_t fin_client_thread_lock;
 int fin_client_thread = 0;
 
 struct debug_response_arg {
@@ -27,9 +27,9 @@ struct response_arg {
 
 struct send_info {
     int * sockfd;
-    pthread_mutex_t * send_lock;
+//    pthread_mutex_t * send_lock;
     int * send_byte;
-    pthread_mutex_t * recv_lock;
+//    pthread_mutex_t * recv_lock;
     int * recv_byte;
 };
 
