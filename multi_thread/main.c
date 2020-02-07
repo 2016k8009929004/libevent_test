@@ -23,6 +23,7 @@ int main(int argc, char * argv[]){
             arg.ip_addr = &argv[2];
             arg.port = atoi(argv[3]);
             arg.buf_size = atoi(argv[4]);
+            arg.sequence = client_thread_num;
 
             pthread_create(&threads[i], NULL, client_thread, (void *)&arg);
 //            pthread_create(&threads[i], NULL, client_thread, (void *)argv);

@@ -33,7 +33,7 @@ void * send_request(void * arg){
 
     int fd = *(info->sockfd);
 
-    pthread_mutex_t * send_lock = info->send_lock;
+//    pthread_mutex_t * send_lock = info->send_lock;
 
     int * send_byte = info->send_byte;
 
@@ -51,9 +51,9 @@ void * send_request(void * arg){
 			exit(1);
 		}
 
-        pthread_mutex_lock(send_lock);
+//        pthread_mutex_lock(send_lock);
         (*send_byte) += send_size;
-        pthread_mutex_unlock(send_lock);
+//        pthread_mutex_unlock(send_lock);
     }
 
 	printf("[CLIENT %d] request complete, send byte: %d\n", fd, *send_byte);
@@ -75,7 +75,7 @@ void response_process(int sock, short event, void * arg){
     struct send_info * info = response_process_arg->info;
 #endif
 
-    pthread_mutex_t * recv_lock = info->recv_lock;
+//    pthread_mutex_t * recv_lock = info->recv_lock;
     int * recv_byte = info->recv_byte;
     int * send_byte = info->send_byte;
 
@@ -94,9 +94,9 @@ void response_process(int sock, short event, void * arg){
     fflush(fp);
 #endif
 
-    pthread_mutex_lock(recv_lock);
+//    pthread_mutex_lock(recv_lock);
     (*recv_byte) += recv_size;
-    pthread_mutex_unlock(recv_lock);
+//    pthread_mutex_unlock(recv_lock);
     
 //    printf("[CLIENT %d] receive reply: %s\n", sock, recv_buf);
 
@@ -169,6 +169,17 @@ void send_request_thread(struct send_info * info){
 void * client_thread(void * argv){
     struct client_arg * server = (struct client_arg *)argv;
 
+    int core_sequence = server->sequence % 45;
+
+    cpu_set_t core_set;
+
+    CPU_ZERO(&core_set);
+    CPU_SET(core_sequence, &core_set);
+
+    if (pthread_setaffinity_np(pthread_self(), sizeof(core_set), &core_set) == -1){
+        printf("warning: could not set CPU affinity, continuing...\n");
+    }
+
     buf_size = server->buf_size;
     
     int send_byte, recv_byte;
@@ -188,9 +199,9 @@ void * client_thread(void * argv){
 
     struct send_info * info = (struct send_info *)malloc(SEND_INFO_SIZE);
     info->sockfd = &sockfd;
-    info->send_lock = &send_lock;
+//    info->send_lock = &send_lock;
     info->send_byte = &send_byte;
-    info->recv_lock = &recv_lock;
+//    info->recv_lock = &recv_lock;
     info->recv_byte = &recv_byte;
 
     receive_response_thread(info);
