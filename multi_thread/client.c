@@ -102,9 +102,8 @@ void response_process(int sock, short event, void * arg){
 
     if((*recv_byte) == (*send_byte)){
         printf("[CLIENT %d] receive reply complete, close connection\n", sock);
-            
+
         work_done_flag = 1;
-    }
 
         event_del(read_ev);
 #ifdef RECEIVE_DEBUG
@@ -166,6 +165,12 @@ void * client_thread(void * argv){
     
     int send_byte, recv_byte;
     send_byte = recv_byte = 0;
+
+    pthread_mutex_t send_lock, recv_lock;
+    pthread_mutex_init(&send_lock, NULL);
+    pthread_mutex_init(&recv_lock, NULL);
+    
+    pthread_mutex_init(&work_done_lock, NULL);
 
     int sockfd = connect_server(*(server->ip_addr), server->port);
     if(sockfd == -1){
