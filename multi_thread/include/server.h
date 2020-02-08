@@ -27,6 +27,7 @@ struct sock_ev_read {
 struct sock_ev_write {
     struct event * write_ev;
     char * buff;
+    int buff_len;
     int * byte_sent;
 };
 
