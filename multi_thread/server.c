@@ -190,7 +190,7 @@ void request_process_cb(int fd, short events, void * arg){
     }
 
     msg[len] = '\0';
-
+#if 0
     struct event * write_ev = (struct event *)malloc(sizeof(struct event));
 
     struct sock_ev_write * write_arg = (struct sock_ev_write *)malloc(sizeof(struct sock_ev_write));
@@ -206,6 +206,15 @@ void request_process_cb(int fd, short events, void * arg){
     event_add(write_ev, NULL);
 
     (*(read_arg->request_cnt))++;
+#endif
+
+    char * reply_msg = (char *)malloc(len + 1);
+    
+    strcpy(reply_msg, msg);
+
+    int send_byte_cnt = write(fd, reply_msg, strlen(reply_msg));
+
+    *(write_arg->byte_sent) += send_byte_cnt;
 
 #ifdef __EVAL_CB__
     gettimeofday(&end, NULL);
