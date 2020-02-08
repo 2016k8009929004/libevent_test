@@ -208,13 +208,15 @@ void request_process_cb(int fd, short events, void * arg){
     (*(read_arg->request_cnt))++;
 #endif
 
+    (*(read_arg->request_cnt))++;
+
     char * reply_msg = (char *)malloc(len + 1);
-    
+
     strcpy(reply_msg, msg);
 
     int send_byte_cnt = write(fd, reply_msg, strlen(reply_msg));
 
-    *(write_arg->byte_sent) += send_byte_cnt;
+    *(read_arg->byte_sent) += send_byte_cnt;
 
 #ifdef __EVAL_CB__
     gettimeofday(&end, NULL);
