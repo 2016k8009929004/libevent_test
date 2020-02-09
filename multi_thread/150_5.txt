@@ -1,0 +1,305 @@
+------------------------------------------------------------
+Client connecting to 172.18.13.15, TCP port 12345
+TCP window size: 45.0 KByte (default)
+------------------------------------------------------------
+[149] local 172.18.13.14 port 47272 connected with 172.18.13.15 port 12345
+[  4] local 172.18.13.14 port 46980 connected with 172.18.13.15 port 12345
+[  5] local 172.18.13.14 port 46982 connected with 172.18.13.15 port 12345
+[ 12] local 172.18.13.14 port 46984 connected with 172.18.13.15 port 12345
+[ 10] local 172.18.13.14 port 46994 connected with 172.18.13.15 port 12345
+[ 11] local 172.18.13.14 port 46990 connected with 172.18.13.15 port 12345
+[  8] local 172.18.13.14 port 46992 connected with 172.18.13.15 port 12345
+[ 13] local 172.18.13.14 port 46996 connected with 172.18.13.15 port 12345
+[  7] local 172.18.13.14 port 46988 connected with 172.18.13.15 port 12345
+[  9] local 172.18.13.14 port 46986 connected with 172.18.13.15 port 12345
+[ 21] local 172.18.13.14 port 46998 connected with 172.18.13.15 port 12345
+[ 14] local 172.18.13.14 port 47000 connected with 172.18.13.15 port 12345
+[ 22] local 172.18.13.14 port 47002 connected with 172.18.13.15 port 12345
+[ 24] local 172.18.13.14 port 47006 connected with 172.18.13.15 port 12345
+[ 20] local 172.18.13.14 port 47004 connected with 172.18.13.15 port 12345
+[ 16] local 172.18.13.14 port 47008 connected with 172.18.13.15 port 12345
+[ 28] local 172.18.13.14 port 47010 connected with 172.18.13.15 port 12345
+[ 17] local 172.18.13.14 port 47012 connected with 172.18.13.15 port 12345
+[ 19] local 172.18.13.14 port 47014 connected with 172.18.13.15 port 12345
+[ 27] local 172.18.13.14 port 47016 connected with 172.18.13.15 port 12345
+[ 31] local 172.18.13.14 port 47018 connected with 172.18.13.15 port 12345
+[ 30] local 172.18.13.14 port 47020 connected with 172.18.13.15 port 12345
+[ 15] local 172.18.13.14 port 47022 connected with 172.18.13.15 port 12345
+[ 23] local 172.18.13.14 port 47028 connected with 172.18.13.15 port 12345
+[ 38] local 172.18.13.14 port 47024 connected with 172.18.13.15 port 12345
+[ 33] local 172.18.13.14 port 47030 connected with 172.18.13.15 port 12345
+[ 18] local 172.18.13.14 port 47026 connected with 172.18.13.15 port 12345
+[ 29] local 172.18.13.14 port 47032 connected with 172.18.13.15 port 12345
+[ 26] local 172.18.13.14 port 47034 connected with 172.18.13.15 port 12345
+[ 25] local 172.18.13.14 port 47036 connected with 172.18.13.15 port 12345
+[ 34] local 172.18.13.14 port 47038 connected with 172.18.13.15 port 12345
+[ 51] local 172.18.13.14 port 47040 connected with 172.18.13.15 port 12345
+[ 39] local 172.18.13.14 port 47044 connected with 172.18.13.15 port 12345
+[ 35] local 172.18.13.14 port 47042 connected with 172.18.13.15 port 12345
+[ 36] local 172.18.13.14 port 47048 connected with 172.18.13.15 port 12345
+[ 32] local 172.18.13.14 port 47050 connected with 172.18.13.15 port 12345
+[ 45] local 172.18.13.14 port 47046 connected with 172.18.13.15 port 12345
+[ 41] local 172.18.13.14 port 47056 connected with 172.18.13.15 port 12345
+[ 49] local 172.18.13.14 port 47054 connected with 172.18.13.15 port 12345
+[ 47] local 172.18.13.14 port 47052 connected with 172.18.13.15 port 12345
+[ 40] local 172.18.13.14 port 47058 connected with 172.18.13.15 port 12345
+[ 50] local 172.18.13.14 port 47060 connected with 172.18.13.15 port 12345
+[ 42] local 172.18.13.14 port 47064 connected with 172.18.13.15 port 12345
+[ 52] local 172.18.13.14 port 47068 connected with 172.18.13.15 port 12345
+[ 48] local 172.18.13.14 port 47066 connected with 172.18.13.15 port 12345
+[ 37] local 172.18.13.14 port 47062 connected with 172.18.13.15 port 12345
+[ 54] local 172.18.13.14 port 47072 connected with 172.18.13.15 port 12345
+[ 53] local 172.18.13.14 port 47070 connected with 172.18.13.15 port 12345
+[ 55] local 172.18.13.14 port 47074 connected with 172.18.13.15 port 12345
+[ 56] local 172.18.13.14 port 47076 connected with 172.18.13.15 port 12345
+[ 44] local 172.18.13.14 port 47080 connected with 172.18.13.15 port 12345
+[ 59] local 172.18.13.14 port 47078 connected with 172.18.13.15 port 12345
+[ 46] local 172.18.13.14 port 47082 connected with 172.18.13.15 port 12345
+[ 66] local 172.18.13.14 port 47084 connected with 172.18.13.15 port 12345
+[ 64] local 172.18.13.14 port 47086 connected with 172.18.13.15 port 12345
+[ 63] local 172.18.13.14 port 47088 connected with 172.18.13.15 port 12345
+[ 67] local 172.18.13.14 port 47090 connected with 172.18.13.15 port 12345
+[ 57] local 172.18.13.14 port 47092 connected with 172.18.13.15 port 12345
+[ 60] local 172.18.13.14 port 47094 connected with 172.18.13.15 port 12345
+[ 61] local 172.18.13.14 port 47096 connected with 172.18.13.15 port 12345
+[ 69] local 172.18.13.14 port 47098 connected with 172.18.13.15 port 12345
+[ 72] local 172.18.13.14 port 47100 connected with 172.18.13.15 port 12345
+[ 70] local 172.18.13.14 port 47102 connected with 172.18.13.15 port 12345
+[ 73] local 172.18.13.14 port 47104 connected with 172.18.13.15 port 12345
+[ 75] local 172.18.13.14 port 47106 connected with 172.18.13.15 port 12345
+[ 76] local 172.18.13.14 port 47108 connected with 172.18.13.15 port 12345
+[ 65] local 172.18.13.14 port 47110 connected with 172.18.13.15 port 12345
+[ 71] local 172.18.13.14 port 47112 connected with 172.18.13.15 port 12345
+[ 43] local 172.18.13.14 port 47114 connected with 172.18.13.15 port 12345
+[ 78] local 172.18.13.14 port 47116 connected with 172.18.13.15 port 12345
+[ 68] local 172.18.13.14 port 47120 connected with 172.18.13.15 port 12345
+[ 58] local 172.18.13.14 port 47118 connected with 172.18.13.15 port 12345
+[ 81] local 172.18.13.14 port 47122 connected with 172.18.13.15 port 12345
+[ 82] local 172.18.13.14 port 47124 connected with 172.18.13.15 port 12345
+[ 83] local 172.18.13.14 port 47126 connected with 172.18.13.15 port 12345
+[ 62] local 172.18.13.14 port 47128 connected with 172.18.13.15 port 12345
+[ 84] local 172.18.13.14 port 47130 connected with 172.18.13.15 port 12345
+[ 85] local 172.18.13.14 port 47134 connected with 172.18.13.15 port 12345
+[ 87] local 172.18.13.14 port 47136 connected with 172.18.13.15 port 12345
+[ 88] local 172.18.13.14 port 47138 connected with 172.18.13.15 port 12345
+[ 80] local 172.18.13.14 port 47132 connected with 172.18.13.15 port 12345
+[ 89] local 172.18.13.14 port 47140 connected with 172.18.13.15 port 12345
+[ 86] local 172.18.13.14 port 47146 connected with 172.18.13.15 port 12345
+[ 79] local 172.18.13.14 port 47144 connected with 172.18.13.15 port 12345
+[ 95] local 172.18.13.14 port 47154 connected with 172.18.13.15 port 12345
+[ 91] local 172.18.13.14 port 47162 connected with 172.18.13.15 port 12345
+[ 92] local 172.18.13.14 port 47148 connected with 172.18.13.15 port 12345
+[ 98] local 172.18.13.14 port 47168 connected with 172.18.13.15 port 12345
+[ 97] local 172.18.13.14 port 47160 connected with 172.18.13.15 port 12345
+[ 90] local 172.18.13.14 port 47156 connected with 172.18.13.15 port 12345
+[ 77] local 172.18.13.14 port 47142 connected with 172.18.13.15 port 12345
+[100] local 172.18.13.14 port 47164 connected with 172.18.13.15 port 12345
+[122] local 172.18.13.14 port 47172 connected with 172.18.13.15 port 12345
+[ 74] local 172.18.13.14 port 47152 connected with 172.18.13.15 port 12345
+[ 94] local 172.18.13.14 port 47158 connected with 172.18.13.15 port 12345
+[ 93] local 172.18.13.14 port 47150 connected with 172.18.13.15 port 12345
+[120] local 172.18.13.14 port 47170 connected with 172.18.13.15 port 12345
+[104] local 172.18.13.14 port 47166 connected with 172.18.13.15 port 12345
+[102] local 172.18.13.14 port 47176 connected with 172.18.13.15 port 12345
+[101] local 172.18.13.14 port 47174 connected with 172.18.13.15 port 12345
+[109] local 172.18.13.14 port 47180 connected with 172.18.13.15 port 12345
+[105] local 172.18.13.14 port 47178 connected with 172.18.13.15 port 12345
+[103] local 172.18.13.14 port 47182 connected with 172.18.13.15 port 12345
+[ 99] local 172.18.13.14 port 47184 connected with 172.18.13.15 port 12345
+[110] local 172.18.13.14 port 47188 connected with 172.18.13.15 port 12345
+[107] local 172.18.13.14 port 47186 connected with 172.18.13.15 port 12345
+[ 96] local 172.18.13.14 port 47190 connected with 172.18.13.15 port 12345
+[108] local 172.18.13.14 port 47192 connected with 172.18.13.15 port 12345
+[111] local 172.18.13.14 port 47196 connected with 172.18.13.15 port 12345
+[106] local 172.18.13.14 port 47194 connected with 172.18.13.15 port 12345
+[113] local 172.18.13.14 port 47198 connected with 172.18.13.15 port 12345
+[115] local 172.18.13.14 port 47200 connected with 172.18.13.15 port 12345
+[112] local 172.18.13.14 port 47202 connected with 172.18.13.15 port 12345
+[123] local 172.18.13.14 port 47208 connected with 172.18.13.15 port 12345
+[118] local 172.18.13.14 port 47206 connected with 172.18.13.15 port 12345
+[114] local 172.18.13.14 port 47204 connected with 172.18.13.15 port 12345
+[119] local 172.18.13.14 port 47210 connected with 172.18.13.15 port 12345
+[121] local 172.18.13.14 port 47214 connected with 172.18.13.15 port 12345
+[117] local 172.18.13.14 port 47212 connected with 172.18.13.15 port 12345
+[126] local 172.18.13.14 port 47218 connected with 172.18.13.15 port 12345
+[116] local 172.18.13.14 port 47216 connected with 172.18.13.15 port 12345
+[124] local 172.18.13.14 port 47220 connected with 172.18.13.15 port 12345
+[125] local 172.18.13.14 port 47222 connected with 172.18.13.15 port 12345
+[133] local 172.18.13.14 port 47228 connected with 172.18.13.15 port 12345
+[129] local 172.18.13.14 port 47226 connected with 172.18.13.15 port 12345
+[128] local 172.18.13.14 port 47224 connected with 172.18.13.15 port 12345
+[136] local 172.18.13.14 port 47234 connected with 172.18.13.15 port 12345
+[132] local 172.18.13.14 port 47230 connected with 172.18.13.15 port 12345
+[135] local 172.18.13.14 port 47232 connected with 172.18.13.15 port 12345
+[130] local 172.18.13.14 port 47238 connected with 172.18.13.15 port 12345
+[127] local 172.18.13.14 port 47240 connected with 172.18.13.15 port 12345
+[138] local 172.18.13.14 port 47242 connected with 172.18.13.15 port 12345
+[131] local 172.18.13.14 port 47244 connected with 172.18.13.15 port 12345
+[141] local 172.18.13.14 port 47248 connected with 172.18.13.15 port 12345
+[134] local 172.18.13.14 port 47246 connected with 172.18.13.15 port 12345
+[143] local 172.18.13.14 port 47250 connected with 172.18.13.15 port 12345
+[145] local 172.18.13.14 port 47252 connected with 172.18.13.15 port 12345
+[139] local 172.18.13.14 port 47254 connected with 172.18.13.15 port 12345
+[144] local 172.18.13.14 port 47256 connected with 172.18.13.15 port 12345
+[137] local 172.18.13.14 port 47236 connected with 172.18.13.15 port 12345
+[147] local 172.18.13.14 port 47262 connected with 172.18.13.15 port 12345
+[142] local 172.18.13.14 port 47258 connected with 172.18.13.15 port 12345
+[140] local 172.18.13.14 port 47260 connected with 172.18.13.15 port 12345
+[146] local 172.18.13.14 port 47266 connected with 172.18.13.15 port 12345
+[152] local 172.18.13.14 port 47268 connected with 172.18.13.15 port 12345
+[155] local 172.18.13.14 port 47276 connected with 172.18.13.15 port 12345
+[151] local 172.18.13.14 port 47274 connected with 172.18.13.15 port 12345
+[150] local 172.18.13.14 port 47270 connected with 172.18.13.15 port 12345
+[148] local 172.18.13.14 port 47264 connected with 172.18.13.15 port 12345
+[  3] local 172.18.13.14 port 46978 connected with 172.18.13.15 port 12345
+[ ID] Interval       Transfer     Bandwidth
+[123]  0.0-10.0 sec  1.63 MBytes  1.36 Mbits/sec
+[ 11]  0.0-10.1 sec   883 KBytes   714 Kbits/sec
+[ 31]  0.0-10.1 sec   874 KBytes   707 Kbits/sec
+[ 67]  0.0-10.1 sec  2.11 MBytes  1.75 Mbits/sec
+[155]  0.0-10.1 sec  2.20 MBytes  1.82 Mbits/sec
+[  9]  0.0-10.1 sec   805 KBytes   650 Kbits/sec
+[ 45]  0.0-10.2 sec   788 KBytes   636 Kbits/sec
+[ 42]  0.0-10.1 sec   788 KBytes   637 Kbits/sec
+[ 56]  0.0-10.2 sec  1.56 MBytes  1.29 Mbits/sec
+[ 35]  0.0-10.2 sec   765 KBytes   616 Kbits/sec
+[ 44]  0.0-10.2 sec   866 KBytes   697 Kbits/sec
+[ 59]  0.0-10.2 sec  1.32 MBytes  1.09 Mbits/sec
+[144]  0.0-10.2 sec  1.59 MBytes  1.31 Mbits/sec
+[ 40]  0.0-10.2 sec   739 KBytes   592 Kbits/sec
+[128]  0.0-10.2 sec   955 KBytes   765 Kbits/sec
+[ 16]  0.0-10.2 sec   685 KBytes   548 Kbits/sec
+[ 17]  0.0-10.3 sec   708 KBytes   565 Kbits/sec
+[ 73]  0.0-10.2 sec  1.25 MBytes  1.03 Mbits/sec
+[106]  0.0-10.2 sec   846 KBytes   676 Kbits/sec
+[117]  0.0-10.2 sec   619 KBytes   495 Kbits/sec
+[ 94]  0.0-10.3 sec  1.10 MBytes   900 Kbits/sec
+[ 99]  0.0-10.3 sec   750 KBytes   598 Kbits/sec
+[  5]  0.0-10.3 sec   692 KBytes   551 Kbits/sec
+[ 21]  0.0-10.3 sec   733 KBytes   582 Kbits/sec
+[ 57]  0.0-10.3 sec   815 KBytes   649 Kbits/sec
+[ 38]  0.0-10.4 sec   687 KBytes   543 Kbits/sec
+[ 23]  0.0-10.4 sec   686 KBytes   542 Kbits/sec
+[ 28]  0.0-10.4 sec   705 KBytes   556 Kbits/sec
+[ 64]  0.0-10.4 sec  1.88 MBytes  1.52 Mbits/sec
+[ 93]  0.0-10.4 sec   973 KBytes   767 Kbits/sec
+[109]  0.0-10.4 sec  1.72 MBytes  1.39 Mbits/sec
+[ 78]  0.0-10.4 sec  1.24 MBytes   999 Kbits/sec
+[118]  0.0-10.4 sec  1.39 MBytes  1.12 Mbits/sec
+[ 77]  0.0-10.5 sec  1.67 MBytes  1.34 Mbits/sec
+[113]  0.0-10.5 sec  1.59 MBytes  1.28 Mbits/sec
+[121]  0.0-10.5 sec  1.07 MBytes   859 Kbits/sec
+[136]  0.0-10.5 sec  1.80 MBytes  1.44 Mbits/sec
+[  4]  0.0-10.5 sec   697 KBytes   545 Kbits/sec
+[ 84]  0.0-10.5 sec  1.10 MBytes   876 Kbits/sec
+[ 85]  0.0-10.5 sec  1.13 MBytes   908 Kbits/sec
+[112]  0.0-10.5 sec  1.10 MBytes   883 Kbits/sec
+[114]  0.0-10.5 sec   825 KBytes   645 Kbits/sec
+[145]  0.0-10.5 sec  1.87 MBytes  1.49 Mbits/sec
+[146]  0.0-10.5 sec  1.67 MBytes  1.34 Mbits/sec
+[ 70]  0.0-10.6 sec  1022 KBytes   791 Kbits/sec
+[ 68]  0.0-10.5 sec  1.12 MBytes   889 Kbits/sec
+[ 83]  0.0-10.5 sec  1.10 MBytes   877 Kbits/sec
+[ 80]  0.0-10.5 sec  1.10 MBytes   876 Kbits/sec
+[ 89]  0.0-10.5 sec  1021 KBytes   793 Kbits/sec
+[ 74]  0.0-10.5 sec  1.19 MBytes   945 Kbits/sec
+[120]  0.0-10.5 sec  1.13 MBytes   900 Kbits/sec
+[101]  0.0-10.6 sec  1023 KBytes   791 Kbits/sec
+[103]  0.0-10.5 sec   909 KBytes   709 Kbits/sec
+[115]  0.0-10.6 sec   990 KBytes   768 Kbits/sec
+[132]  0.0-10.5 sec   964 KBytes   749 Kbits/sec
+[135]  0.0-10.6 sec  1.06 MBytes   842 Kbits/sec
+[127]  0.0-10.5 sec  1.17 MBytes   928 Kbits/sec
+[152]  0.0-10.6 sec   918 KBytes   713 Kbits/sec
+[148]  0.0-10.6 sec   883 KBytes   685 Kbits/sec
+[ 12]  0.0-10.8 sec   926 KBytes   702 Kbits/sec
+[ 10]  0.0-10.8 sec   682 KBytes   518 Kbits/sec
+[  8]  0.0-10.8 sec   810 KBytes   615 Kbits/sec
+[ 13]  0.0-10.8 sec   807 KBytes   612 Kbits/sec
+[  7]  0.0-10.8 sec   753 KBytes   571 Kbits/sec
+[ 14]  0.0-10.8 sec   800 KBytes   607 Kbits/sec
+[ 22]  0.0-10.8 sec  1.06 MBytes   823 Kbits/sec
+[ 24]  0.0-10.8 sec   854 KBytes   647 Kbits/sec
+[ 20]  0.0-10.8 sec   959 KBytes   728 Kbits/sec
+[ 19]  0.0-10.8 sec   715 KBytes   542 Kbits/sec
+[ 27]  0.0-10.8 sec   757 KBytes   574 Kbits/sec
+[ 30]  0.0-10.8 sec   758 KBytes   575 Kbits/sec
+[ 15]  0.0-10.8 sec   904 KBytes   686 Kbits/sec
+[ 33]  0.0-10.8 sec   618 KBytes   469 Kbits/sec
+[ 18]  0.0-10.8 sec   889 KBytes   674 Kbits/sec
+[ 29]  0.0-10.8 sec   763 KBytes   577 Kbits/sec
+[ 26]  0.0-10.8 sec   924 KBytes   701 Kbits/sec
+[ 25]  0.0-10.8 sec   810 KBytes   614 Kbits/sec
+[ 34]  0.0-10.8 sec   926 KBytes   702 Kbits/sec
+[ 39]  0.0-10.8 sec   775 KBytes   587 Kbits/sec
+[ 36]  0.0-10.8 sec   966 KBytes   733 Kbits/sec
+[ 32]  0.0-10.8 sec   793 KBytes   601 Kbits/sec
+[ 41]  0.0-10.8 sec   814 KBytes   618 Kbits/sec
+[ 49]  0.0-10.8 sec  1.28 MBytes   991 Kbits/sec
+[ 47]  0.0-10.8 sec   883 KBytes   670 Kbits/sec
+[ 50]  0.0-10.8 sec   887 KBytes   673 Kbits/sec
+[ 52]  0.0-10.8 sec   956 KBytes   725 Kbits/sec
+[ 48]  0.0-10.8 sec   827 KBytes   627 Kbits/sec
+[ 37]  0.0-10.8 sec  1.38 MBytes  1.07 Mbits/sec
+[ 53]  0.0-10.8 sec   967 KBytes   733 Kbits/sec
+[ 55]  0.0-10.8 sec   790 KBytes   598 Kbits/sec
+[ 66]  0.0-10.8 sec   839 KBytes   636 Kbits/sec
+[ 60]  0.0-10.8 sec   930 KBytes   704 Kbits/sec
+[ 61]  0.0-10.8 sec   894 KBytes   678 Kbits/sec
+[ 69]  0.0-10.8 sec   920 KBytes   697 Kbits/sec
+[ 72]  0.0-10.8 sec   964 KBytes   730 Kbits/sec
+[ 75]  0.0-10.8 sec   972 KBytes   737 Kbits/sec
+[ 76]  0.0-10.8 sec  1.07 MBytes   831 Kbits/sec
+[ 71]  0.0-10.8 sec  1.14 MBytes   886 Kbits/sec
+[ 43]  0.0-10.8 sec  1.27 MBytes   983 Kbits/sec
+[ 58]  0.0-10.8 sec  1.02 MBytes   790 Kbits/sec
+[ 81]  0.0-10.8 sec  1.28 MBytes   995 Kbits/sec
+[ 82]  0.0-10.8 sec   958 KBytes   725 Kbits/sec
+[ 88]  0.0-10.8 sec  1.00 MBytes   778 Kbits/sec
+[ 79]  0.0-10.8 sec   870 KBytes   660 Kbits/sec
+[ 98]  0.0-10.8 sec   931 KBytes   704 Kbits/sec
+[ 97]  0.0-10.8 sec   883 KBytes   670 Kbits/sec
+[ 90]  0.0-10.8 sec  1.15 MBytes   891 Kbits/sec
+[100]  0.0-10.8 sec  2.03 MBytes  1.58 Mbits/sec
+[122]  0.0-10.8 sec  1.01 MBytes   780 Kbits/sec
+[104]  0.0-10.8 sec  1.49 MBytes  1.15 Mbits/sec
+[102]  0.0-10.8 sec  1.08 MBytes   834 Kbits/sec
+[105]  0.0-10.8 sec   835 KBytes   634 Kbits/sec
+[110]  0.0-10.8 sec  1.02 MBytes   793 Kbits/sec
+[108]  0.0-10.8 sec   908 KBytes   687 Kbits/sec
+[111]  0.0-10.8 sec  1.00 MBytes   777 Kbits/sec
+[119]  0.0-10.8 sec  1.75 MBytes  1.36 Mbits/sec
+[116]  0.0-10.8 sec   996 KBytes   753 Kbits/sec
+[124]  0.0-10.8 sec  1.04 MBytes   806 Kbits/sec
+[125]  0.0-10.8 sec   985 KBytes   747 Kbits/sec
+[133]  0.0-10.8 sec   935 KBytes   707 Kbits/sec
+[129]  0.0-10.8 sec  1.04 MBytes   807 Kbits/sec
+[130]  0.0-10.8 sec  1.59 MBytes  1.23 Mbits/sec
+[138]  0.0-10.8 sec  1.22 MBytes   943 Kbits/sec
+[131]  0.0-10.8 sec  1.04 MBytes   806 Kbits/sec
+[141]  0.0-10.8 sec   979 KBytes   742 Kbits/sec
+[134]  0.0-10.8 sec   800 KBytes   605 Kbits/sec
+[143]  0.0-10.8 sec   997 KBytes   754 Kbits/sec
+[137]  0.0-10.8 sec  1.28 MBytes   994 Kbits/sec
+[147]  0.0-10.8 sec  1.90 MBytes  1.47 Mbits/sec
+[142]  0.0-10.8 sec  1.00 MBytes   777 Kbits/sec
+[140]  0.0-10.8 sec   898 KBytes   679 Kbits/sec
+[151]  0.0-10.8 sec  1.87 MBytes  1.45 Mbits/sec
+[  3]  0.0-10.8 sec   859 KBytes   652 Kbits/sec
+[ 51]  0.0-10.8 sec   822 KBytes   621 Kbits/sec
+[ 54]  0.0-10.8 sec   862 KBytes   652 Kbits/sec
+[ 46]  0.0-10.9 sec  1.17 MBytes   904 Kbits/sec
+[ 63]  0.0-10.8 sec   890 KBytes   672 Kbits/sec
+[ 65]  0.0-10.8 sec  1.31 MBytes  1.01 Mbits/sec
+[ 62]  0.0-10.9 sec  1.24 MBytes   959 Kbits/sec
+[ 87]  0.0-10.9 sec  1.10 MBytes   847 Kbits/sec
+[ 86]  0.0-10.9 sec  1.50 MBytes  1.16 Mbits/sec
+[ 95]  0.0-10.9 sec  1.02 MBytes   785 Kbits/sec
+[ 91]  0.0-10.9 sec  1.40 MBytes  1.08 Mbits/sec
+[ 92]  0.0-10.9 sec  1.11 MBytes   856 Kbits/sec
+[107]  0.0-10.9 sec   836 KBytes   630 Kbits/sec
+[ 96]  0.0-10.9 sec  1.47 MBytes  1.14 Mbits/sec
+[126]  0.0-10.9 sec  1.61 MBytes  1.24 Mbits/sec
+[139]  0.0-10.8 sec  1.06 MBytes   820 Kbits/sec
+[150]  0.0-10.9 sec   859 KBytes   647 Kbits/sec
+[149]  0.0-10.9 sec   703 KBytes   529 Kbits/sec
