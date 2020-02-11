@@ -59,7 +59,7 @@ void * send_request(void * arg){
 
         (*send_byte) += send_size;
 
-        int recv_size = read(fd, recv_buf, buf_size);
+        int recv_size = recv(fd, recv_buf, buf_size, 0);
 
         if(recv_size == 0){
             printf("[CLIENT] close connection\n");
