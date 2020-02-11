@@ -105,10 +105,12 @@ void * send_request(void * arg){
 
             if((*recv_byte) == (*send_byte)){
                 printf("[CLIENT %d] receive reply complete, close connection\n", fd);
-                return;
+                break;
             }
         }
     }
+
+    return;
 /*
     while(1){
         recv_size = read(fd, recv_buf, buf_size);
