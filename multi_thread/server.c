@@ -220,7 +220,7 @@ void request_process_cb(int fd, short events, void * arg){
         exit(1);
     }
 
-    *(read_arg->byte_sent) += send_byte_cnt;
+    *(read_arg->byte_sent) += send_byte;
 
     printf("[SERVER] send byte: %d\n", *(read_arg->byte_sent));
 
