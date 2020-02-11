@@ -189,6 +189,8 @@ void request_process_cb(int fd, short events, void * arg){
         return;
     }
 
+    printf("[SERVER] recv len: %d\n", len);
+
     msg[len] = '\0';
 #if 0
     struct event * write_ev = (struct event *)malloc(sizeof(struct event));
