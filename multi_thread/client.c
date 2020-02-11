@@ -49,39 +49,42 @@ void * send_request(void * arg){
     FILE * recv_fp = fopen("server-ouput.dat", "wb");
 #endif
 
-    while(!feof(send_fp)){
-        send_size = fread(send_buf, 1, buf_size, send_fp);
+    int i;
+    for(i = 0;i < 1024;i++){
+        while(!feof(send_fp)){
+            send_size = fread(send_buf, 1, buf_size, send_fp);
 
-        if(write(fd, send_buf, send_size) < 0){
-			perror("[CLIENT] send failed");
-			exit(1);
-		}
+            if(write(fd, send_buf, send_size) < 0){
+	    		perror("[CLIENT] send failed");
+		    	exit(1);
+    		}
 
-        (*send_byte) += send_size;
+            (*send_byte) += send_size;
 
-        int temp = 0;
-        while(temp < send_size){
-            recv_size = read(fd, recv_buf, buf_size);
+            int temp = 0;
+            while(temp < send_size){
+                recv_size = read(fd, recv_buf, buf_size);
 
-            if(recv_size == 0){
-                printf("[CLIENT] close connection\n");
-                close(fd);
-            }
+                if(recv_size == 0){
+                    printf("[CLIENT] close connection\n");
+                    close(fd);
+                }
 
 #ifdef RECEIVE_DEBUG
-            fwrite(recv_buf, recv_size, 1, recv_fp);
-            fflush(recv_fp);
+                fwrite(recv_buf, recv_size, 1, recv_fp);
+                fflush(recv_fp);
 #endif
 
-            temp += recv_size;
-//            printf("[CLIENT] recv byte: %d, send byte: %d\n", *recv_byte, *send_byte);
+                temp += recv_size;
+//                printf("[CLIENT] recv byte: %d, send byte: %d\n", *recv_byte, *send_byte);
+            }
+            (*recv_byte) += send_size;
         }
-        (*recv_byte) += send_size;
+
+    	printf("[CLIENT %d] request complete, send byte: %d\n", fd, *send_byte);
+
+        fclose(send_fp);
     }
-
-	printf("[CLIENT %d] request complete, send byte: %d\n", fd, *send_byte);
-
-    fclose(send_fp);
 /*
     while(1){
         recv_size = read(fd, recv_buf, buf_size);
