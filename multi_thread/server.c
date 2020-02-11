@@ -224,7 +224,7 @@ void request_process_cb(int fd, short events, void * arg){
         if(send_byte < 0){
             if(errno == EAGAIN){
                 printf("[SERVER] EAGAIN error\n");
-                usleep(500000);
+                sleep(1);
                 continue;
                 printf("[SERVER] continue\n");
             }
