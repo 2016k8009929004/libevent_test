@@ -36,6 +36,7 @@ void * send_request(void * arg){
 //    pthread_mutex_t * send_lock = info->send_lock;
 
     int * send_byte = info->send_byte;
+    int * recv_byte = info->recv_byte;
 
     char send_buf[buf_size];
     char recv_buf[buf_size + 1];
@@ -64,7 +65,7 @@ void * send_request(void * arg){
     fclose(send_fp);
 
     do{
-        int recv_size = recv(fd, recv_buf, buf_size, 0);
+        recv_size = recv(fd, recv_buf, buf_size, 0);
 
         if(recv_size == 0){
             printf("[CLIENT] close connection\n");
