@@ -214,11 +214,14 @@ void request_process_cb(int fd, short events, void * arg){
 
     strcpy(reply_msg, msg);
 
-    int send_byte = write(fd, reply_msg, strlen(reply_msg));
+    int send_byte;
+
+reply:
+    send_byte = write(fd, reply_msg, strlen(reply_msg));
     if(send_byte < 0){
         if(errno == EAGAIN){
-            printf("wait\n");
-            exit(1);
+            usleep(500000);
+            goto reply;
         }
         perror("[SERVER] send failed");
         exit(1);
