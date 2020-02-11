@@ -2,15 +2,18 @@
 
 extern int client_thread_num;
 
+#define PTHREAD_TEST
+//#define FORK_TEST
+
 //extern pthread_mutex_t fin_client_thread_lock;
 
 int main(int argc, char * argv[]){
     if(argc == 5){
-
+#ifdef PTHREAD_TEST
 //        client_thread(argc, argv);
 
         client_thread_num = atoi(argv[1]);
-/*
+
         pthread_mutex_init(&fin_client_thread_lock, NULL);
 
 //        thread_num = atoi(argv[1]);
@@ -33,7 +36,10 @@ int main(int argc, char * argv[]){
         for(i = 0;i < client_thread_num;i++){
             pthread_join(threads[i], NULL);
         }
-*/
+
+#endif
+
+#ifdef FORK_TEST
         pid_t pid;
         int i;
         for(i = 0;i < client_thread_num;i++){
@@ -62,6 +68,7 @@ int main(int argc, char * argv[]){
 
             client_thread(&arg);
         }
+#endif
     }else{
 //        server_thread(argc, argv);
 
@@ -77,7 +84,6 @@ int main(int argc, char * argv[]){
         for(i = 0;i < thread_num;i++){
             pthread_join(threads[i], NULL);
         }
-
 #if 0
         int cpu_num = sysconf(_SC_NPROCESSORS_CONF);
         printf("[SERVER] server has %d processor(s)\n", cpu_num);
