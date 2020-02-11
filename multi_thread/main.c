@@ -14,7 +14,7 @@ int main(int argc, char * argv[]){
 
         client_thread_num = atoi(argv[1]);
 
-        pthread_mutex_init(&fin_client_thread_lock, NULL);
+//        pthread_mutex_init(&fin_client_thread_lock, NULL);
 
 //        thread_num = atoi(argv[1]);
 
@@ -27,8 +27,9 @@ int main(int argc, char * argv[]){
             arg.ip_addr = &argv[2];
             arg.port = atoi(argv[3]);
             arg.buf_size = atoi(argv[4]);
+#ifdef __BIND_CORE__
             arg.sequence = i;
-
+#endif
             pthread_create(&threads[i], NULL, client_thread, (void *)&arg);
 //            pthread_create(&threads[i], NULL, client_thread, (void *)argv);
         }
