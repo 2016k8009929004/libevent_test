@@ -90,7 +90,7 @@ void * send_request(void * arg){
 
         gettimeofday(&end, NULL);
         
-        if(start.tv_sec - end.tv_sec > 10){
+        if(end.tv_sec - start.tv_sec > 10){
             printf("[CLIENT] request complete\n");
             return;
         }
