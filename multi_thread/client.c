@@ -57,15 +57,15 @@ void * send_request(void * arg){
 			exit(1);
 		}
 
-//        pthread_mutex_lock(send_lock);
         (*send_byte) += send_size;
-//        pthread_mutex_unlock(send_lock);
 
         int recv_size = read(fd, recv_buf, buf_size);
 
         if(recv_size == 0){
             printf("[CLIENT] close connection\n");
             close(fd);
+        }else{
+            printf("[CLIENT] recv size: %d\n");
         }
 
 #ifdef RECEIVE_DEBUG
