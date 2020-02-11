@@ -159,6 +159,7 @@ void send_request_thread(struct send_info * info){
 }
 
 void * client_thread(void * argv){
+#if 0
     struct client_arg * server = (struct client_arg *)argv;
 
     buf_size = server->buf_size;
@@ -194,5 +195,31 @@ void * client_thread(void * argv){
     free(info);
 
     return NULL;
+#endif
 
+    struct client_arg * server = (struct client_arg *)argv;
+
+    buf_size = server->buf_size;
+    
+    int send_byte, recv_byte;
+    send_byte = recv_byte = 0;
+
+    int sockfd = connect_server(*(server->ip_addr), server->port);
+    if(sockfd == -1){
+        perror("[CLIENT] tcp connect error");
+        exit(1);
+    }
+
+    struct send_info * info = (struct send_info *)malloc(SEND_INFO_SIZE);
+    info->sockfd = &sockfd;
+    info->send_byte = &send_byte;
+    info->recv_byte = &recv_byte;
+
+    send_request(info);
+
+    while(!work_done_flag);
+
+    free(info);
+
+    return NULL;
 }
