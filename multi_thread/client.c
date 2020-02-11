@@ -64,7 +64,7 @@ void * send_request(void * arg){
 
     fclose(send_fp);
 
-    do{
+    while(1){
         recv_size = recv(fd, recv_buf, buf_size, 0);
 
         if(recv_size == 0){
@@ -85,8 +85,9 @@ void * send_request(void * arg){
 
         if((*recv_byte) == (*send_byte)){
             printf("[CLIENT %d] receive reply complete, close connection\n", fd);
+            return;
         }
-    }while(recv_size > 0);
+    }
 }
 
 void response_process(int sock, short event, void * arg){
