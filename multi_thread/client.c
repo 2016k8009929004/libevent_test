@@ -82,7 +82,7 @@ void * send_request(void * arg){
 */
         }
 
-    	printf("[CLIENT %d] request complete, send byte: %d\n", fd, *send_byte);
+//    	printf("[CLIENT %d] request complete, send byte: %d\n", fd, *send_byte);
 
         fclose(send_fp);
 
@@ -104,39 +104,14 @@ void * send_request(void * arg){
 //      printf("[CLIENT %d] receive reply: %s\n", sock, recv_buf);
 
             if((*recv_byte) == (*send_byte)){
-                printf("[CLIENT %d] receive reply complete, close connection\n", fd);
+//                printf("[CLIENT %d] receive reply complete, close connection\n", fd);
                 break;
             }
         }
     }
 
+    printf("[CLIENT] request complete\n");
     return;
-/*
-    while(1){
-        recv_size = read(fd, recv_buf, buf_size);
-
-        if(recv_size == 0){
-            printf("[CLIENT] close connection\n");
-            close(fd);
-        }else{
-            printf("[CLIENT] recv size: %d, recv byte: %d, send byte: %d\n", recv_size, *recv_byte, *send_byte);
-        }
-
-#ifdef RECEIVE_DEBUG
-        fwrite(recv_buf, recv_size, 1, recv_fp);
-        fflush(recv_fp);
-#endif
-
-        (*recv_byte) += recv_size;
-    
-//    printf("[CLIENT %d] receive reply: %s\n", sock, recv_buf);
-
-        if((*recv_byte) == (*send_byte)){
-            printf("[CLIENT %d] receive reply complete, close connection\n", fd);
-            return;
-        }
-    }
-*/
 }
 
 void response_process(int sock, short event, void * arg){
