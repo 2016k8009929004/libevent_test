@@ -243,7 +243,9 @@ void request_process_cb(int fd, short events, void * arg){
 
     sprintf(buff, "elapsed_time %ld\n", elapsed_time);
     
+    pthread_mutex_lock(&record_lock);
     fwrite(buff, strlen(buff), 1, fp);
+    pthread_mutex_unlock(&record_lock);
 
     fclose(fp);
 #endif
@@ -406,6 +408,10 @@ void * server_thread(void * arg){
     }
 
     printf("[server_thread] core: %d, pid: %d, tid: %ld, self: %ld\n", run_core, getpid(), (long int)syscall(__NR_gettid), pthread_self());
+#endif
+
+#ifdef __EVVAL__CB__
+    pthread_mutex_init(&record, NULL);
 #endif
 
     evutil_socket_t sock;

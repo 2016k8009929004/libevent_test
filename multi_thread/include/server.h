@@ -13,6 +13,10 @@ pthread_mutex_t record_lock;
 
 #define BUF_SIZE 4096
 
+#ifdef __EVAL_CB__
+pthread_mutex_t record_lock;
+#endif
+
 struct sock_ev_read {
     struct event_base * base;
     struct event * read_ev;
@@ -31,7 +35,6 @@ struct sock_ev_write {
     int * byte_sent;
 };
 
-//pthread_mutex_t connect_cnt_lock;
 int connect_cnt = 0;
 
 struct time_record {
