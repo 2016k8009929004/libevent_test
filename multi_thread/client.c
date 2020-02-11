@@ -44,6 +44,10 @@ void * send_request(void * arg){
 
 	int send_size, recv_size;
 
+    struct timeval start, end;
+
+    gettimeofday(&start, NULL);
+
     int i;
     for(i = 0;i < 1024;i++){
         FILE * send_fp = fopen("client-input.dat", "rb");
@@ -60,29 +64,7 @@ void * send_request(void * arg){
     		}
 
             (*send_byte) += send_size;
-/*
-            int temp = 0;
-            while(temp < send_size){
-                recv_size = read(fd, recv_buf, buf_size);
-
-                if(recv_size == 0){
-                    printf("[CLIENT] close connection\n");
-                    close(fd);
-                }
-
-#ifdef RECEIVE_DEBUG
-                fwrite(recv_buf, recv_size, 1, recv_fp);
-                fflush(recv_fp);
-#endif
-
-                temp += recv_size;
-//                printf("[CLIENT] recv byte: %d, send byte: %d\n", *recv_byte, *send_byte);
-            }
-            (*recv_byte) += send_size;
-*/
         }
-
-//    	printf("[CLIENT %d] request complete, send byte: %d\n", fd, *send_byte);
 
         fclose(send_fp);
 
@@ -100,18 +82,21 @@ void * send_request(void * arg){
 #endif
 
             (*recv_byte) += recv_size;
-    
-//      printf("[CLIENT %d] receive reply: %s\n", sock, recv_buf);
 
             if((*recv_byte) == (*send_byte)){
-//                printf("[CLIENT %d] receive reply complete, close connection\n", fd);
                 break;
             }
         }
+
+        gettimeofday(&end, NULL);
+        
+        if(end.tv_sec - start.tv_sec > 10){
+            printf("[CLIENT] request complete\n");
+            return;
+        }
     }
 
-    printf("[CLIENT] request complete\n");
-    return;
+    
 }
 
 void response_process(int sock, short event, void * arg){
