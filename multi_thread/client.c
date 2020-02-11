@@ -60,7 +60,7 @@ void * send_request(void * arg){
     		}
 
             (*send_byte) += send_size;
-
+/*
             int temp = 0;
             while(temp < send_size){
                 recv_size = read(fd, recv_buf, buf_size);
@@ -79,11 +79,35 @@ void * send_request(void * arg){
 //                printf("[CLIENT] recv byte: %d, send byte: %d\n", *recv_byte, *send_byte);
             }
             (*recv_byte) += send_size;
+*/
         }
 
     	printf("[CLIENT %d] request complete, send byte: %d\n", fd, *send_byte);
 
         fclose(send_fp);
+
+        while(1){
+            recv_size = read(fd, recv_buf, buf_size);
+
+            if(recv_size == 0){
+                printf("[CLIENT] close connection\n");
+                close(fd);
+            }
+
+#ifdef RECEIVE_DEBUG
+            fwrite(recv_buf, recv_size, 1, recv_fp);
+            fflush(recv_fp);
+#endif
+
+            (*recv_byte) += recv_size;
+    
+//      printf("[CLIENT %d] receive reply: %s\n", sock, recv_buf);
+
+            if((*recv_byte) == (*send_byte)){
+                printf("[CLIENT %d] receive reply complete, close connection\n", fd);
+                return;
+            }
+        }
     }
 /*
     while(1){
