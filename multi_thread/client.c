@@ -38,6 +38,8 @@ void * send_request(void * arg){
     int * send_byte = info->send_byte;
 
     char send_buf[buf_size];
+    char recv_buf[buf_size + 1];
+    memset(recv_buf, 0, sizeof(recv_buf));
 
 	int send_size, recv_size;
 
@@ -54,6 +56,26 @@ void * send_request(void * arg){
 //        pthread_mutex_lock(send_lock);
         (*send_byte) += send_size;
 //        pthread_mutex_unlock(send_lock);
+
+        int recv_size = read(sock, recv_buf, buf_size);
+
+        if(recv_size == 0){
+            printf("[CLIENT] close connection\n");
+            close(sock);
+        }
+
+#ifdef RECEIVE_DEBUG
+        fwrite(recv_buf, recv_size, 1, fp);
+        fflush(fp);
+#endif
+
+        (*recv_byte) += recv_size;
+    
+//    printf("[CLIENT %d] receive reply: %s\n", sock, recv_buf);
+
+        if((*recv_byte) == (*send_byte)){
+            printf("[CLIENT %d] receive reply complete, close connection\n", sock);
+        }
     }
 
 	printf("[CLIENT %d] request complete, send byte: %d\n", fd, *send_byte);
