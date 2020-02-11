@@ -66,9 +66,7 @@ void * send_request(void * arg){
             if(recv_size == 0){
                 printf("[CLIENT] close connection\n");
                 close(fd);
-            }/*else{
-                printf("[CLIENT] recv size: %d, recv byte: %d, send byte: %d\n", recv_size, *recv_byte, *send_byte);
-            }*/
+            }
 
 #ifdef RECEIVE_DEBUG
             fwrite(recv_buf, recv_size, 1, recv_fp);
@@ -76,10 +74,9 @@ void * send_request(void * arg){
 #endif
 
             temp += recv_size;
-            (*recv_byte) += recv_size;
-
-            printf("[CLIENT] recv byte: %d, send byte: %d\n", *recv_byte, *send_byte);
+//            printf("[CLIENT] recv byte: %d, send byte: %d\n", *recv_byte, *send_byte);
         }
+        (*recv_byte) += send_size;
     }
 
 	printf("[CLIENT %d] request complete, send byte: %d\n", fd, *send_byte);

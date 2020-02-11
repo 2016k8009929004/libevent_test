@@ -221,20 +221,11 @@ void request_process_cb(int fd, short events, void * arg){
     while(byte_left > 0){
         send_byte = write(fd, reply_msg, byte_left);
 
-        if(send_byte < 0){
-            if(errno == EAGAIN){
-                printf("[SERVER] EAGAIN error\n");
-                sleep(1);
-                continue;
-                printf("[SERVER] continue\n");
-            }
-        }
-
         byte_left -= send_byte;
         *(read_arg->byte_sent) += send_byte;
     }
 
-    printf("[SERVER] send byte: %d\n", *(read_arg->byte_sent));
+//    printf("[SERVER] send byte: %d\n", *(read_arg->byte_sent));
 
 #ifdef __EVAL_CB__
     gettimeofday(&end, NULL);
