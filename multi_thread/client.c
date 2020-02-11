@@ -36,6 +36,7 @@ void * send_request(void * arg){
 //    pthread_mutex_t * send_lock = info->send_lock;
 
     int * send_byte = info->send_byte;
+    int * recv_byte = info->recv_byte;
 
     char send_buf[buf_size];
     char recv_buf[buf_size + 1];
@@ -77,7 +78,7 @@ void * send_request(void * arg){
 //    printf("[CLIENT %d] receive reply: %s\n", sock, recv_buf);
 
         if((*recv_byte) == (*send_byte)){
-            printf("[CLIENT %d] receive reply complete, close connection\n", sock);
+            printf("[CLIENT %d] receive reply complete, close connection\n", fd);
         }
     }
 
