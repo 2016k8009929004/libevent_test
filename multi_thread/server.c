@@ -30,7 +30,7 @@ evutil_socket_t server_init(int port, int listen_num){
         return -1;
     }
 
-    evutil_make_socket_nonblocking(sock);
+//    evutil_make_socket_nonblocking(sock);
 
     return sock;
 }
