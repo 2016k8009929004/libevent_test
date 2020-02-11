@@ -71,7 +71,7 @@ void * send_request(void * arg){
             printf("[CLIENT] close connection\n");
             close(fd);
         }else{
-            printf("[CLIENT] recv size: %d\n", recv_size);
+            printf("[CLIENT] recv size: %d, recv byte: %d, send byte: %d\n", recv_size, *recv_byte, *send_byte);
         }
 
 #ifdef RECEIVE_DEBUG
