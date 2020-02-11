@@ -58,12 +58,28 @@ void * send_request(void * arg){
 		}
 
         (*send_byte) += send_size;
+
+        int temp = 0;
+        while(temp < send_size){
+            recv_size = recv(fd, recv_buf, buf_size, 0);
+
+            if(recv_size == 0){
+                printf("[CLIENT] close connection\n");
+                close(fd);
+            }
+
+            temp += recv_size;
+#ifdef RECEIVE_DEBUG
+            fwrite(recv_buf, recv_size, 1, recv_fp);
+            fflush(recv_fp);
+#endif
+        }
     }
 
 	printf("[CLIENT %d] request complete, send byte: %d\n", fd, *send_byte);
 
     fclose(send_fp);
-
+/*
     while(1){
         recv_size = recv(fd, recv_buf, buf_size, 0);
 
@@ -88,6 +104,7 @@ void * send_request(void * arg){
             return;
         }
     }
+*/
 }
 
 void response_process(int sock, short event, void * arg){
