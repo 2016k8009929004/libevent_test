@@ -44,13 +44,13 @@ void * send_request(void * arg){
 
 	int send_size, recv_size;
 
-    FILE * send_fp = fopen("client-input.dat", "rb");
-#ifdef RECEIVE_DEBUG
-    FILE * recv_fp = fopen("server-ouput.dat", "wb");
-#endif
-
     int i;
     for(i = 0;i < 1024;i++){
+        FILE * send_fp = fopen("client-input.dat", "rb");
+#ifdef RECEIVE_DEBUG
+        FILE * recv_fp = fopen("server-ouput.dat", "wb");
+#endif
+
         while(!feof(send_fp)){
             send_size = fread(send_buf, 1, buf_size, send_fp);
 
