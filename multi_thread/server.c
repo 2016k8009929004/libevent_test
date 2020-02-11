@@ -216,18 +216,23 @@ void request_process_cb(int fd, short events, void * arg){
 
     int send_byte;
 
-reply:
-    send_byte = write(fd, reply_msg, strlen(reply_msg));
-    if(send_byte < 0){
-        if(errno == EAGAIN){
-            usleep(500000);
-            goto reply;
-        }
-        perror("[SERVER] send failed");
-        exit(1);
-    }
+    int byte_left = strlen(reply_msg);
 
-    *(read_arg->byte_sent) += send_byte;
+    while(byte_left > 0){
+        send_byte = write(fd, reply_msg, byte_left);
+
+        if(send_byte < 0){
+            if(errno == EAGAIN){
+                printf("[SERVER] EAGAIN error\n");
+                usleep(500000);
+                continue;
+                printf("[SERVER] continue\n");
+            }
+        }
+
+        byte_left -= send_byte;
+        *(read_arg->byte_sent) += send_byte;
+    }
 
     printf("[SERVER] send byte: %d\n", *(read_arg->byte_sent));
 
