@@ -22,7 +22,7 @@ int connect_server(char * server_ip, int port){
         return -1;
     }
 
-//    evutil_make_socket_nonblocking(sockfd);
+    evutil_make_socket_nonblocking(sockfd);
 
     return sockfd;
 
