@@ -44,6 +44,9 @@ void * send_request(void * arg){
 	int send_size, recv_size;
 
     FILE * send_fp = fopen("client-input.dat", "rb");
+#ifdef RECEIVE_DEBUG
+    FILE * recv_fp = fopen("server-ouput.dat", "wb");
+#endif
 
     while(!feof(send_fp)){
         send_size = fread(send_buf, 1, buf_size, send_fp);
@@ -57,16 +60,16 @@ void * send_request(void * arg){
         (*send_byte) += send_size;
 //        pthread_mutex_unlock(send_lock);
 
-        int recv_size = read(sock, recv_buf, buf_size);
+        int recv_size = read(fd, recv_buf, buf_size);
 
         if(recv_size == 0){
             printf("[CLIENT] close connection\n");
-            close(sock);
+            close(fd);
         }
 
 #ifdef RECEIVE_DEBUG
-        fwrite(recv_buf, recv_size, 1, fp);
-        fflush(fp);
+        fwrite(recv_buf, recv_size, 1, recv_fp);
+        fflush(recv_fp);
 #endif
 
         (*recv_byte) += recv_size;
