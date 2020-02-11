@@ -245,7 +245,7 @@ void * client_thread(void * argv){
 
     send_request(info);
 
-    while(!work_done_flag);
+//    while(!work_done_flag);
 
     free(info);
 
