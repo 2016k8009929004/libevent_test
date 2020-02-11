@@ -218,6 +218,8 @@ void request_process_cb(int fd, short events, void * arg){
 
     *(read_arg->byte_sent) += send_byte_cnt;
 
+    printf("[SERVER] send byte: %d\n", *(read_arg->byte_sent));
+
 #ifdef __EVAL_CB__
     gettimeofday(&end, NULL);
 
