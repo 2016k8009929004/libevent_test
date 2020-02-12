@@ -55,13 +55,13 @@ void * send_request(void * arg){
         FILE * recv_fp = fopen("server-ouput.dat", "wb");
 #endif
 
+        FILE * fp = fopen("request.txt", "a+");
+        fseek(fp, 0, SEEK_END);
+
+        struct timeval start;
+        gettimeofday(&start, NULL);
+
         while(!feof(send_fp)){
-            FILE * fp = fopen("request.txt", "a+");
-            fseek(fp, 0, SEEK_END);
-
-            struct timeval start, end;
-            gettimeofday(&start, NULL);
-
             send_size = fread(send_buf, 1, buf_size, send_fp);
 
             if(write(fd, send_buf, send_size) < 0){
@@ -73,6 +73,9 @@ void * send_request(void * arg){
         }
 
         fclose(send_fp);
+
+        struct timeval send_end;
+        gettimeofday(&send_end, NULL);
 
         while(1){
             recv_size = read(fd, recv_buf, buf_size);
@@ -89,24 +92,36 @@ void * send_request(void * arg){
 
             (*recv_byte) += recv_size;
 
-            gettimeofday(&end, NULL);
-
-            long elapsed_time = end.tv_usec - accept_time.tv_usec;
-
-            char buff[1024];
-
-            sprintf(buff, "request_time %ld\n", elapsed_time);
-    
-            fwrite(buff, strlen(buff), 1, fp);
-
-            fclose(fp);
-
             if((*recv_byte) == (*send_byte)){
                 break;
             }
         }
 
         gettimeofday(&end, NULL);
+
+        long send_time, recv_time;
+    
+        if(start.tv_usec > send_end.tv_usec){
+            send_end.tv_usec += 1000000;
+            send_end.tv_sec -= 1;
+        }
+
+        send_time = send_end.tv_usec - start.tv_usec;
+    
+        if(send_end.tv_usec > end.tv_usec){
+            end.tv_usec += 1000000;
+            end.tv_sec -= 1;
+        }
+
+        recv_time = end.tv_usec - send_end.tv_usec;
+
+        char buff[1024];
+
+        sprintf(buff, "send_time %ld recv_time %ld\n", send_time, recv_time);
+    
+        fwrite(buff, strlen(buff), 1, fp);
+
+        fclose(fp);
         
         if(end.tv_sec - start.tv_sec > 10){
             printf("[CLIENT] request complete\n");
