@@ -209,6 +209,7 @@ void request_process_cb(int fd, short events, void * arg){
 #endif
 
     (*(read_arg->request_cnt))++;
+    printf("[SERVER] recv len: %d, request cnt: %d\n", len, *(read_arg->request_cnt));
 
     char * reply_msg = (char *)malloc(len + 1);
 
@@ -225,7 +226,7 @@ void request_process_cb(int fd, short events, void * arg){
         *(read_arg->byte_sent) += send_byte;
     }
 
-//    printf("[SERVER] send byte: %d\n", *(read_arg->byte_sent));
+    printf("[SERVER] send byte: %d\n", *(read_arg->byte_sent));
 
 #ifdef __EVAL_CB__
     gettimeofday(&end, NULL);
