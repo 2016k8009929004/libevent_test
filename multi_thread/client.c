@@ -48,81 +48,77 @@ void * send_request(void * arg){
 
     gettimeofday(&time1, NULL);
 
-    int i;
-    for(i = 0;i < 1024;i++){
-        FILE * send_fp = fopen("client-input.dat", "rb");
+    FILE * send_fp = fopen("client-input.dat", "rb");
 #ifdef RECEIVE_DEBUG
-        FILE * recv_fp = fopen("server-ouput.dat", "wb");
+    FILE * recv_fp = fopen("server-ouput.dat", "wb");
 #endif
 
-        FILE * fp = fopen("request.txt", "a+");
-        fseek(fp, 0, SEEK_END);
+    FILE * fp = fopen("request.txt", "a+");
+    fseek(fp, 0, SEEK_END);
 
-        while(!feof(send_fp)){
-            struct timeval start;
-            gettimeofday(&start, NULL);
+    while(!feof(send_fp)){
+        struct timeval start;
+        gettimeofday(&start, NULL);
     
-            send_size = fread(send_buf, 1, buf_size, send_fp);
+//send request
+        send_size = fread(send_buf, 1, buf_size, send_fp);
 
-            if(write(fd, send_buf, send_size) < 0){
-	    		perror("[CLIENT] send failed");
-		    	exit(1);
-    		}
+        if(write(fd, send_buf, send_size) < 0){
+			perror("[CLIENT] send failed");
+	    	exit(1);
+    	}
 
-            (*send_byte) += send_size;
+        (*send_byte) += send_size;
 
-            struct timeval send_end;
-            gettimeofday(&send_end, NULL);
+        struct timeval send_end;
+        gettimeofday(&send_end, NULL);
 
-            while(1){
-                recv_size = read(fd, recv_buf, buf_size);
+//receive reply
+        while(1){
+            recv_size = read(fd, recv_buf, buf_size);
 
-                if(recv_size == 0){
-                    printf("[CLIENT] close connection\n");
-                    close(fd);
-                }
+            if(recv_size == 0){
+                printf("[CLIENT] close connection\n");
+                close(fd);
+            }
 #ifdef RECEIVE_DEBUG
-                fwrite(recv_buf, recv_size, 1, recv_fp);
-                fflush(recv_fp);
+            fwrite(recv_buf, recv_size, 1, recv_fp);
+            fflush(recv_fp);
 #endif
-                (*recv_byte) += recv_size;
+            (*recv_byte) += recv_size;
 
-                if((*recv_byte) == (*send_byte)){
-                    break;
-                }        
-            }
-        
-            if(end.tv_sec - time1.tv_sec > 10){
-                printf("[CLIENT] request complete\n");
-                return;
-            }
-
-            struct timeval end;
-            gettimeofday(&end, NULL);
-
-            double start_time = (double)start.tv_sec + ((double)start.tv_usec/(double)1000000);
-            double send_end_time = (double)send_end.tv_sec + ((double)send_end.tv_usec/(double)1000000);
-        
-            double send_time = send_end_time - start_time;
-
-            double end_time = (double)end.tv_sec + ((double)end.tv_usec/(double)1000000);
-
-            double recv_time = end_time - send_end_time;
-
-            char buff[1024];
-
-            sprintf(buff, "send_time %lf recv_time %lf\n", send_time, recv_time);
-    
-            fwrite(buff, strlen(buff), 1, fp);
-
-            fclose(fp);
-
-            if(end.tv_sec - time1.tv_sec > 10){
-                printf("[CLIENT] request complete\n");
-                return;
+            if((*recv_byte) == (*send_byte)){
+                break;
             }
         }
+
+        struct timeval end;
+        gettimeofday(&end, NULL);
+
+        double start_time = (double)start.tv_sec + ((double)start.tv_usec/(double)1000000);
+        double send_end_time = (double)send_end.tv_sec + ((double)send_end.tv_usec/(double)1000000);
+        
+        double send_time = send_end_time - start_time;
+
+        double end_time = (double)end.tv_sec + ((double)end.tv_usec/(double)1000000);
+
+        double recv_time = end_time - send_end_time;
+
+        char buff[1024];
+
+        sprintf(buff, "send_time %lf recv_time %lf\n", send_time, recv_time);
+    
+        fwrite(buff, strlen(buff), 1, fp);
+
+        fclose(fp);
+
+        if(end.tv_sec - time1.tv_sec > 10){
+            printf("[CLIENT] request complete\n");
+            return;
+        }
+
         fclose(send_fp);
+        
     }
 }
 
