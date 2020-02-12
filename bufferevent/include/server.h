@@ -14,9 +14,7 @@ pthread_mutex_t record_lock;
 #endif
 
 struct sock_ev_read {
-#ifdef __BIND_CORE__
-    int core_sequence;
-#endif
+    int fd;
     int * byte_sent;
     int * request_cnt;
     struct time_record * start;

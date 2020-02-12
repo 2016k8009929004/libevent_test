@@ -11,4 +11,4 @@
 
 //void request_start(struct time_record * record);
 
-void request_end(int core_sequence, struct timeval start, int byte_sent, int request_cnt);
+void request_end(int fd, struct timeval start, int byte_sent, int request_cnt);

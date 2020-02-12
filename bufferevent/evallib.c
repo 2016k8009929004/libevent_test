@@ -7,9 +7,9 @@ void request_start(struct time_record * record){
     }
 }
 */
-void request_end(int core_sequence, struct timeval start, int byte_sent, int request_cnt){
+void request_end(int fd, struct timeval start, int byte_sent, int request_cnt){
     char file_name[1024];
-    sprintf(file_name, "record_core_%d.txt", core_sequence);
+    sprintf(file_name, "record_core_%d.txt", fd);
 
 //    FILE * fp = fopen("record.txt", "a+");
     FILE * fp = fopen(file_name, "a+");

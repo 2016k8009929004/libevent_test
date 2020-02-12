@@ -116,11 +116,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
 #ifdef __REAL_TIME_STATS__
-#ifdef __BIND_CORE__
-        request_end(read_arg->core_sequence, read_arg->start->time, *(read_arg->byte_sent), *(read_arg->request_cnt));
-#else
-        request_end(0, read_arg->start->time, *(read_arg->byte_sent), *(read_arg->request_cnt));
-#endif
+        request_end(read_arg->fd, read_arg->start->time, *(read_arg->byte_sent), *(read_arg->request_cnt));
 #endif
 
     char reply_msg[BUF_SIZE + 1];
