@@ -76,14 +76,14 @@ void * server_process(void * arg){
     read_arg->start = (struct time_record *)malloc(sizeof(struct time_record));
     read_arg->start->flag = 0;
     
-    bufferevent_setcb(bev, read_cb , NULL, NULL, thread_arg);
+    bufferevent_setcb(bev, read_cb , NULL, NULL, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
     printf("------read callback------\n");
     struct timeval start;
-    gettimeofday(&start,NULL);
+    gettimeofday(&start, NULL);
 
     struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
