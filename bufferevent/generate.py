@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 
 fileList = os.listdir("./")
 
@@ -11,7 +12,7 @@ for file in fileList:
         fp = open(file, "r")
         lines = fp.readlines()
         lastLine = lines[-1]
-        recordFile = open("perform.txt", "a+")
+        recordFile = open("perform_"+ str(sys.argv[1]) +".txt", "a+")
         recordFile.write(lastLine)
         fp.close()
         recordFile.close()
