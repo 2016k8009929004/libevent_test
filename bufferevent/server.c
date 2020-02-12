@@ -80,15 +80,17 @@ void * server_process(void * arg){
     struct bufferevent * bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
     
     struct sock_ev_read * read_arg = (struct sock_ev_read *)malloc(sizeof(struct sock_ev_read));
+    
+    read_arg->fd = fd;
+
     read_arg->byte_sent = (int *)malloc(sizeof(int));
     *(read_arg->byte_sent) = 0;
+
     read_arg->request_cnt = (int *)malloc(sizeof(int));
     *(read_arg->request_cnt) = 0;
+    
     read_arg->start = (struct time_record *)malloc(sizeof(struct time_record));
     read_arg->start->flag = 0;  
-#ifdef __BIND_CORE__
-    read_arg->core_sequence = sequence;
-#endif
 
     bufferevent_setcb(bev, read_cb , NULL, NULL, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
