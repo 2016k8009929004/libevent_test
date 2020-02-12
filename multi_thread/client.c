@@ -80,8 +80,6 @@ void * send_request(void * arg){
             if(recv_size == 0){
                 printf("[CLIENT] close connection\n");
                 close(fd);
-            }else{
-                printf("[CLIENT] recv len: %d\n", recv_size);
             }
 
 #ifdef RECEIVE_DEBUG
@@ -120,10 +118,8 @@ void * send_request(void * arg){
             printf("[CLIENT] request complete\n");
             return;
         }
-
-        fclose(send_fp);
-
     }
+    fclose(send_fp);
 }
 
 void response_process(int sock, short event, void * arg){
