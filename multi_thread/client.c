@@ -44,9 +44,9 @@ void * send_request(void * arg){
 
 	int send_size, recv_size;
 
-    struct timeval start, end;
+    struct timeval time1, time2;
 
-    gettimeofday(&start, NULL);
+    gettimeofday(&time1, NULL);
 
     int i;
     for(i = 0;i < 1024;i++){
@@ -97,24 +97,13 @@ void * send_request(void * arg){
             }
         }
 
+        struct timeval end;
         gettimeofday(&end, NULL);
-
-        double send_time, recv_time;
-    
-        if(start.tv_usec > send_end.tv_usec){
-            send_end.tv_usec += 1000000;
-            send_end.tv_sec -= 1;
-        }
 
         double start_time = (double)start.tv_sec + ((double)start.tv_usec/(double)1000000);
         double send_end_time = (double)send_end.tv_sec + ((double)send_end.tv_usec/(double)1000000);
         
         send_time = send_end_time - start_time;
-
-        if(send_end.tv_usec > end.tv_usec){
-            end.tv_usec += 1000000;
-            end.tv_sec -= 1;
-        }
 
         double end_time = (double)end.tv_sec + ((double)end.tv_usec/(double)1000000);
 
@@ -127,8 +116,8 @@ void * send_request(void * arg){
         fwrite(buff, strlen(buff), 1, fp);
 
         fclose(fp);
-        
-        if(end.tv_sec - start.tv_sec > 10){
+
+        if(end.tv_sec - time1.tv_sec > 10){
             printf("[CLIENT] request complete\n");
             return;
         }
