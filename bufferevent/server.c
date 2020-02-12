@@ -103,7 +103,9 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     printf("[SERVER] recv len: %d\n", len);
 
+#ifdef __REAL_TIME_STATS__
     (*(read_arg->request_cnt))++;
+#endif
 
     printf("------ 3 ------\n");
 
@@ -122,8 +124,10 @@ void read_cb(struct bufferevent * bev, void * arg){
     bufferevent_write(bev, reply_msg, len);
 
     printf("------ 5 ------\n");
-    
+
+#ifdef __REAL_TIME_STATS__
     *(read_arg->byte_sent) += len;
+#endif
 }
 
 void * server_thread(void * arg){
