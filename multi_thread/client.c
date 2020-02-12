@@ -103,11 +103,11 @@ void * send_request(void * arg){
         double start_time = (double)start.tv_sec + ((double)start.tv_usec/(double)1000000);
         double send_end_time = (double)send_end.tv_sec + ((double)send_end.tv_usec/(double)1000000);
         
-        send_time = send_end_time - start_time;
+        double send_time = send_end_time - start_time;
 
         double end_time = (double)end.tv_sec + ((double)end.tv_usec/(double)1000000);
 
-        recv_time = end_time - send_end_time;
+        double recv_time = end_time - send_end_time;
 
         char buff[1024];
 
