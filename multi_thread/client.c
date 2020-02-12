@@ -46,8 +46,6 @@ void * send_request(void * arg){
 
     struct timeval time1, time2;
 
-    gettimeofday(&time1, NULL);
-
     FILE * send_fp = fopen("client-input.dat", "rb");
 #ifdef RECEIVE_DEBUG
     FILE * recv_fp = fopen("server-ouput.dat", "wb");
@@ -55,6 +53,8 @@ void * send_request(void * arg){
 
     FILE * fp = fopen("request.txt", "a+");
     fseek(fp, 0, SEEK_END);
+
+    gettimeofday(&time1, NULL);
 
     while(!feof(send_fp)){
         struct timeval start;
@@ -118,7 +118,7 @@ void * send_request(void * arg){
         }
 
         fclose(send_fp);
-        
+
     }
 }
 
