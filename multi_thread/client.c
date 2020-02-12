@@ -99,25 +99,30 @@ void * send_request(void * arg){
 
         gettimeofday(&end, NULL);
 
-        long send_time, recv_time;
+        double send_time, recv_time;
     
         if(start.tv_usec > send_end.tv_usec){
             send_end.tv_usec += 1000000;
             send_end.tv_sec -= 1;
         }
 
-        send_time = send_end.tv_usec - start.tv_usec;
-    
+        double start_time = (double)start.tv_sec + ((double)start.tv_usec/(double)1000000);
+        double send_end_time = (double)send_end.tv_sec + ((double)send_end.tv_usec/(double)1000000);
+        
+        send_time = send_end_time - start_time;
+
         if(send_end.tv_usec > end.tv_usec){
             end.tv_usec += 1000000;
             end.tv_sec -= 1;
         }
 
-        recv_time = end.tv_usec - send_end.tv_usec;
+        double end_time = (double)end.tv_sec + ((double)end.tv_usec/(double)1000000);
+
+        recv_time = end_time - send_end_time;
 
         char buff[1024];
 
-        sprintf(buff, "send_time %ld recv_time %ld\n", send_time, recv_time);
+        sprintf(buff, "send_time %lf recv_time %lf\n", send_time, recv_time);
     
         fwrite(buff, strlen(buff), 1, fp);
 
