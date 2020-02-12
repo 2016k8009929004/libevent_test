@@ -80,7 +80,10 @@ void * send_request(void * arg){
             if(recv_size == 0){
                 printf("[CLIENT] close connection\n");
                 close(fd);
+            }else{
+                printf("[CLIENT] recv len: %d\n", recv_size);
             }
+
 #ifdef RECEIVE_DEBUG
             fwrite(recv_buf, recv_size, 1, recv_fp);
             fflush(recv_fp);
@@ -88,6 +91,7 @@ void * send_request(void * arg){
             (*recv_byte) += recv_size;
 
             if((*recv_byte) == (*send_byte)){
+                printf("[CLIENT] next round\n");
                 break;
             }
         }
