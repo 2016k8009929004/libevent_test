@@ -59,6 +59,4 @@ void accept_cb(int fd, short events, void * arg);
 
 void * server_process(void * arg);
 
-void request_process_cb(int fd, short events, void * arg);
-
 void response_process_cb(int fd, short events, void * arg);
