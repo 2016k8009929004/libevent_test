@@ -22,7 +22,7 @@ int connect_server(char * server_ip, int port){
         return -1;
     }
 
-    evutil_make_socket_nonblocking(sockfd);
+//    evutil_make_socket_nonblocking(sockfd);
 
     return sockfd;
 
@@ -56,6 +56,12 @@ void * send_request(void * arg){
 #endif
 
         while(!feof(send_fp)){
+            FILE * fp = fopen("request.txt", "a+");
+            fseek(fp, 0, SEEK_END);
+
+            struct timeval start, end;
+            gettimeofday(&start, NULL);
+
             send_size = fread(send_buf, 1, buf_size, send_fp);
 
             if(write(fd, send_buf, send_size) < 0){
@@ -82,6 +88,18 @@ void * send_request(void * arg){
 #endif
 
             (*recv_byte) += recv_size;
+
+            gettimeofday(&end, NULL);
+
+            long elapsed_time = end.tv_usec - accept_time.tv_usec;
+
+            char buff[1024];
+
+            sprintf(buff, "request_time %ld\n", elapsed_time);
+    
+            fwrite(buff, strlen(buff), 1, fp);
+
+            fclose(fp);
 
             if((*recv_byte) == (*send_byte)){
                 break;
