@@ -9,8 +9,9 @@ for file in fileList:
     result = re.match(r'record(.*)', fileName)
     if result:
         fp = open(file, "r")
+        lines = fp.readlines()
+        lastLine = lines[-1]
         recordFile = open("perform.txt", "a+")
-        context = fp.read()
-        recordFile.write(context)
+        recordFile.write(lastLine)
         fp.close()
         recordFile.close()
