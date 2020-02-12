@@ -48,15 +48,11 @@ void accept_cb(int fd, short events, void * arg){
     struct server_process_arg * thread_arg = (struct server_process_arg *)malloc(SERVER_PROCESS_ARG_SIZE);
     thread_arg->fd = s;
     thread_arg->base = (struct event_base *)arg;
-    thread_arg->byte_sent = (int *)malloc(sizeof(int));
-    *(thread_arg->byte_sent) = 0;
-    thread_arg->request_cnt = (int *)malloc(sizeof(int));
-    *(thread_arg->request_cnt) = 0;
-    thread_arg->start = (struct time_record *)malloc(sizeof(struct time_record));
-    thread_arg->start->flag = 0;
-    
     thread_arg->sequence = connect_cnt;
+
+    pthread_mutex_lock(&connect_lock);
     connect_cnt++;
+    pthread_mutex_unlock(&connect_lock);
 
     pthread_t thread;
     pthread_create(&thread, NULL, server_process, (void *)thread_arg);
@@ -73,9 +69,12 @@ void * server_process(void * arg){
     struct bufferevent * bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
     
     struct sock_ev_read * read_arg = (struct sock_ev_read *)malloc(sizeof(struct sock_ev_read));
-    read_arg->byte_sent = thread_arg->byte_sent;
-    read_arg->request_cnt = thread_arg->request_cnt;
-    read_arg->start = thread_arg->start;
+    read_arg->byte_sent = (int *)malloc(sizeof(int));
+    *(read_arg->byte_sent) = 0;
+    read_arg->request_cnt = (int *)malloc(sizeof(int));
+    *(read_arg->request_cnt) = 0;
+    read_arg->start = (struct time_record *)malloc(sizeof(struct time_record));
+    read_arg->start->flag = 0;
     
     bufferevent_setcb(bev, read_cb , NULL, NULL, thread_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
@@ -142,6 +141,8 @@ void * server_thread(void * arg){
 #endif
 
     event_init();
+
+    pthread_mutex_init(&connect_lock, NULL);
 
     evutil_socket_t sock;
     if((sock = server_init(12345, 100)) < 0){

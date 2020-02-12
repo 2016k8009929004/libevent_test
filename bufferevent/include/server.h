@@ -22,13 +22,7 @@ struct sock_ev_read {
     struct time_record * start;
 };
 
-struct sock_ev_write {
-    struct event * write_ev;
-    char * buff;
-    int buff_len;
-    int * byte_sent;
-};
-
+pthread_mutex_t connect_lock;
 int connect_cnt = 0;
 
 struct time_record {
@@ -40,9 +34,6 @@ struct server_process_arg {
     evutil_socket_t * fd;
     struct event_base * base;
     int sequence;
-    int * byte_sent;
-    int * request_cnt;
-    struct time_record * start;
 };
 
 #define SERVER_PROCESS_ARG_SIZE sizeof(struct server_process_arg)
