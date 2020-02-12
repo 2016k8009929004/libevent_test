@@ -33,18 +33,11 @@ void * send_request(void * arg){
 
     int fd = *(info->sockfd);
 
-//    pthread_mutex_t * send_lock = info->send_lock;
-
-    int * send_byte = info->send_byte;
-    int * recv_byte = info->recv_byte;
-
     char send_buf[buf_size];
     char recv_buf[buf_size + 1];
     memset(recv_buf, 0, sizeof(recv_buf));
 
 	int send_size, recv_size;
-
-    struct timeval time1, time2;
 
     FILE * send_fp = fopen("client-input.dat", "rb");
 #ifdef RECEIVE_DEBUG
@@ -54,12 +47,14 @@ void * send_request(void * arg){
     FILE * fp = fopen("request.txt", "a+");
     fseek(fp, 0, SEEK_END);
 
+    struct timeval time1;
     gettimeofday(&time1, NULL);
 
     while(!feof(send_fp)){
+/*
         struct timeval start;
         gettimeofday(&start, NULL);
-    
+*/  
 //send request
         send_size = fread(send_buf, 1, buf_size, send_fp);
 
@@ -69,10 +64,10 @@ void * send_request(void * arg){
     	}
 
 //        (*send_byte) += send_size;
-
+/*
         struct timeval send_end;
         gettimeofday(&send_end, NULL);
-
+*/
 //receive reply
         int temp = 0;
         while(1){
@@ -96,7 +91,7 @@ void * send_request(void * arg){
 
         struct timeval end;
         gettimeofday(&end, NULL);
-
+/*
         double start_time = (double)start.tv_sec + ((double)start.tv_usec/(double)1000000);
         double send_end_time = (double)send_end.tv_sec + ((double)send_end.tv_usec/(double)1000000);
         
@@ -112,7 +107,7 @@ void * send_request(void * arg){
     
         fwrite(buff, strlen(buff), 1, fp);
         fflush(fp);
-
+*/
         if(end.tv_sec - time1.tv_sec > 10){
             printf("[CLIENT] request complete\n");
             return;
