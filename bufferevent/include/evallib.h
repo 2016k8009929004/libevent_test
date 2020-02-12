@@ -3,8 +3,6 @@
 #include <pthread.h>
 #include <string.h>
 
-#include "log.h"
-
 #define __REAL_TIME_STATS__
 
 //struct timeval start, end, time1, time2;

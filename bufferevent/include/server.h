@@ -44,11 +44,11 @@ struct time_record {
 
 struct server_process_arg {
     evutil_socket_t * fd;
+    struct event_base * base;
     int sequence;
     int * byte_sent;
     int * request_cnt;
     struct time_record * start;
-    struct event_base * base;
 };
 
 #define SERVER_PROCESS_ARG_SIZE sizeof(struct server_process_arg)

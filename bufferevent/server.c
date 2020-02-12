@@ -33,7 +33,7 @@ evutil_socket_t server_init(int port, int listen_num){
     return sock;
 }
 
-void accept_cb(struct evconnlistener * listener, evutil_socket_t fd, struct sockaddr * address, int socklen, void * arg){
+void accept_cb(int fd, short events, void * arg){
     struct sockaddr_in client;
     socklen_t len = sizeof(client);
 
@@ -71,7 +71,7 @@ void * server_process(void * arg){
     int sequence = thread_arg->sequence;
 
     struct bufferevent * bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
-    bufferevent_setcb(bev, socket_read_cb , NULL, NULL, arg);
+    bufferevent_setcb(bev, read_cb , NULL, NULL, arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 }
 
@@ -89,7 +89,7 @@ void read_cb(struct bufferevent * bev,void*  arg){
     bufferevent_write(bev, reply_msg, len);
 }
 
-void * server_process(void * arg){
+void * server_thread(void * arg){
     cpu_set_t core_set;
 
     CPU_ZERO(&core_set);
@@ -100,7 +100,7 @@ void * server_process(void * arg){
     }
 
 #ifdef __EVAL_CB__
-    pthread_mutex_init(&record, NULL);
+    pthread_mutex_init(&record_lock, NULL);
 #endif
 
     event_init();
