@@ -74,7 +74,7 @@ void * send_request(void * arg){
         gettimeofday(&send_end, NULL);
 
 //receive reply
-        int recv_byte = 0;
+        int temp = 0;
         while(1){
             recv_size = read(fd, recv_buf, buf_size);
 
@@ -87,9 +87,9 @@ void * send_request(void * arg){
             fwrite(recv_buf, recv_size, 1, recv_fp);
             fflush(recv_fp);
 #endif
-            recv_byte += recv_size;
+            temp += recv_size;
 
-            if(recv_byte == send_byte){
+            if(temp == send_size){
                 break;
             }
         }
