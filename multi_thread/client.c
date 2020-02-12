@@ -68,12 +68,13 @@ void * send_request(void * arg){
 	    	exit(1);
     	}
 
-        (*send_byte) += send_size;
+//        (*send_byte) += send_size;
 
         struct timeval send_end;
         gettimeofday(&send_end, NULL);
 
 //receive reply
+        int recv_byte = 0;
         while(1){
             recv_size = read(fd, recv_buf, buf_size);
 
@@ -86,10 +87,9 @@ void * send_request(void * arg){
             fwrite(recv_buf, recv_size, 1, recv_fp);
             fflush(recv_fp);
 #endif
-            (*recv_byte) += recv_size;
+            recv_byte += recv_size;
 
-            if((*recv_byte) == (*send_byte)){
-                printf("[CLIENT] next round\n");
+            if(recv_byte == send_byte){
                 break;
             }
         }
