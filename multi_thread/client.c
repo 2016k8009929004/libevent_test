@@ -58,10 +58,10 @@ void * send_request(void * arg){
         FILE * fp = fopen("request.txt", "a+");
         fseek(fp, 0, SEEK_END);
 
-        struct timeval start;
-        gettimeofday(&start, NULL);
-
         while(!feof(send_fp)){
+            struct timeval start;
+            gettimeofday(&start, NULL);
+    
             send_size = fread(send_buf, 1, buf_size, send_fp);
 
             if(write(fd, send_buf, send_size) < 0){
@@ -70,60 +70,60 @@ void * send_request(void * arg){
     		}
 
             (*send_byte) += send_size;
-        }
 
-        fclose(send_fp);
+            struct timeval send_end;
+            gettimeofday(&send_end, NULL);
 
-        struct timeval send_end;
-        gettimeofday(&send_end, NULL);
+            while(1){
+                recv_size = read(fd, recv_buf, buf_size);
 
-        while(1){
-            recv_size = read(fd, recv_buf, buf_size);
-
-            if(recv_size == 0){
-                printf("[CLIENT] close connection\n");
-                close(fd);
-            }
-
+                if(recv_size == 0){
+                    printf("[CLIENT] close connection\n");
+                    close(fd);
+                }
 #ifdef RECEIVE_DEBUG
-            fwrite(recv_buf, recv_size, 1, recv_fp);
-            fflush(recv_fp);
+                fwrite(recv_buf, recv_size, 1, recv_fp);
+                fflush(recv_fp);
 #endif
+                (*recv_byte) += recv_size;
 
-            (*recv_byte) += recv_size;
+                if((*recv_byte) == (*send_byte)){
+                    break;
+                }        
+            }
+        
+            if(end.tv_sec - time1.tv_sec > 10){
+                printf("[CLIENT] request complete\n");
+                return;
+            }
 
-            if((*recv_byte) == (*send_byte)){
-                break;
+            struct timeval end;
+            gettimeofday(&end, NULL);
+
+            double start_time = (double)start.tv_sec + ((double)start.tv_usec/(double)1000000);
+            double send_end_time = (double)send_end.tv_sec + ((double)send_end.tv_usec/(double)1000000);
+        
+            double send_time = send_end_time - start_time;
+
+            double end_time = (double)end.tv_sec + ((double)end.tv_usec/(double)1000000);
+
+            double recv_time = end_time - send_end_time;
+
+            char buff[1024];
+
+            sprintf(buff, "send_time %lf recv_time %lf\n", send_time, recv_time);
+    
+            fwrite(buff, strlen(buff), 1, fp);
+
+            fclose(fp);
+
+            if(end.tv_sec - time1.tv_sec > 10){
+                printf("[CLIENT] request complete\n");
+                return;
             }
         }
-
-        struct timeval end;
-        gettimeofday(&end, NULL);
-
-        double start_time = (double)start.tv_sec + ((double)start.tv_usec/(double)1000000);
-        double send_end_time = (double)send_end.tv_sec + ((double)send_end.tv_usec/(double)1000000);
-        
-        double send_time = send_end_time - start_time;
-
-        double end_time = (double)end.tv_sec + ((double)end.tv_usec/(double)1000000);
-
-        double recv_time = end_time - send_end_time;
-
-        char buff[1024];
-
-        sprintf(buff, "send_time %lf recv_time %lf\n", send_time, recv_time);
-    
-        fwrite(buff, strlen(buff), 1, fp);
-
-        fclose(fp);
-
-        if(end.tv_sec - time1.tv_sec > 10){
-            printf("[CLIENT] request complete\n");
-            return;
-        }
+        fclose(send_fp);
     }
-
-    
 }
 
 void response_process(int sock, short event, void * arg){
