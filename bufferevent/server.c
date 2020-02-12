@@ -67,7 +67,7 @@ void accept_cb(int fd, short events, void * arg){
 void * server_process(void * arg){
     struct server_process_arg * thread_arg = (struct server_process_arg *)arg;
     evutil_socket_t fd = *(thread_arg->fd);
-    struct event_base base = *(thread_arg->base);
+    struct event_base * base = thread_arg->base;
     int sequence = thread_arg->sequence;
 
     struct bufferevent * bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
@@ -75,7 +75,7 @@ void * server_process(void * arg){
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 }
 
-void read_cb(struct bufferevent * bev,void*  arg){
+void read_cb(struct bufferevent * bev, void * arg){
     struct timeval start;
     gettimeofday(&start,NULL);
 
