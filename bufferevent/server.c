@@ -60,11 +60,23 @@ void accept_cb(int fd, short events, void * arg){
 }
 
 void * server_process(void * arg){
-    printf("------server process------\n");
     struct server_process_arg * thread_arg = (struct server_process_arg *)arg;
     evutil_socket_t fd = *(thread_arg->fd);
     struct event_base * base = thread_arg->base;
     int sequence = thread_arg->sequence;
+
+#ifdef __BIND_CORE__
+    int core_sequence = (sequence % 46) + 1;
+
+    cpu_set_t core_set;
+
+    CPU_ZERO(&core_set);
+    CPU_SET(core_sequence, &core_set);
+
+    if (pthread_setaffinity_np(pthread_self(), sizeof(core_set), &core_set) == -1){
+        printf("warning: could not set CPU affinity, continuing...\n");
+    }
+#endif
 
     struct bufferevent * bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
     
@@ -74,20 +86,20 @@ void * server_process(void * arg){
     read_arg->request_cnt = (int *)malloc(sizeof(int));
     *(read_arg->request_cnt) = 0;
     read_arg->start = (struct time_record *)malloc(sizeof(struct time_record));
-    read_arg->start->flag = 0;
-    
+    read_arg->start->flag = 0;  
+#ifdef __BIND_CORE__
+    read_arg->core_sequence = sequence;
+#endif
+
     bufferevent_setcb(bev, read_cb , NULL, NULL, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
-    printf("------read callback------\n");
     struct timeval start;
     gettimeofday(&start, NULL);
 
     struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
-
-    printf("------ 1 ------\n");
 
 #ifdef __REAL_TIME_STATS__
     if(!read_arg->start->flag){
@@ -95,19 +107,14 @@ void read_cb(struct bufferevent * bev, void * arg){
         read_arg->start->flag = 1;
     }
 #endif
-    printf("------ 2 ------\n");
 
     char msg[BUF_SIZE + 1];
     size_t len = bufferevent_read(bev, msg, sizeof(msg));
     msg[len] = '\0';
 
-    printf("[SERVER] recv len: %d\n", len);
-
 #ifdef __REAL_TIME_STATS__
     (*(read_arg->request_cnt))++;
 #endif
-
-    printf("------ 3 ------\n");
 
 #ifdef __REAL_TIME_STATS__
 #ifdef __BIND_CORE__
@@ -117,13 +124,9 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 #endif
 
-    printf("------ 4 ------\n");
-
     char reply_msg[BUF_SIZE + 1];
     memcpy(reply_msg, msg, len);
     bufferevent_write(bev, reply_msg, len);
-
-    printf("------ 5 ------\n");
 
 #ifdef __REAL_TIME_STATS__
     *(read_arg->byte_sent) += len;
