@@ -111,14 +111,14 @@ void * send_request(void * arg){
         sprintf(buff, "send_time %lf recv_time %lf\n", send_time, recv_time);
     
         fwrite(buff, strlen(buff), 1, fp);
-
-        fclose(fp);
+        fflush(fp);
 
         if(end.tv_sec - time1.tv_sec > 10){
             printf("[CLIENT] request complete\n");
             return;
         }
     }
+    
     fclose(send_fp);
 }
 
