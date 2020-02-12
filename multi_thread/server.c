@@ -159,28 +159,23 @@ void request_process_cb(int fd, short events, void * arg){
     struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
 #ifdef __REAL_TIME_STATS__
-//    pthread_mutex_lock(&record_lock);
-//    request_start(read_arg->start);
     if(!read_arg->start->flag){
         gettimeofday(&read_arg->start->time, NULL);
         read_arg->start->flag = 1;
     }
-//    pthread_mutex_unlock(&record_lock);
 #endif
-
+/*
     char * msg = (char *)malloc(BUF_SIZE + 1);
 
 	int len = read(fd, msg, sizeof(msg) - 1);
 
     if(len <= 0){
 #ifdef __REAL_TIME_STATS__
-//        pthread_mutex_lock(&record_lock);
 #ifdef __BIND_CORE__
         request_end(read_arg->core_sequence, read_arg->start->time, *(read_arg->byte_sent), *(read_arg->request_cnt));
 #else
         request_end(0, read_arg->start->time, *(read_arg->byte_sent), *(read_arg->request_cnt));
 #endif
-//        pthread_mutex_unlock(&record_lock);
 #endif
 
         event_del(read_arg->read_ev);
@@ -250,6 +245,7 @@ void request_process_cb(int fd, short events, void * arg){
 
     fclose(fp);
 #endif
+*/
 }
 
 void response_process_cb(int fd, short events, void * arg){
