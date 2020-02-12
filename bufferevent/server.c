@@ -71,7 +71,13 @@ void * server_process(void * arg){
     int sequence = thread_arg->sequence;
 
     struct bufferevent * bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
-    bufferevent_setcb(bev, read_cb , NULL, NULL, arg);
+    
+    struct sock_ev_read * read_arg = (struct sock_ev_read *)malloc(sizeof(struct sock_ev_read));
+    read_arg->byte_sent = thread_arg->byte_sent;
+    read_arg->request_cnt = thread_arg->request_cnt;
+    read_arg->start = thread_arg->start;
+    
+    bufferevent_setcb(bev, read_cb , NULL, NULL, thread_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 }
 
@@ -79,14 +85,33 @@ void read_cb(struct bufferevent * bev, void * arg){
     struct timeval start;
     gettimeofday(&start,NULL);
 
-    
+    struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
+
+#ifdef __REAL_TIME_STATS__
+    if(!read_arg->start->flag){
+        gettimeofday(&read_arg->start->time, NULL);
+        read_arg->start->flag = 1;
+    }
+#endif
+
     char msg[BUF_SIZE + 1];
     size_t len = bufferevent_read(bev, msg, sizeof(msg));
     msg[len] = '\0';
 
+    (*(read_arg->request_cnt))++;
+
+#ifdef __REAL_TIME_STATS__
+#ifdef __BIND_CORE__
+        request_end(read_arg->core_sequence, read_arg->start->time, *(read_arg->byte_sent), *(read_arg->request_cnt));
+#else
+        request_end(0, read_arg->start->time, *(read_arg->byte_sent), *(read_arg->request_cnt));
+#endif
+#endif
+
     char reply_msg[BUF_SIZE + 1];
     memcpy(reply_msg, msg, len);
     bufferevent_write(bev, reply_msg, len);
+    *(read_arg->byte_sent) += len;
 }
 
 void * server_thread(void * arg){
@@ -110,10 +135,6 @@ void * server_thread(void * arg){
         perror("[SERVER] server init error");
         exit(1);
     }
-
-#ifdef __REAL_TIME_STATS__
-    pthread_mutex_init(&record_lock, NULL);
-#endif
 
     struct event_base * base = event_base_new();
 

@@ -1,10 +1,6 @@
 #include "common.h"
 #include "evallib.h"
 
-#ifdef __REAL_TIME_STATS__
-pthread_mutex_t record_lock;
-#endif
-
 #define __BIND_CORE__
 //#define __GET_CORE__
 
@@ -18,8 +14,6 @@ pthread_mutex_t record_lock;
 #endif
 
 struct sock_ev_read {
-    struct event_base * base;
-    struct event * read_ev;
 #ifdef __BIND_CORE__
     int core_sequence;
 #endif
