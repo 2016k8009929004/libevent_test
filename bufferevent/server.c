@@ -2,8 +2,6 @@
 
 #define __NR_gettid 186
 
-int request_cnt = 0;
-
 evutil_socket_t server_init(int port, int listen_num){
     evutil_socket_t sock;
     if((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
@@ -112,6 +110,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     memcpy(reply_msg, msg, len);
     bufferevent_write(bev, reply_msg, len);
     *(read_arg->byte_sent) += len;
+    printf("[SERVER] recv byte: %d\n", len);
 }
 
 void * server_thread(void * arg){
