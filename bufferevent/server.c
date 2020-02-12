@@ -88,18 +88,25 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
+    printf("------ 1 ------\n");
+
 #ifdef __REAL_TIME_STATS__
     if(!read_arg->start->flag){
         gettimeofday(&read_arg->start->time, NULL);
         read_arg->start->flag = 1;
     }
 #endif
+    printf("------ 2 ------\n");
 
     char msg[BUF_SIZE + 1];
     size_t len = bufferevent_read(bev, msg, sizeof(msg));
     msg[len] = '\0';
 
+    printf("[SERVER] recv len: %d\n", len);
+
     (*(read_arg->request_cnt))++;
+
+    printf("------ 3 ------\n");
 
 #ifdef __REAL_TIME_STATS__
 #ifdef __BIND_CORE__
@@ -109,9 +116,14 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 #endif
 
+    printf("------ 4 ------\n");
+
     char reply_msg[BUF_SIZE + 1];
     memcpy(reply_msg, msg, len);
     bufferevent_write(bev, reply_msg, len);
+
+    printf("------ 5 ------\n");
+    
     *(read_arg->byte_sent) += len;
 }
 
