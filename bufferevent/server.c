@@ -32,6 +32,7 @@ evutil_socket_t server_init(int port, int listen_num){
 }
 
 void accept_cb(int fd, short events, void * arg){
+    printf("------accept callback------\n");
     struct sockaddr_in client;
     socklen_t len = sizeof(client);
 
@@ -63,6 +64,7 @@ void accept_cb(int fd, short events, void * arg){
 }
 
 void * server_process(void * arg){
+    printf("------server process------\n");
     struct server_process_arg * thread_arg = (struct server_process_arg *)arg;
     evutil_socket_t fd = *(thread_arg->fd);
     struct event_base * base = thread_arg->base;
@@ -80,6 +82,7 @@ void * server_process(void * arg){
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
+    printf("------read callback------\n");
     struct timeval start;
     gettimeofday(&start,NULL);
 
@@ -110,7 +113,6 @@ void read_cb(struct bufferevent * bev, void * arg){
     memcpy(reply_msg, msg, len);
     bufferevent_write(bev, reply_msg, len);
     *(read_arg->byte_sent) += len;
-    printf("[SERVER] recv byte: %d\n", len);
 }
 
 void * server_thread(void * arg){
