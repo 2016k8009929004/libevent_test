@@ -1,7 +1,7 @@
 #include "common.h"
 #include "evallib.h"
 
-//#define __BIND_CORE__
+#define __BIND_CORE__
 //#define __GET_CORE__
 
 #define __EVAL_CB__
