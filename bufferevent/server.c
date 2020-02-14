@@ -83,8 +83,8 @@ void accept_cb(int fd, short events, void * arg){
 
     char buff[1024];
     
-    sprintf(buff, "total_time %lf pthread_create_time %lf\n", 
-            end_time - start_time, pthread_end_time - pthread_start_time);
+    sprintf(buff, "total_time %d pthread_create_time %d\n", 
+            (int)(end_time - start_time), (int)(pthread_end_time - pthread_start_time));
 
     pthread_mutex_lock(&accept_cb_lock);
     FILE * fp = fopen("accept_cb.txt", "a+");
@@ -179,7 +179,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     char buff[1024];
     
-    sprintf(buff, "total_time %lf\n", end_time - start_time);
+    sprintf(buff, "total_time %d\n", (int)(end_time - start_time));
 
     pthread_mutex_lock(&read_cb_lock);
     FILE * fp = fopen("read_cb.txt", "a+");
@@ -188,7 +188,6 @@ void read_cb(struct bufferevent * bev, void * arg){
     fwrite(buff, strlen(buff), 1, fp);
     fflush(fp);
     pthread_mutex_unlock(&read_cb_lock);
-    
 #endif
 }
 
