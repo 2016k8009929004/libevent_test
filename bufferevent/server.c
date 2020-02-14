@@ -81,7 +81,7 @@ void accept_cb(int fd, short events, void * arg){
     double pthread_end_time = (double)pthread_end.tv_sec * 1000000 + (double)pthread_end.tv_usec;
     double end_time = (double)end.tv_sec * 1000000 + (double)end.tv_usec;
 
-    char buff[1024];
+    char buff[100];
     
     sprintf(buff, "total_time %d pthread_create_time %d\n", 
             (int)(end_time - start_time), (int)(pthread_end_time - pthread_start_time));
@@ -91,7 +91,7 @@ void accept_cb(int fd, short events, void * arg){
     fseek(fp, 0, SEEK_END);
     
     fwrite(buff, strlen(buff), 1, fp);
-    fflush(fp);
+    fclose(fp);
     pthread_mutex_unlock(&accept_cb_lock);
     
 #endif
@@ -177,7 +177,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     double start_time = (double)start.tv_sec * 1000000 + (double)start.tv_usec;
     double end_time = (double)end.tv_sec * 1000000 + (double)end.tv_usec;
 
-    char buff[1024];
+    char buff[100];
     
     sprintf(buff, "total_time %d\n", (int)(end_time - start_time));
 
@@ -186,7 +186,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     fseek(fp, 0, SEEK_END);
     
     fwrite(buff, strlen(buff), 1, fp);
-    fflush(fp);
+    fclose(fp);
     pthread_mutex_unlock(&read_cb_lock);
 #endif
 }
