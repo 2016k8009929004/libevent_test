@@ -1,7 +1,7 @@
 #include "common.h"
 #include "evallib.h"
 
-#define __BIND_CORE__
+//#define __BIND_CORE__
 //#define __GET_CORE__
 
 #define __EVAL_CB__
@@ -10,7 +10,8 @@
 #define BUF_SIZE 4096
 
 #ifdef __EVAL_CB__
-pthread_mutex_t record_lock;
+pthread_mutex_t accept_cb_lock;
+pthread_mutex_t read_cb_lock;
 #endif
 
 struct sock_ev_read {
