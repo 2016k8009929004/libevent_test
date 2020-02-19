@@ -5,7 +5,7 @@ make clean && make all
 server='server'
 client='client'
 
-server_ip='172.18.13.14'
+server_ip='172.18.13.15'
 server_port=12345
 
 if test $1 = $server
