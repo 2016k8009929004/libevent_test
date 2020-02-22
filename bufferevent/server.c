@@ -133,6 +133,11 @@ void * server_process(void * arg){
 
     bufferevent_setcb(bev, read_cb , NULL, NULL, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
+
+
+//------ TEST ------
+    event_dispatch();
+
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
