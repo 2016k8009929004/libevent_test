@@ -159,6 +159,8 @@ void read_cb(struct bufferevent * bev, void * arg){
     size_t len = bufferevent_read(bev, msg, sizeof(msg));
     msg[len] = '\0';
 
+    printf("[SERVER] read len: %d\n", len);
+
 #ifdef __REAL_TIME_STATS__
     (*(read_arg->request_cnt))++;
 #endif
