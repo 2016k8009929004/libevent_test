@@ -134,10 +134,6 @@ void * server_process(void * arg){
     bufferevent_setcb(bev, read_cb , NULL, NULL, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 
-
-//------ TEST ------
-    event_dispatch();
-
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
@@ -158,8 +154,6 @@ void read_cb(struct bufferevent * bev, void * arg){
     char msg[BUF_SIZE + 1];
     size_t len = bufferevent_read(bev, msg, sizeof(msg));
     msg[len] = '\0';
-
-    printf("[SERVER] read len: %d\n", len);
 
 #ifdef __REAL_TIME_STATS__
     (*(read_arg->request_cnt))++;
