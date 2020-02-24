@@ -137,6 +137,9 @@ void * server_process(void * arg){
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
+    
+    struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
+
 #ifdef __EVAL_CB__
     struct timeval start;
     gettimeofday(&start, NULL);
@@ -148,8 +151,6 @@ void read_cb(struct bufferevent * bev, void * arg){
         read_arg->start->flag = 1;
     }
 #endif
-
-    struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
     char msg[BUF_SIZE + 1];
     size_t len = bufferevent_read(bev, msg, sizeof(msg));
