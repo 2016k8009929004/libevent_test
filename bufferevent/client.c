@@ -101,6 +101,7 @@ void * send_request(void * arg){
 
         fwrite(buff, strlen(buff), 1, fp);
         fflush(fp);
+#endif
 
         pthread_mutex_unlock(&rtt_lock);
 
@@ -109,7 +110,6 @@ void * send_request(void * arg){
             return;
         }
     }
-#endif
     
     fclose(send_fp);
 
