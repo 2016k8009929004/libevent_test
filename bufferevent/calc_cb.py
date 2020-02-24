@@ -22,7 +22,7 @@ for file in readFile:
         else:
             avg = (avg + round(float(total)/float(count), 4)) / 2
 
-print('read_cb average: %d' % avg)
+print('read_cb average: %.4f' % avg)
 
 acceptFile = ["accept_cb_1.txt", "accept_cb_2.txt", "accept_cb_3.txt", "accept_cb_4.txt", "accept_cb_5.txt"]
 
@@ -48,4 +48,4 @@ for file in acceptFile:
             avg_accept = (avg_accept + round(float(tot_accept)/float(count), 4)) / 2
             avg_pthread_create = (avg_pthread_create + round(float(tot_pthread_create)/float(count), 4)) / 2
 
-print('accept average: %d, pthread_create average: %d' % (avg_accept, avg_pthread_create))
+print('accept average: %.4f, pthread_create average: %.4f' % (avg_accept, avg_pthread_create))
