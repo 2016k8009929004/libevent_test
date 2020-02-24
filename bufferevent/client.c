@@ -91,15 +91,12 @@ void * send_request(void * arg){
         struct timeval end;
         gettimeofday(&end, NULL);
 
-        double start_time = (double)start.tv_sec + ((double)start.tv_usec/(double)1000000);
-
-        double end_time = (double)end.tv_sec + ((double)end.tv_usec/(double)1000000);
-
-        double rtt = end_time - start_time;
+        double start_time = (double)start.tv_sec * 1000000 + (double)start.tv_usec;
+        double end_time = (double)end.tv_sec * 1000000 + (double)end.tv_usec;
 
         char buff[1024];
 
-        sprintf(buff, "round trip time %lf\n", rtt);
+        sprintf(buff, "round trip time %lf\n", (int)(end_time - start_time));
     
         fwrite(buff, strlen(buff), 1, fp);
         fflush(fp);
