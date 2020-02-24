@@ -6,7 +6,7 @@ with open("read_cb.txt", "r") as f:
     total = 0
     count = 0
     for line in f:
-       res = line.split()
+        res = line.split()
         if len(res) == 2 and res[1].isdigit():
            total += int(res[1])
            count += 1
