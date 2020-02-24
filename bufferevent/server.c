@@ -137,7 +137,7 @@ void * server_process(void * arg){
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
-    
+
     struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
 #ifdef __EVAL_CB__
@@ -158,15 +158,12 @@ void read_cb(struct bufferevent * bev, void * arg){
 
 //    printf("[SERVER] recv len: %d\n", len);
 
-#ifdef __REAL_TIME_STATS__
-    (*(read_arg->request_cnt))++;
-#endif
-
 //    char reply_msg[BUF_SIZE + 1];
 //    memcpy(reply_msg, msg, len);
     bufferevent_write(bev, msg, len);
 
 #ifdef __REAL_TIME_STATS__
+    (*(read_arg->request_cnt))++;
     *(read_arg->byte_sent) += len;
     request_end(read_arg->fd, read_arg->start->time, *(read_arg->byte_sent), *(read_arg->request_cnt));
 #endif
