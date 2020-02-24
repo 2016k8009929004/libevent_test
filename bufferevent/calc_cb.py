@@ -15,7 +15,7 @@ with open("read_cb.txt", "r") as f:
 
 print('read_cb average: %.4f' % avg)
 
-with open(file, "r") as f:
+with open("accept_cb.txt", "r") as f:
     tot_accept = 0
     tot_pthread_create = 0
     count = 0
