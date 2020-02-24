@@ -142,14 +142,14 @@ void read_cb(struct bufferevent * bev, void * arg){
     gettimeofday(&start, NULL);
 #endif
 
-    struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
-
 #ifdef __REAL_TIME_STATS__
     if(!read_arg->start->flag){
         gettimeofday(&read_arg->start->time, NULL);
         read_arg->start->flag = 1;
     }
 #endif
+
+    struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
     char msg[BUF_SIZE + 1];
     size_t len = bufferevent_read(bev, msg, sizeof(msg));
@@ -161,16 +161,13 @@ void read_cb(struct bufferevent * bev, void * arg){
     (*(read_arg->request_cnt))++;
 #endif
 
-#ifdef __REAL_TIME_STATS__
-        request_end(read_arg->fd, read_arg->start->time, *(read_arg->byte_sent), *(read_arg->request_cnt));
-#endif
-
 //    char reply_msg[BUF_SIZE + 1];
 //    memcpy(reply_msg, msg, len);
     bufferevent_write(bev, msg, len);
 
 #ifdef __REAL_TIME_STATS__
     *(read_arg->byte_sent) += len;
+    request_end(read_arg->fd, read_arg->start->time, *(read_arg->byte_sent), *(read_arg->request_cnt));
 #endif
 
 #ifdef __EVAL_CB__
