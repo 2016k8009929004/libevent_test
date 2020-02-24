@@ -21,7 +21,7 @@ with open(file, "r") as f:
     count = 0
     for line in f:
         res = line.split()
-       if len(res) == 4 and res[1].isdigit() and res[3].isdigit():
+        if len(res) == 4 and res[1].isdigit() and res[3].isdigit():
             tot_accept += int(res[1])
             tot_pthread_create += int(res[3])
             count += 1
