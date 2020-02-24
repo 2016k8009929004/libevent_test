@@ -13,5 +13,8 @@ then
     rm record_core_*.txt
     ./libevent_test $2
 else
-    ./libevent_test $2 $server_ip $server_port $3
+    for a in {1..5}
+    do
+        ./libevent_test $2 $server_ip $server_port $3
+    done
 fi
