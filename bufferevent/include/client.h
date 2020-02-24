@@ -2,6 +2,8 @@
 
 //#define RECEIVE_DEBUG
 
+#define __EV_RTT__
+
 int buf_size;
 
 //pthread_mutex_t work_done_lock;
@@ -11,6 +13,10 @@ int client_thread_num;
 
 //pthread_mutex_t fin_client_thread_lock;
 int fin_client_thread = 0;
+
+#ifdef __EV_RTT__
+pthread_mutex_t rtt_lock;
+#endif
 
 struct debug_response_arg {
     struct event * read_ev;

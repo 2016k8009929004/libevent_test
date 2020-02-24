@@ -43,8 +43,11 @@ void * send_request(void * arg){
 #ifdef RECEIVE_DEBUG
     FILE * recv_fp = fopen("server-ouput.dat", "wb");
 #endif
+
+#ifdef __EV_RTT__
     FILE * fp = fopen("rtt.txt", "a+");
     fseek(fp, 0, SEEK_END);
+#endif
 
     struct timeval time1;
     gettimeofday(&time1, NULL);
@@ -62,11 +65,6 @@ void * send_request(void * arg){
 	    	exit(1);
     	}
 
-//        (*send_byte) += send_size;
-/*
-        struct timeval send_end;
-        gettimeofday(&send_end, NULL);
-*/
 //receive reply
         int temp = 0;
         while(1){
@@ -91,24 +89,33 @@ void * send_request(void * arg){
         struct timeval end;
         gettimeofday(&end, NULL);
 
+#ifdef __EV_RTT__
         double start_time = (double)start.tv_sec * 1000000 + (double)start.tv_usec;
         double end_time = (double)end.tv_sec * 1000000 + (double)end.tv_usec;
 
         char buff[1024];
 
-        sprintf(buff, "round trip time %lf\n", (int)(end_time - start_time));
-    
+        sprintf(buff, "round trip time %d\n", (int)(end_time - start_time));
+        
+        pthread_mutex_lock(&rtt_lock);
+
         fwrite(buff, strlen(buff), 1, fp);
         fflush(fp);
+
+        pthread_mutex_unlock(&rtt_lock);
 
         if(end.tv_sec - time1.tv_sec > 10){
             printf("[CLIENT] request complete\n");
             return;
         }
     }
+#endif
     
     fclose(send_fp);
+
+#ifdef __EV_RTT__
     fclose(fp);
+#endif
 }
 
 void response_process(int sock, short event, void * arg){
@@ -253,6 +260,10 @@ void * client_thread(void * argv){
     
     int send_byte, recv_byte;
     send_byte = recv_byte = 0;
+
+#ifdef __EV_RTT__
+    pthread_mutex_init(&rtt_lock, NULL);
+#endif
 
     int sockfd = connect_server(*(server->ip_addr), server->port);
     if(sockfd == -1){
