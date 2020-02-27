@@ -136,14 +136,14 @@ void * server_process(void * arg){
 
 void event_cb(struct bufferevent * bev, short event, void * arg){
     if(event & BEV_EVENT_EOF){
-        printf("[SERVER] connection closed\n");
+        struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
         
 #ifdef __EVAL_READ__
     
 #endif
 
 #ifdef __REAL_TIME_STATS__
-        request_end(read_arg->fd, read_arg->start, read_arg->byte_sent, read_arg->request_cnt);
+        request_endread_argfd, read_arg->start, read_arg->byte_sent, read_arg->request_cnt);
 #endif
     }
 }
