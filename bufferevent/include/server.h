@@ -11,6 +11,9 @@
 
 #ifdef __EVAL_CB__
 pthread_mutex_t accept_cb_lock;
+#endif
+
+#ifdef __EVAL_READ__
 pthread_mutex_t read_cb_lock;
 #endif
 
