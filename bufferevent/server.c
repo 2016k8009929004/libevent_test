@@ -214,6 +214,9 @@ void * server_thread(void * arg){
 
 #ifdef __EVAL_CB__
     pthread_mutex_init(&accept_cb_lock, NULL);
+#endif
+
+#ifdef __EVAL_READ__
     pthread_mutex_init(&read_cb_lock, NULL);
 #endif
 
