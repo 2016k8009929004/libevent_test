@@ -139,7 +139,17 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
         struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
         
 #ifdef __EVAL_READ__
+        char buff[100];
     
+        sprintf(buff, "total_time %.4f\n", ((double)read_arg->total_time)/read_arg->request_cnt);
+
+        pthread_mutex_lock(&read_cb_lock);
+        FILE * fp = fopen("read_cb.txt", "a+");
+        fseek(fp, 0, SEEK_END);
+    
+        fwrite(buff, strlen(buff), 1, fp);
+        fclose(fp);
+        pthread_mutex_unlock(&read_cb_lock);
 #endif
 
 #ifdef __REAL_TIME_STATS__
@@ -186,17 +196,9 @@ void read_cb(struct bufferevent * bev, void * arg){
     double start_time = (double)start.tv_sec * 1000000 + (double)start.tv_usec;
     double end_time = (double)end.tv_sec * 1000000 + (double)end.tv_usec;
 
-    char buff[100];
-    
-    sprintf(buff, "total_time %d\n", (int)(end_time - start_time));
+    read_arg->request_cnt++;
+    read_arg->total_time += (int)(end_time - start_time);
 
-    pthread_mutex_lock(&read_cb_lock);
-    FILE * fp = fopen("read_cb.txt", "a+");
-    fseek(fp, 0, SEEK_END);
-    
-    fwrite(buff, strlen(buff), 1, fp);
-    fclose(fp);
-    pthread_mutex_unlock(&read_cb_lock);
 #endif
 }
 

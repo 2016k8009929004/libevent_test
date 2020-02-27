@@ -5,7 +5,7 @@
 //#define __GET_CORE__
 
 //#define __EVAL_CB__
-//#define __EVAL_READ__
+#define __EVAL_READ__
 
 #define BUF_SIZE 4096
 
