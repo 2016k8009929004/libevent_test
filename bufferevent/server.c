@@ -143,7 +143,7 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
 #endif
 
 #ifdef __REAL_TIME_STATS__
-        request_endread_argfd, read_arg->start, read_arg->byte_sent, read_arg->request_cnt);
+        request_end(read_arg->fd, read_arg->start, read_arg->byte_sent, read_arg->request_cnt);
 #endif
     }
 }
