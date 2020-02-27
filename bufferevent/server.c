@@ -222,5 +222,7 @@ void * server_thread(void * arg){
 
     event_base_dispatch(base);
 
+    printf("------ event end ------\n");
+
     return 0;
 }
