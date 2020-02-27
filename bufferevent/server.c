@@ -131,9 +131,15 @@ void * server_process(void * arg){
     read_arg->start = (struct time_record *)malloc(sizeof(struct time_record));
     read_arg->start->flag = 0;  
 
-    bufferevent_setcb(bev, read_cb , NULL, NULL, read_arg);
+    bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 
+}
+
+void event_cb(struct bufferevent * bev, short event, void * arg){
+    if(event & BEV_EVENT_EOF){
+        printf("[SERVER] connection closed\n");
+    }
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
@@ -221,8 +227,6 @@ void * server_thread(void * arg){
     event_add(ev_listen, NULL);
 
     event_base_dispatch(base);
-
-    printf("------ event end ------\n");
 
     return 0;
 }
