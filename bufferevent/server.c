@@ -84,7 +84,7 @@ void accept_cb(int fd, short events, void * arg){
     char buff[100];
     
     sprintf(buff, "total_time %d pthread_create_time %d\n", 
-            (int)(end_time - start_time), (int)(pthread_end_time - pthread_start_time));
+        (int)(end_time - start_time), (int)(pthread_end_time - pthread_start_time));
 
     pthread_mutex_lock(&accept_cb_lock);
     FILE * fp = fopen("accept_cb.txt", "a+");
@@ -122,14 +122,12 @@ void * server_process(void * arg){
     
     read_arg->fd = fd;
 
-    read_arg->byte_sent = (int *)malloc(sizeof(int));
-    *(read_arg->byte_sent) = 0;
+    read_arg->byte_sent = 0;
+    read_arg->request_cnt = 0;
 
-    read_arg->request_cnt = (int *)malloc(sizeof(int));
-    *(read_arg->request_cnt) = 0;
+    read_arg->total_time = 0;
 
-    read_arg->start = (struct time_record *)malloc(sizeof(struct time_record));
-    read_arg->start->flag = 0;  
+    read_arg->start_flag = 0;  
 
     bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
@@ -139,6 +137,14 @@ void * server_process(void * arg){
 void event_cb(struct bufferevent * bev, short event, void * arg){
     if(event & BEV_EVENT_EOF){
         printf("[SERVER] connection closed\n");
+        
+#ifdef __EVAL_READ__
+    
+#endif
+
+#ifdef __REAL_TIME_STATS__
+        request_end(read_arg->fd, read_arg->start, read_arg->byte_sent, read_arg->request_cnt);
+#endif
     }
 }
 
@@ -146,15 +152,15 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
-#ifdef __EVAL_CB__
+#ifdef __EVAL_READ__
     struct timeval start;
     gettimeofday(&start, NULL);
 #endif
 
 #ifdef __REAL_TIME_STATS__
-    if(!read_arg->start->flag){
-        gettimeofday(&read_arg->start->time, NULL);
-        read_arg->start->flag = 1;
+    if(!read_arg->start_flag){
+        gettimeofday(&read_arg->start, NULL);
+        read_arg->start_flag = 1;
     }
 #endif
 
@@ -169,12 +175,11 @@ void read_cb(struct bufferevent * bev, void * arg){
     bufferevent_write(bev, msg, len);
 
 #ifdef __REAL_TIME_STATS__
-    (*(read_arg->request_cnt))++;
-    *(read_arg->byte_sent) += len;
-    request_end(read_arg->fd, read_arg->start->time, *(read_arg->byte_sent), *(read_arg->request_cnt));
+    read_arg->request_cnt++;
+    read_arg->byte_sent += len;
 #endif
 
-#ifdef __EVAL_CB__
+#ifdef __EVAL_READ__
     struct timeval end;
     gettimeofday(&end, NULL);
 

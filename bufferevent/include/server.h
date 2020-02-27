@@ -5,6 +5,7 @@
 //#define __GET_CORE__
 
 //#define __EVAL_CB__
+//#define __EVAL_READ__
 
 #define BUF_SIZE 4096
 
@@ -15,18 +16,18 @@ pthread_mutex_t read_cb_lock;
 
 struct sock_ev_read {
     int fd;
-    int * byte_sent;
-    int * request_cnt;
-    struct time_record * start;
+    
+    int byte_sent;
+    int request_cnt;
+
+    int total_time;
+
+    struct timeval start;
+    int start_flag;
 };
 
 pthread_mutex_t connect_lock;
 int connect_cnt = 0;
-
-struct time_record {
-    struct timeval time;
-    int flag;
-};
 
 struct server_process_arg {
     evutil_socket_t * fd;
