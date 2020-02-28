@@ -198,19 +198,20 @@ void read_cb(struct bufferevent * bev, void * arg){
 #ifdef __EVAL_READ__
     struct timeval end;
     gettimeofday(&end, NULL);
-
+    
     double start_time = (double)start.tv_sec * 1000000 + (double)start.tv_usec;
     double end_time = (double)end.tv_sec * 1000000 + (double)end.tv_usec;
 
-    read_arg->request_cnt++;
-    read_arg->total_time += (int)(end_time - start_time);
-
+    pthread_mutex_lock(&read_cb_lock);
+    request_cnt++;
+    total_time += (int)(end_time - start_time);
+    pthread_mutex_unlock(&read_cb_lock);
 #endif
 }
 
 static void signal_cb(evutil_socket_t sig, short events, void * arg){
     struct event_base * base = arg;
-    
+#ifdef __REAL_TIME_STATS__
     double start_time = (double)g_start.tv_sec + ((double)g_start.tv_usec/(double)1000000);
     double end_time = (double)g_end.tv_sec + ((double)g_end.tv_usec/(double)1000000);
 
@@ -227,6 +228,20 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
     fwrite(buff, strlen(buff), 1, fp);
 
     fclose(fp);
+#endif
+
+#ifdef __EVAL_READ__
+    FILE * fp = fopen("read_cb.txt", "a+");
+    fseek(fp, 0, SEEK_END);
+
+    char buff[1024];
+
+    sprintf(buff, "callback %.4f\n", ((double)total_time)/request_cnt);
+    
+    fwrite(buff, strlen(buff), 1, fp);
+
+    fclose(fp);
+#endif
 
     event_base_loopexit(base, NULL);
 }
