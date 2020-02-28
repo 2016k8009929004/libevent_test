@@ -246,10 +246,10 @@ void * server_thread(void * arg){
     struct event_base * base = event_base_new();
 
     struct event * ev_listen = event_new(base, sock, EV_READ | EV_PERSIST, accept_cb, base);
-
-    struct event * signal_event = evsignal_new(base, SIGINT, signal_cb, (void *)base);
-
     event_add(ev_listen, NULL);
+
+    struct event * ev_signal = evsignal_new(base, SIGINT, signal_cb, (void *)base);
+    event_add(ev_signal, NULL)
 
     event_base_dispatch(base);
 
