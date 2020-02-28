@@ -6,6 +6,13 @@
 
 //#define __EVAL_CB__
 //#define __EVAL_READ__
+//#define __REAL_TIME_STATS__
+
+#ifdef __REAL_TIME_STATS__
+pthread_mutex_t record_lock;
+int request_cnt;
+int byte_sent;
+#endif
 
 #define BUF_SIZE 4096
 

@@ -185,8 +185,8 @@ void read_cb(struct bufferevent * bev, void * arg){
     bufferevent_write(bev, msg, len);
 
 #ifdef __REAL_TIME_STATS__
-    read_arg->request_cnt++;
-    read_arg->byte_sent += len;
+    request_cnt++;
+    byte_sent += len;
 #endif
 
 #ifdef __EVAL_READ__
@@ -200,6 +200,15 @@ void read_cb(struct bufferevent * bev, void * arg){
     read_arg->total_time += (int)(end_time - start_time);
 
 #endif
+}
+
+static void signal_cb(evutil_socket_t sig, short events, void * user_data){
+    struct event_base * base = user_data;
+    struct timeval delay = { 2, 0 };
+
+    printf("Caught an interrupt signal; exiting cleanly in two seconds.\n");
+
+    event_base_loopexit(base, &delay);
 }
 
 void * server_thread(void * arg){
@@ -220,6 +229,10 @@ void * server_thread(void * arg){
     pthread_mutex_init(&read_cb_lock, NULL);
 #endif
 
+#ifdef __REAL_TIME_STATS__
+    pthread_mutex_init(&record_lock, NULL);
+#endif
+
     event_init();
 
     pthread_mutex_init(&connect_lock, NULL);
@@ -233,6 +246,8 @@ void * server_thread(void * arg){
     struct event_base * base = event_base_new();
 
     struct event * ev_listen = event_new(base, sock, EV_READ | EV_PERSIST, accept_cb, base);
+
+    struct event * signal_event = evsignal_new(base, SIGINT, signal_cb, (void *)base);
 
     event_add(ev_listen, NULL);
 
