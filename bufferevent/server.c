@@ -137,7 +137,7 @@ void * server_process(void * arg){
 void event_cb(struct bufferevent * bev, short event, void * arg){
     if(event & BEV_EVENT_EOF){
         struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
-        
+
 #ifdef __EVAL_READ__
         char buff[100];
     
@@ -153,7 +153,9 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
 #endif
 
 #ifdef __REAL_TIME_STATS__
-        request_end(read_arg->fd, read_arg->start, read_arg->byte_sent, read_arg->request_cnt);
+        pthread_mutex_lock(&end_lock);
+        gettimeofday(&g_end, NULL);
+        pthread_mutex_unlock(&end_lock);
 #endif
     }
 }
@@ -168,10 +170,12 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
 #ifdef __REAL_TIME_STATS__
-    if(!read_arg->start_flag){
-        gettimeofday(&read_arg->start, NULL);
-        read_arg->start_flag = 1;
+    pthread_mutex_lock(&start_lock);
+    if(!start_flag){
+        gettimeofday(&g_start, NULL);
+        start_flag = 1;
     }
+    pthread_mutex_unlock(&start_lock);
 #endif
 
     char msg[BUF_SIZE + 1];
@@ -185,8 +189,10 @@ void read_cb(struct bufferevent * bev, void * arg){
     bufferevent_write(bev, msg, len);
 
 #ifdef __REAL_TIME_STATS__
+    pthread_mutex_lock(&record_lock);
     request_cnt++;
     byte_sent += len;
+    pthread_mutex_unlock(&record_lock);
 #endif
 
 #ifdef __EVAL_READ__
@@ -204,11 +210,23 @@ void read_cb(struct bufferevent * bev, void * arg){
 
 static void signal_cb(evutil_socket_t sig, short events, void * user_data){
     struct event_base * base = user_data;
-    struct timeval delay = { 2, 0 };
+    
+    double start_time = (double)g_start.tv_sec + ((double)g_start.tv_usec/(double)1000000);
+    double end_time = (double)g_end.tv_sec + ((double)g_end.tv_usec/(double)1000000);
 
-    printf("Caught an interrupt signal; exiting cleanly in two seconds.\n");
+	double elapsed = end_time - start_time;
 
-    event_base_loopexit(base, &delay);
+	FILE * fp = fopen("throughput.txt", "a+");
+    fseek(fp, 0, SEEK_END);
+
+    char buff[1024];
+
+    sprintf(buff, "rps %.4f throughput %.4f\n", 
+            ((double)request_cnt)/elapsed, ((double)byte_sent)/elapsed);
+    
+    fwrite(buff, strlen(buff), 1, fp);
+
+    fclose(fp);
 }
 
 void * server_thread(void * arg){
@@ -231,6 +249,12 @@ void * server_thread(void * arg){
 
 #ifdef __REAL_TIME_STATS__
     pthread_mutex_init(&record_lock, NULL);
+    request_cnt = byte_sent = 0;
+
+    pthread_mutex_init(&start_lock, NULL);
+    start_flag = 0;
+
+    pthread_mutex_init(&end_lock, NULL);
 #endif
 
     event_init();
