@@ -249,7 +249,7 @@ void * server_thread(void * arg){
     event_add(ev_listen, NULL);
 
     struct event * ev_signal = evsignal_new(base, SIGINT, signal_cb, (void *)base);
-    event_add(ev_signal, NULL)
+    event_add(ev_signal, NULL);
 
     event_base_dispatch(base);
 
