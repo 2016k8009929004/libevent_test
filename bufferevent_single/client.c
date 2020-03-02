@@ -38,9 +38,6 @@ void * send_request(void * arg){
     memset(recv_buf, 0, sizeof(recv_buf));
 
 	int send_size, recv_size;
-    int total_time, request_cnt;
-
-    total_time = request_cnt = 0;
 
     FILE * send_fp = fopen("client-input.dat", "rb");
 #ifdef RECEIVE_DEBUG
@@ -49,6 +46,9 @@ void * send_request(void * arg){
 
 #ifdef __EV_RTT__
     struct timeval record_start[200000], record_end[200000];
+
+    int request_cnt;
+    request_cnt = 0;
     
     FILE * fp = fopen("rtt.txt", "a+");
     fseek(fp, 0, SEEK_END);
@@ -116,12 +116,12 @@ void * send_request(void * arg){
 #ifdef __EV_RTT__
     int j;
     for(j = 0;j <= request_cnt;j++){
-        double start_time = (double)record_start[j].tv_sec * 1000000 + (double)record_start[j].tv_usec;
-        double end_time = (double)record_end[j].tv_sec * 1000000 + (double)record_end[j].tv_usec;
+        long start_time = (long)record_start[j].tv_sec * 1000000 + (long)record_start[j].tv_usec;
+        long end_time = (long)record_end[j].tv_sec * 1000000 + (long)record_end[j].tv_usec;
 
         char buff[1024];
 
-        sprintf(buff, "start: %lf, end: %ld, rtt %d\n", start_time, end_time, end_time - start_time);
+        sprintf(buff, "start: %ld, end: %ld, rtt %ld\n", start_time, end_time, end_time - start_time);
         
         pthread_mutex_lock(&rtt_lock);
 
