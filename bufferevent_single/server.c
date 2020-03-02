@@ -39,6 +39,8 @@ void accept_cb(int fd, short events, void * arg){
     struct sockaddr_in client;
     socklen_t len = sizeof(client);
 
+    struct event_base * base = (struct event_base *)arg;
+
     evutil_socket_t * s = (evutil_socket_t *)malloc(sizeof(evutil_socket_t)); 
 
     if((*s = accept(fd, (struct sockaddr *)&client, &len)) < 0){
@@ -92,7 +94,7 @@ void accept_cb(int fd, short events, void * arg){
     
 #endif
 }
-
+#if 0
 void * server_process(void * arg){
     struct server_process_arg * thread_arg = (struct server_process_arg *)arg;
     evutil_socket_t fd = *(thread_arg->fd);
@@ -129,7 +131,7 @@ void * server_process(void * arg){
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 
 }
-
+#endif
 void event_cb(struct bufferevent * bev, short event, void * arg){
     if(event & BEV_EVENT_EOF){
         struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;

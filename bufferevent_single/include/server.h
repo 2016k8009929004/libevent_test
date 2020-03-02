@@ -5,7 +5,7 @@
 //#define __GET_CORE__
 
 //#define __EVAL_CB__
-##define __EVAL_READ__
+//#define __EVAL_READ__
 
 //#define __REAL_TIME_STATS__
 
@@ -60,9 +60,9 @@ struct server_process_arg {
 evutil_socket_t server_init(int port, int listen_num);
 
 void accept_cb(int fd, short events, void * arg);
-
+#if 0
 void * server_process(void * arg);
-
+#endif
 void read_cb(struct bufferevent * bev, void * arg);
 
 void event_cb(struct bufferevent * bev, short event, void * arg);
