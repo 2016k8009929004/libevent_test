@@ -225,43 +225,14 @@ void send_request_thread(struct send_info * info){
 }
 
 void * client_thread(void * argv){
-#if 0
-    struct client_arg * server = (struct client_arg *)argv;
+    cpu_set_t core_set;
 
-    buf_size = server->buf_size;
-    
-    int send_byte, recv_byte;
-    send_byte = recv_byte = 0;
-/*
-    pthread_mutex_t send_lock, recv_lock;
-    pthread_mutex_init(&send_lock, NULL);
-    pthread_mutex_init(&recv_lock, NULL);
-    
-    pthread_mutex_init(&work_done_lock, NULL);
-*/
-    int sockfd = connect_server(*(server->ip_addr), server->port);
-    if(sockfd == -1){
-        perror("[CLIENT] tcp connect error");
-        exit(1);
+    CPU_ZERO(&core_set);
+    CPU_SET(0, &core_set);
+
+    if (pthread_setaffinity_np(pthread_self(), sizeof(core_set), &core_set) == -1){
+        printf("warning: could not set CPU affinity, continuing...\n");
     }
-
-    struct send_info * info = (struct send_info *)malloc(SEND_INFO_SIZE);
-    info->sockfd = &sockfd;
-//    info->send_lock = &send_lock;
-    info->send_byte = &send_byte;
-//    info->recv_lock = &recv_lock;
-    info->recv_byte = &recv_byte;
-
-    receive_response_thread(info);
-
-    send_request_thread(info);
-
-    while(!work_done_flag);
-
-    free(info);
-
-    return NULL;
-#endif
 
     struct client_arg * server = (struct client_arg *)argv;
 
