@@ -32,7 +32,6 @@ evutil_socket_t server_init(int port, int listen_num){
 }
 
 void accept_cb(int fd, short events, void * arg){
-    printf("------ accept cb ------\n");
 #ifdef __EVAL_CB__
     struct timeval start;
     gettimeofday(&start, NULL);
@@ -135,19 +134,25 @@ void * server_process(void * arg){
 #endif
 void event_cb(struct bufferevent * bev, short event, void * arg){
     if(event & BEV_EVENT_EOF){
-        struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
-
 #ifdef __REAL_TIME_STATS__
         pthread_mutex_lock(&end_lock);
         gettimeofday(&g_end, NULL);
         pthread_mutex_unlock(&end_lock);
 #endif
+        bufferevent_free(bev);
+
+    }else if(event & BEV_EVENT_READING){
+		printf("BEV_EVENT_READING event happend\n");
+		bufferevent_free(bev);
+	}else if(event & BEV_EVENT_WRITING)
+	{
+		printf("BEV_EVENT_WRITING event happend\n");
+		bufferevent_free(bev);	
     }
+
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
-    printf("------ read cb ------\n");
-
     struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
 #ifdef __EVAL_READ__
