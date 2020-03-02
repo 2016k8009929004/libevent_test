@@ -55,11 +55,11 @@ void accept_cb(int fd, short events, void * arg){
     connect_cnt++;
     pthread_mutex_unlock(&connect_lock);
 
-    struct bufferevent * bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
+    struct bufferevent * bev = bufferevent_socket_new(base, *s, BEV_OPT_CLOSE_ON_FREE);
     
     struct sock_ev_read * read_arg = (struct sock_ev_read *)malloc(sizeof(struct sock_ev_read));
     
-    read_arg->fd = s;
+    read_arg->fd = *s;
 
     read_arg->byte_sent = 0;
     read_arg->request_cnt = 0;
