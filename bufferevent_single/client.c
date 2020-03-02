@@ -48,7 +48,7 @@ void * send_request(void * arg){
 #endif
 
 #ifdef __EV_RTT__
-    struct timeval record_start[10000], record_end[10000];
+    struct timeval record_start[200000], record_end[200000];
     
     FILE * fp = fopen("rtt.txt", "a+");
     fseek(fp, 0, SEEK_END);
