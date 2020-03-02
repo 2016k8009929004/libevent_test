@@ -115,13 +115,13 @@ void * send_request(void * arg){
 
 #ifdef __EV_RTT__
     int j;
-    for(j = 0;j < request_cnt;j++){
+    for(j = 0;j <= request_cnt;j++){
         double start_time = (double)record_start[j].tv_sec * 1000000 + (double)record_start[j].tv_usec;
         double end_time = (double)record_end[j].tv_sec * 1000000 + (double)record_end[j].tv_usec;
 
         char buff[1024];
 
-        sprintf(buff, "rtt %d\n", end_time - start_time);
+        sprintf(buff, "start: %lf, end: %ld, rtt %d\n", start_time, end_time, end_time - start_time);
         
         pthread_mutex_lock(&rtt_lock);
 
