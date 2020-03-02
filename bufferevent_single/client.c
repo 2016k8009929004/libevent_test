@@ -49,9 +49,6 @@ void * send_request(void * arg){
 
 #ifdef __EV_RTT__
     struct timeval record_start[10000], record_end[10000];
-
-    int request_cnt;
-    request_cnt = 0;
     
     FILE * fp = fopen("rtt.txt", "a+");
     fseek(fp, 0, SEEK_END);
@@ -115,12 +112,6 @@ void * send_request(void * arg){
         }
     }
 #endif
-
-        if(end.tv_sec - time1.tv_sec > 10){
-            printf("[CLIENT] request complete\n");
-            break;
-        }
-    }
 
 #ifdef __EV_RTT__
     int j;
