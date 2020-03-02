@@ -48,29 +48,25 @@ void accept_cb(int fd, short events, void * arg){
 
     evutil_make_socket_nonblocking(*s);
 
-    struct server_process_arg * thread_arg = (struct server_process_arg *)malloc(SERVER_PROCESS_ARG_SIZE);
-    thread_arg->fd = s;
-    thread_arg->base = (struct event_base *)arg;
-    thread_arg->sequence = connect_cnt;
-
     pthread_mutex_lock(&connect_lock);
     connect_cnt++;
     pthread_mutex_unlock(&connect_lock);
 
-    pthread_t thread;
+    struct bufferevent * bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
+    
+    struct sock_ev_read * read_arg = (struct sock_ev_read *)malloc(sizeof(struct sock_ev_read));
+    
+    read_arg->fd = s;
 
-#ifdef __EVAL_CB__
-    struct timeval pthread_start, pthread_end;
-    gettimeofday(&pthread_start, NULL);
-#endif
+    read_arg->byte_sent = 0;
+    read_arg->request_cnt = 0;
 
-    pthread_create(&thread, NULL, server_process, (void *)thread_arg);
+    read_arg->total_time = 0;
 
-#ifdef __EVAL_CB__
-    gettimeofday(&pthread_end, NULL);
-#endif
+    read_arg->start_flag = 0;  
 
-    pthread_detach(thread);
+    bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
+    bufferevent_enable(bev, EV_READ | EV_PERSIST);
 
 #ifdef __EVAL_CB__
     struct timeval end;
