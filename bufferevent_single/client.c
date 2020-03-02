@@ -57,9 +57,11 @@ void * send_request(void * arg){
 
     while(!feof(send_fp)){
 
+#ifdef __EV_RTT__
         struct timeval start;
         gettimeofday(&start, NULL);
-  
+#endif  
+
 //send request
         send_size = fread(send_buf, 1, buf_size, send_fp);
 
@@ -94,7 +96,7 @@ void * send_request(void * arg){
 
 #ifdef __EV_RTT__
         request_cnt++;
-	    total_time += (int)(end_time - start_time);
+	    
 #endif
 
         if(end.tv_sec - time1.tv_sec > 10){
