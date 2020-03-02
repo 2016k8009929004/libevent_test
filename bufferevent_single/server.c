@@ -32,6 +32,7 @@ evutil_socket_t server_init(int port, int listen_num){
 }
 
 void accept_cb(int fd, short events, void * arg){
+    printf("[accept_cb] pid: %d, tid:%ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 #ifdef __EVAL_CB__
     struct timeval start;
     gettimeofday(&start, NULL);
@@ -145,6 +146,7 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
+    printf("[read_cb] pid: %d, tid:%ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
     struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
 #ifdef __EVAL_READ__
