@@ -141,15 +141,7 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
 #endif
         bufferevent_free(bev);
 
-    }else if(event & BEV_EVENT_READING){
-		printf("BEV_EVENT_READING event happend\n");
-		bufferevent_free(bev);
-	}else if(event & BEV_EVENT_WRITING)
-	{
-		printf("BEV_EVENT_WRITING event happend\n");
-		bufferevent_free(bev);	
     }
-
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
