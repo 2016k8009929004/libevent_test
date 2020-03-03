@@ -45,7 +45,7 @@ void * send_request(void * arg){
 #endif
 
 #ifdef __EV_RTT__
-    struct timeval record_start[200000], record_end[200000];
+    struct timeval record_start[250000], record_end[250000];
 
     int request_cnt;
     request_cnt = 0;
@@ -126,6 +126,7 @@ void * send_request(void * arg){
         pthread_mutex_lock(&rtt_lock);
 
         fwrite(buff, strlen(buff), 1, fp);
+        fflush(fp);
 
         pthread_mutex_unlock(&rtt_lock);
     }
