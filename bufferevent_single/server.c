@@ -9,9 +9,9 @@ evutil_socket_t server_init(int port, int listen_num){
 		return -1;
     }
 
-//    evutil_make_listen_socket_reuseable(sock);
-    int on = 1;
-    setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+    evutil_make_listen_socket_reuseable(sock);
+//    int on = 1;
+//    setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
 
     struct sockaddr_in sin;
     sin.sin_family = AF_INET;
