@@ -234,8 +234,9 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
     int i;
 
 	for (i = 0; i < core_limit; i++) {
+        printf("Server thread %d got signal\n", i);
 		if(sv_thread[i] == pthread_self()){
-			printf("Server thread %d got signal\n", i);
+
         }else{
 			pthread_kill(sv_thread[i], sig);
         }
@@ -254,10 +255,12 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 }
 
 void * server_thread(void * arg){
+	int core = *(int *)arg;
+
     cpu_set_t core_set;
 
     CPU_ZERO(&core_set);
-    CPU_SET(0, &core_set);
+    CPU_SET(core, &core_set);
 
     if (pthread_setaffinity_np(pthread_self(), sizeof(core_set), &core_set) == -1){
         printf("warning: could not set CPU affinity, continuing...\n");
