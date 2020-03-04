@@ -243,9 +243,7 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
         }
 	}
 
-    printf("pthread all end\n");
-
-//    event_base_loopexit(base, NULL);
+    event_base_loopexit(base, NULL);
 }
 
 void * server_thread(void * arg){
