@@ -231,6 +231,7 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 
     event_base_loopexit(base, NULL);
 
+    pthread_exit(NULL);
 }
 
 void * server_thread(void * arg){
