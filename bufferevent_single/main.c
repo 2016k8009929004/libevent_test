@@ -77,11 +77,11 @@ int main(int argc, char * argv[]){
 
         int i;
         for(i = 0;i < core_limit;i++){
-            pthread_create(&server_thread[i], NULL, server_thread, NULL);
+            pthread_create(&sv_thread[i], NULL, server_thread, NULL);
         }
 
         for(i = 0;i < core_limit;i++){
-            pthread_join(server_thread[i], NULL);
+            pthread_join(sv_thread[i], NULL);
         }
 #if 0
         int cpu_num = sysconf(_SC_NPROCESSORS_CONF);
