@@ -246,6 +246,8 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 		}
 	}
 
+	printf("----- check status: %d -----");
+
     for (i = 0; i < core_limit; i++) {
 		if(!done[i]){
 			break;
