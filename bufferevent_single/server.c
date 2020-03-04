@@ -227,11 +227,35 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
     fclose(fp);
 #endif
 
+//    event_base_loopexit(base, NULL);
+
     struct event_base * base = arg;
 
-    event_base_loopexit(base, NULL);
+	printf("----- Server thread %lu -----\n", pthread_self());
 
-    pthread_exit(NULL);
+    int i;
+
+	for (i = 0; i < core_limit; i++) {
+		if (sv_thread[i] == pthread_self()) {
+//			printf("Server thread %d got SIGINT\n", i);
+			done[i] = 1;
+		} else {
+			if (!done[i]) {
+				pthread_exit(NULL);
+			}
+		}
+	}
+
+    for (i = 0; i < core_limit; i++) {
+		if(!done[i]){
+			break;
+        }
+	}
+
+    if(i == core_limit){
+		printf("all threads are exited\n");
+        event_base_loopexit(base, NULL);
+    }
 }
 
 void * server_thread(void * arg){
