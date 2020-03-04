@@ -228,7 +228,7 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 #endif
 
 //    event_base_loopexit(base, NULL);
-
+/*
     struct event_base * base = arg;
 
     int i;
@@ -252,6 +252,8 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 		printf("all threads are exited\n");
         event_base_loopexit(base, NULL);
     }
+*/
+    pthread_exit(NULL);
 }
 
 void * server_thread(void * arg){
