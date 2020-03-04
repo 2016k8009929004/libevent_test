@@ -238,7 +238,7 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 			done[i] = 1;
         }else{
             if(!done[i]){
-                pthread_kill(app_thread[i], sig);
+                pthread_kill(sv_thread[i], sig);
             }
         }
 	}
