@@ -268,6 +268,9 @@ void * server_thread(void * arg){
         printf("warning: could not set CPU affinity, continuing...\n");
     }
 
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+
 #ifdef __EVAL_CB__
     pthread_mutex_init(&accept_cb_lock, NULL);
 #endif
