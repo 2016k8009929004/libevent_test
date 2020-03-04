@@ -235,13 +235,9 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 
 	for (i = 0; i < core_limit; i++) {
 		if(sv_thread[i] == pthread_self()){
-//			printf("Server thread %d got signal\n", i);
+			printf("Server thread %d got signal\n", i);
 			done[i] = 1;
-            pthread_kill(sv_thread[i], sig);
-        }else{
-            if(!done[i]){
-                pthread_kill(sv_thread[i], sig);
-            }
+            pthread_exit(NULL);
         }
 	}
 
@@ -252,6 +248,7 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 	}
     
     if(i == core_limit){
+		printf("all threads are exited\n");
         event_base_loopexit(base, NULL);
     }
 }
