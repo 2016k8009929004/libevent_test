@@ -234,9 +234,9 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 
 	for (i = 0; i < core_limit; i++) {
 		if (app_thread[i] == pthread_self()) {
-			printf("Server thread %d got SIGINT\n", i);
+			printf("Server thread %d got signal\n", i);
 		} else {
-			pthread_kill(app_thread[i], signum);
+			pthread_kill(app_thread[i], sig);
 		}
 	}
 }
