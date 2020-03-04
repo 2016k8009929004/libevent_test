@@ -236,6 +236,7 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 		if (sv_thread[i] == pthread_self()) {
 			printf("Server thread %d got signal\n", i);
 			pthread_kill(sv_thread[i], sig);
+        }
 	}
 
     event_base_loopexit(base, NULL);
