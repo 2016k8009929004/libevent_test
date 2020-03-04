@@ -231,15 +231,19 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 
     struct event_base * base = arg;
 
+	printf("----- Server thread %d -----\n", pthread_self());
+
     int i;
 
 	for (i = 0; i < core_limit; i++) {
-        printf("Server thread %d got signal\n", i);
-		if(sv_thread[i] == pthread_self()){
-
-        }else{
-			pthread_kill(sv_thread[i], sig);
-        }
+		if (sv_thread[i] == pthread_self()) {
+//			printf("Server thread %d got SIGINT\n", i);
+			done[i] = 1;
+		} else {
+			if (!done[i]) {
+				pthread_kill(sv_thread[i], sig);
+			}
+		}
 	}
 
     for (i = 0; i < core_limit; i++) {
@@ -265,9 +269,6 @@ void * server_thread(void * arg){
     if (pthread_setaffinity_np(pthread_self(), sizeof(core_set), &core_set) == -1){
         printf("warning: could not set CPU affinity, continuing...\n");
     }
-
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 
 #ifdef __EVAL_CB__
     pthread_mutex_init(&accept_cb_lock, NULL);
