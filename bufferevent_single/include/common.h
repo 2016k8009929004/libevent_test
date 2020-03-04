@@ -40,6 +40,7 @@ struct client_arg {
 
 int core_limit;
 pthread_t sv_thread[MAX_CPUS];
+int done[MAX_CPUS];
 
 void * client_thread(void * argv);
 void * server_thread(void * arg);

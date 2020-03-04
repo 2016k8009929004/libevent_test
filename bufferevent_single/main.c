@@ -73,9 +73,13 @@ int main(int argc, char * argv[]){
     }else{
 //        server_thread(argc, argv);
 
+        int i;
+        for(i = 0;i < core_limit;i++){
+            done[i] = 0;
+        }
+
         core_limit = atoi(argv[1]);
 
-        int i;
         for(i = 0;i < core_limit;i++){
             pthread_create(&sv_thread[i], NULL, server_thread, NULL);
         }
