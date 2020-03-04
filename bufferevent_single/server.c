@@ -228,7 +228,17 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
     fclose(fp);
 #endif
 
-    event_base_loopexit(base, NULL);
+//    event_base_loopexit(base, NULL);
+
+    int i;
+
+	for (i = 0; i < core_limit; i++) {
+		if (app_thread[i] == pthread_self()) {
+			printf("Server thread %d got SIGINT\n", i);
+		} else {
+			pthread_kill(app_thread[i], signum);
+		}
+	}
 }
 
 void * server_thread(void * arg){

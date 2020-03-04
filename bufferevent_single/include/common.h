@@ -34,6 +34,13 @@ struct client_arg {
     int buf_size;
 };
 
+#ifndef MAX_CPUS
+#define MAX_CPUS		16
+#endif
+
+int core_limit;
+pthread_t server_thread[MAX_CPUS];
+
 void * client_thread(void * argv);
 void * server_thread(void * arg);
 
