@@ -195,6 +195,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 }
 
 static void signal_cb(evutil_socket_t sig, short events, void * arg){
+    struct event_base * base = arg;
 #ifdef __REAL_TIME_STATS__
     double start_time = (double)g_start.tv_sec + ((double)g_start.tv_usec/(double)1000000);
     double end_time = (double)g_end.tv_sec + ((double)g_end.tv_usec/(double)1000000);
@@ -228,8 +229,6 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 #endif
 
 //    event_base_loopexit(base, NULL);
-
-    struct event_base * base = arg;
 
 	exit(0);
 }
