@@ -147,6 +147,8 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
+    printf("[read cb] pid: %d, tid:%ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
+
     struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
 
 #ifdef __EVAL_READ__
