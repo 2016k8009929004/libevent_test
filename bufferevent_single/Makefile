@@ -1,8 +1,8 @@
 TARGET = libevent_test
 all: $(TARGET)
 
-CC = gcc
-LD = gcc
+CC = g++
+LD = g++
 
 CFLAGS = -g -Wall -Iinclude
 LDFLAGS = -L/usr/local/lib/ 
@@ -11,11 +11,11 @@ LIBS = -lpthread -levent
 
 HDRS = ./include/*.h
 
-SRCS = common.c evallib.c client.c server.c main.c
+SRCS = common.cc evallib.cc client.cc server.cc main.cc
 
-OBJS = $(patsubst %.c,%.o, $(SRCS))
+OBJS = $(patsubst %.cc,%.o, $(SRCS))
 
-$(OBJS)  : %.o : %.c include/*.h
+$(OBJS)  : %.o : %.cc include/*.h
 		$(CC) -c $(CFLAGS) $< -o $@
 
 $(TARGET): $(OBJS)
