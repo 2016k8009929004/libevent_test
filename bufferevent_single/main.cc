@@ -1,6 +1,7 @@
 #include "common.h"
 
 extern int client_thread_num;
+extern int core_limit;
 
 #define PTHREAD_TEST
 //#define FORK_TEST
