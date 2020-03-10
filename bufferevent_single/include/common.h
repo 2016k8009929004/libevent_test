@@ -38,10 +38,10 @@ struct client_arg {
 #define MAX_CPUS		16
 #endif
 
-int core_limit;
-pthread_t sv_thread[MAX_CPUS];
-int done[MAX_CPUS];
-int cores[MAX_CPUS];
+static int core_limit;
+static pthread_t sv_thread[MAX_CPUS];
+static int done[MAX_CPUS];
+static int cores[MAX_CPUS];
 
 void * client_thread(void * argv);
 void * server_thread(void * arg);
