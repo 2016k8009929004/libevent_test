@@ -1,10 +1,12 @@
 #include "common.h"
 
-extern int client_thread_num;
-extern int core_limit;
-
 #define PTHREAD_TEST
 //#define FORK_TEST
+
+extern int core_limit;
+extern pthread_t sv_thread[MAX_CPUS];
+extern int done[MAX_CPUS];
+extern int cores[MAX_CPUS];
 
 //extern pthread_mutex_t fin_client_thread_lock;
 
