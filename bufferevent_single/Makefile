@@ -4,7 +4,7 @@ all: $(TARGET)
 CC = g++
 LD = g++
 
-CFLAGS = -g -Wall -Iinclude
+CFLAGS = -std=c++11 -g -Wall -Iinclude
 LDFLAGS = -L/usr/local/lib/ 
 
 LIBS = -lpthread -levent
