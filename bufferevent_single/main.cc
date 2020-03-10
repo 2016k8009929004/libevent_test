@@ -3,6 +3,7 @@
 #define PTHREAD_TEST
 //#define FORK_TEST
 
+extern int client_thread_num;
 extern int core_limit;
 extern pthread_t sv_thread[MAX_CPUS];
 extern int done[MAX_CPUS];
