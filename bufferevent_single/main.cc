@@ -10,13 +10,8 @@ extern int client_thread_num;
 int main(int argc, char * argv[]){
     if(argc == 5){
 #ifdef PTHREAD_TEST
-//        client_thread(argc, argv);
 
         client_thread_num = atoi(argv[1]);
-
-//        pthread_mutex_init(&fin_client_thread_lock, NULL);
-
-//        thread_num = atoi(argv[1]);
 
         pthread_t * threads = (pthread_t *)malloc(sizeof(pthread_t) * client_thread_num);
 
@@ -38,70 +33,72 @@ int main(int argc, char * argv[]){
             pthread_join(threads[i], NULL);
         }
 
-#endif
-
-#ifdef FORK_TEST
-        pid_t pid;
-        int i;
-        for(i = 0;i < client_thread_num;i++){
-            pid = fork();
-            if(pid == -1){
-                perror("[CLIENT] fork failed");
-                exit(1);
-            }else if(pid == 0){
-                break;
-            }
-        }
-
-        if(pid == 0){
-            cpu_set_t mask;
-            CPU_ZERO(&mask);
-            CPU_SET(i % 46, &mask);
-
-            if (sched_setaffinity(0, sizeof(mask), &mask) == -1){
-                printf("warning: could not set CPU affinity, continuing...\n");
-            }
-
-            struct client_arg arg;
-            arg.ip_addr = &argv[2];
-            arg.port = atoi(argv[3]);
-            arg.buf_size = atoi(argv[4]);
-
-            client_thread(&arg);
-        }
-#endif
     }else{
-//        server_thread(argc, argv);
 
         core_limit = atoi(argv[1]);
 
+        struct hikv_arg hikv_thread_arg = {
+            2,      //pm_size
+            1,      //num_server_thread
+            1,      //num_backend_thread
+            0,      //num_warm_kv
+            0,      //num_put_kv
+            0,      //num_get_kv
+            0,      //num_delete_kv
+            0,      //num_scan_kv
+            100,    //scan_range
+            1234,   //seed
+            0       //scan_all
+        }
+
         int i;
+        for (i = 0; i < argc; i++){
+            double d;
+            uint64_t n;
+            char junk;
+            if(sscanf(argv[i], "--pm_size=%llu%c", &n, &junk) == 1){
+                hikv_thread_arg->pm_size = n;
+            }else if(sscanf(argv[i], "--num_server_thread=%llu%c", &n, &junk) == 1){
+                hikv_thread_arg->num_server_thread = n;
+            }else if(sscanf(argv[i], "--num_backend_thread=%llu%c", &n, &junk) == 1){
+                hikv_thread_arg->num_backend_thread = n;
+            }else if(sscanf(argv[i], "--num_warm=%llu%c", &n, &junk) == 1){
+                hikv_thread_arg->num_warm_kv = n;
+            }else if(sscanf(argv[i], "--num_put=%llu%c", &n, &junk) == 1){
+                hikv_thread_arg->num_put_kv = n;
+            }else if(sscanf(argv[i], "--num_get=%llu%c", &n, &junk) == 1){
+                hikv_thread_arg->num_get_kv = n;
+            }else if(sscanf(argv[i], "--num_delete=%llu%c", &n, &junk) == 1){
+                hikv_thread_arg->num_delete_kv = n;
+            }else if(sscanf(argv[i], "--num_scan=%llu%c", &n, &junk) == 1){
+                hikv_thread_arg->num_scan_kv = n;
+            }else if(sscanf(argv[i], "--scan_range=%llu%c", &n, &junk) == 1){
+                hikv_thread_arg->scan_range = n;
+            }else if(sscanf(argv[i], "--num_scan_all=%llu%c", &n, &junk) == 1){
+                hikv_thread_arg->scan_all = n;
+            }else if(sscanf(argv[i], "--seed=%llu%c", &n, &junk) == 1){
+                hikv_thread_arg->seed = n;
+            }else if (sscanf(argv[i], "--seq=%llu%c", &n, &junk) == 1){
+                if (n == 1){
+                    sequence_rw = 1;
+                }
+            }else if(i > 0){
+                printf("error (%s)!\n", argv[i]);
+                return 0;
+            }
+        }
+
         for(i = 0;i < core_limit;i++){
     		cores[i] = i;
             done[i] = 0;
-            pthread_create(&sv_thread[i], NULL, server_thread, (void *)&cores[i]);
+            sv_thread_arg[i].core = i;
+            sv_thread_arg[i].thread_id = i;
+            memcpy(&sv_thread_arg[i].hikv_thread_arg, &hikv_thread_arg, HIKV_ARG_SIZE);
+            pthread_create(&sv_thread[i], NULL, server_thread, (void *)&sv_thread_arg[i]);
         }
 
         for(i = 0;i < core_limit;i++){
             pthread_join(sv_thread[i], NULL);
         }
-#if 0
-        int cpu_num = sysconf(_SC_NPROCESSORS_CONF);
-        printf("[SERVER] server has %d processor(s)\n", cpu_num);
-
-        int * thread_id = (int *)malloc(sizeof(int) * cpu_num);
-        pthread_t * threads = (pthread_t *)malloc(sizeof(pthread_t) * cpu_num);
-        
-        int i;
-        for(i = 0;i < cpu_num;i++){
-            thread_id[i] = i;
-            pthread_create(&threads[i], NULL, server_thread, (void *)&thread_id[i]);
-        }
-
-        for(i = 0;i < cpu_num;i++){
-            pthread_join(threads[i], NULL);
-        }
-#endif
-
     }
 }

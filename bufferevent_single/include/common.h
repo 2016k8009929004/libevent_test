@@ -18,11 +18,20 @@
 #include <sched.h>
 #include <pthread.h>
 
+//libevent library
 #include <event.h>
 #include <event2/util.h>
 #include <event2/listener.h>
 #include <event2/bufferevent.h>
 #include <event2/buffer.h>
+
+//HiKV library
+#include "city.h"
+#include "config.h"
+#include "pflush.h"
+#include "random.h"
+#include "pm_alloc.h"
+#include "hikv.h"
 
 //#define BUF_SIZE 256
 
@@ -34,12 +43,25 @@ struct client_arg {
     int buf_size;
 };
 
+#define VALUE_SIZE 32
+#define KEY_SIZE 16
+
+// The key-value struct in network connection
+struct __attribute__((__packed__)) kv_item {
+	uint16_t len;
+	char value[VALUE_SIZE];
+	char key[KEY_SIZE];	// <-- KV_KEY_OFFSET
+};
+
+#define KV_ITEM_SIZE sizeof(struct kv_item)
+
 #ifndef MAX_CPUS
 #define MAX_CPUS		16
 #endif
 
 static int core_limit;
 static pthread_t sv_thread[MAX_CPUS];
+static struct server_arg sv_thread_arg[MAX_CPUS];
 static int done[MAX_CPUS];
 static int cores[MAX_CPUS];
 

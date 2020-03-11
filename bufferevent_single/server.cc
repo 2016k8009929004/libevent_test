@@ -2,6 +2,8 @@
 
 #define __NR_gettid 186
 
+int sequence_rw = 0;
+
 evutil_socket_t server_init(int port, int listen_num){
     evutil_socket_t sock;
     if((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
@@ -41,7 +43,10 @@ void accept_cb(int fd, short events, void * arg){
     struct sockaddr_in client;
     socklen_t len = sizeof(client);
 
-    struct event_base * base = (struct event_base *)arg;
+    struct accept_args * args = (struct event_base *)arg;
+    int thread_id = args->thread_id;
+    struct event_base * base = args->base;
+    struct hikv * hi = args->hi; 
 
     evutil_socket_t * s = (evutil_socket_t *)malloc(sizeof(evutil_socket_t)); 
 
@@ -67,7 +72,10 @@ void accept_cb(int fd, short events, void * arg){
 
     read_arg->total_time = 0;
 
-    read_arg->start_flag = 0;  
+    read_arg->start_flag = 0; 
+
+    read_arg->thread_id = thread_id;
+    read_arg->hi = hi; 
 
     bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
@@ -96,44 +104,7 @@ void accept_cb(int fd, short events, void * arg){
     
 #endif
 }
-#if 0
-void * server_process(void * arg){
-    struct server_process_arg * thread_arg = (struct server_process_arg *)arg;
-    evutil_socket_t fd = *(thread_arg->fd);
-    struct event_base * base = thread_arg->base;
-    int sequence = thread_arg->sequence;
 
-#ifdef __BIND_CORE__
-    int core_sequence = (sequence % 46) + 1;
-
-    cpu_set_t core_set;
-
-    CPU_ZERO(&core_set);
-    CPU_SET(core_sequence, &core_set);
-
-    if (pthread_setaffinity_np(pthread_self(), sizeof(core_set), &core_set) == -1){
-        printf("warning: could not set CPU affinity, continuing...\n");
-    }
-#endif
-
-    struct bufferevent * bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
-    
-    struct sock_ev_read * read_arg = (struct sock_ev_read *)malloc(sizeof(struct sock_ev_read));
-    
-    read_arg->fd = fd;
-
-    read_arg->byte_sent = 0;
-    read_arg->request_cnt = 0;
-
-    read_arg->total_time = 0;
-
-    read_arg->start_flag = 0;  
-
-    bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
-    bufferevent_enable(bev, EV_READ | EV_PERSIST);
-
-}
-#endif
 void event_cb(struct bufferevent * bev, short event, void * arg){
     if(event & BEV_EVENT_EOF){
 #ifdef __REAL_TIME_STATS__
@@ -149,7 +120,10 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
 void read_cb(struct bufferevent * bev, void * arg){
 //    printf("[read cb] pid: %d, tid:%ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
-    struct sock_ev_read * read_arg = (struct sock_ev_read *)arg;
+    struct sock_ev_read * args = (struct sock_ev_read *)arg;
+
+    int thread_id = args->thread_id;
+    struct hikv * hi = args->hi;
 
 #ifdef __EVAL_READ__
     struct timeval start;
@@ -165,15 +139,27 @@ void read_cb(struct bufferevent * bev, void * arg){
     pthread_mutex_unlock(&start_lock);
 #endif
 
-    char msg[BUF_SIZE + 1];
-    size_t len = bufferevent_read(bev, msg, sizeof(msg));
-    msg[len] = '\0';
+    //receive
+//    char msg[BUF_SIZE + 1];
+    struct kv_item * item = (struct kv_item *)malloc(BUFF_SIZE);
+    size_t len = bufferevent_read(bev, item, sizeof(item));
+    int recv_num = len/KV_ITEM_SIZE;
+//    msg[len] = '\0';
 
 //    printf("[SERVER] recv len: %d\n", len);
 
-//    char reply_msg[BUF_SIZE + 1];
-//    memcpy(reply_msg, msg, len);
-    bufferevent_write(bev, msg, len);
+    //process
+    int i, res;
+    for(i = 0;i < recv_num;i++){
+        if(item[i].len > 0){
+            res = hi->insert(thread_id, item[i].key, item[i].value);
+        }else if(item[i].len == 0){
+            res = hi->search(thread_id, item[i].key, item[i].value);
+        }
+    }
+
+    //reply
+    bufferevent_write(bev, item, len);
 
 #ifdef __REAL_TIME_STATS__
     pthread_mutex_lock(&record_lock);
@@ -237,7 +223,14 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 }
 
 void * server_thread(void * arg){
-	int core = *(int *)arg;
+//	int core = *(int *)arg;
+
+    struct server_arg * thread_arg = (struct server_arg *)arg;
+    int core = thread_arg->core;
+    int thread_id = thread_arg->thread_id;
+    struct hikv_arg hikv_thread_arg = thread_arg->hikv_thread_arg;
+
+    char pmem[128] = "/home/pmem0/pm";
 
     cpu_set_t core_set;
 
@@ -248,6 +241,23 @@ void * server_thread(void * arg){
         printf("warning: could not set CPU affinity, continuing...\n");
     }
 
+    //Initialize Key-Value storage
+    uniform_int_distribution<> range(0, 1000);
+    struct hikv * hi = new hikv(pm_size * 1024 * 1024 * 1024, num_server_thread, num_backend_thread, num_server_thread * num_put_kv, pmem);
+/*
+    pthread_t tid[32];
+
+    int i;
+    for (i = 0;i < num_server_thread;i++){
+        args[i] = (struct test_thread_args *)malloc(sizeof(struct test_thread_args));
+        args[i]->thread_id = i;
+        args[i]->obj = hi;
+        memcpy(&args[i]->test_args, &test_args[i], sizeof(struct test_args));
+
+        pthread_create(tid[i], NULL, thread_task, args[i]);
+        pthread_detach(tid[i]);
+    }
+*/
 #ifdef __EVAL_CB__
     pthread_mutex_init(&accept_cb_lock, NULL);
 #endif
@@ -278,7 +288,9 @@ void * server_thread(void * arg){
 
     struct event_base * base = event_base_new();
 
-    struct event * ev_listen = event_new(base, sock, EV_READ | EV_PERSIST, accept_cb, base);
+    struct accept_args args = {thread_id, base, hi};
+
+    struct event * ev_listen = event_new(base, sock, EV_READ | EV_PERSIST, accept_cb, (void *)args);
     event_add(ev_listen, NULL);
 
     struct event * ev_signal = evsignal_new(base, SIGINT, signal_cb, (void *)base);
