@@ -15,7 +15,7 @@ SRCS = common.cc evallib.cc client.cc server.cc main.cc
 
 OBJS = $(patsubst %.cc,%.o, $(SRCS))
 
-$(OBJS)  : %.o : %.cc include/*.h
+$(OBJS)  : %.o : %.cc $(HDRS)
 		$(CC) -c $(CFLAGS) $< -o $@
 
 $(TARGET): $(OBJS)
