@@ -59,6 +59,29 @@ struct __attribute__((__packed__)) kv_trans_item {
 #define MAX_CPUS		16
 #endif
 
+struct hikv_arg {
+    size_t pm_size;
+    uint64_t num_server_thread;
+    uint64_t num_backend_thread;
+    uint64_t num_warm_kv;
+    uint64_t num_put_kv;
+    uint64_t num_get_kv;
+    uint64_t num_delete_kv;
+    uint64_t num_scan_kv;
+    uint64_t scan_range;
+    uint64_t seed;
+    uint64_t scan_all;
+};
+
+#define HIKV_ARG_SIZE sizeof(struct hikv_arg)
+
+struct server_arg {
+    int core;
+    int thread_id;
+    struct hikv_arg hikv_thread_arg;
+};
+
+
 static int core_limit;
 static pthread_t sv_thread[MAX_CPUS];
 static struct server_arg sv_thread_arg[MAX_CPUS];
