@@ -9,7 +9,7 @@ LDFLAGS = -L/usr/local/lib/ -L ./third-party/jemalloc-4.2.1/lib -L ./third-party
 
 LIBS = -lpthread -levent -ljemalloc -ltbb -lpmem -lpthread
 
-HDRS = ./include/*.h
+HDRS = ./include/*.h ./HiKV/lib/*.h ./HiKV/mem/*.h ./HiKV/ntstore/*.h ./HiKV/obj/*.h 
 
 SRCS = common.cc evallib.cc client.cc server.cc main.cc
 
