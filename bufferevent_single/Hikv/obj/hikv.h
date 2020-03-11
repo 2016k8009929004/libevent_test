@@ -24,7 +24,11 @@ struct arg_t {
     int i;
 };
 
-//void* bt_by_ht_ptn(void* p_arg);
+static void* bt_by_ht_ptn(void* p_arg) {
+    struct arg_t *arg = (struct arg_t *)p_arg;
+    arg->hikv->bt_restore_by_ht_ptn(arg->i);
+}
+
 
 struct hikv
 {
@@ -354,10 +358,5 @@ struct hikv
     public:
         struct task_queue *tq;
 };
-
-static void* bt_by_ht_ptn(void* p_arg) {
-    struct arg_t *arg = (struct arg_t *)p_arg;
-    arg->hikv->bt_restore_by_ht_ptn(arg->i);
-}
 
 #endif
