@@ -15,7 +15,7 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
 	}
 
     FILE * fp = fopen("client-input.dat", "rb");
-    fread(value_corpus, 1, NUM_KEYS * sizeof(VALUE_SIZE), fp);
+    fread(value_corpus, 1, NUM_KEYS * VALUE_SIZE, fp);
     fclose(fp);
 
     return;
@@ -179,10 +179,10 @@ void * send_request(void * arg){
     for(iter = 0;iter < NUM_ITER;iter++){
         if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
             printf("===== 1 =====\n");
-            snprintf((char *)req_kv->key, sizeof(req_kv->key), "%064llu", key_corpus[key_i]);     //set Key
+            snprintf((char *)req_kv->key, KEY_SIZE, "%064llu", key_corpus[key_i]);     //set Key
             printf("===== 2 =====\n");
 			req_kv->len = VALUE_SIZE;
-			memcpy((char *)req_kv->value, (char *)value_corpus + key_i * VALUE_SIZE, VALUE_SIZE);   //set Value
+			memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
             printf("===== 3 =====\n");
 			key_i = (key_i + 1) & NUM_KEYS_;
 		}else{
