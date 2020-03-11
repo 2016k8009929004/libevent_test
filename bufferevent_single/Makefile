@@ -11,7 +11,7 @@ LIBS = -lpthread -levent -ljemalloc -ltbb -lpmem
 
 HDRS = ./include/*.h 
 
-SRCS = client.cc server.cc main.cc
+SRCS = client.cc server.cc
 
 OBJS = $(patsubst %.cc,%.o, $(SRCS))
 
