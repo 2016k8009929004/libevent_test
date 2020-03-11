@@ -27,13 +27,13 @@ server.o: server.cc
 		$(CC) -c $(CFLAGS) $< -o $@
 
 server: server.o
-		$(LD) $(LDFLAGS) $(OBJS) -o $@ $(LIBS)
+		$(LD) $(LDFLAGS) -o $@ $(LIBS)
 
 client.o: client.cc
 		$(CC) -c $(CFLAGS) $< -o $@
 
 client: client.o
-		$(LD) $(LDFLAGS) $(OBJS) -o $@ $(LIBS)
+		$(LD) $(LDFLAGS) -o $@ $(LIBS)
 
 clean:
 		rm -f *.o $(TARGET)
