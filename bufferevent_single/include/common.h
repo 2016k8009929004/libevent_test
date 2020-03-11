@@ -43,17 +43,17 @@ struct client_arg {
     int buf_size;
 };
 
-#define VALUE_SIZE 32
-#define KEY_SIZE 16
+#define VALUE_SIZE 256
+#define KEY_SIZE 64
 
 // The key-value struct in network connection
-struct __attribute__((__packed__)) kv_item {
+struct __attribute__((__packed__)) kv_trans_item {
 	uint16_t len;
-	char value[VALUE_SIZE];
-	char key[KEY_SIZE];	// <-- KV_KEY_OFFSET
+	uint8_t value[VALUE_SIZE];
+	uint8_t key[KEY_SIZE];
 };
 
-#define KV_ITEM_SIZE sizeof(struct kv_item)
+#define KV_ITEM_SIZE sizeof(struct kv_trans_item)
 
 #ifndef MAX_CPUS
 #define MAX_CPUS		16

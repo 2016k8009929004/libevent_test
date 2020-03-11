@@ -141,7 +141,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     //receive
 //    char msg[BUF_SIZE + 1];
-    struct kv_item * item = (struct kv_item *)malloc(BUFF_SIZE);
+    struct kv_trans_item * item = (struct kv_trans_item *)malloc(BUF_SIZE);
     size_t len = bufferevent_read(bev, item, sizeof(item));
     int recv_num = len/KV_ITEM_SIZE;
 //    msg[len] = '\0';
