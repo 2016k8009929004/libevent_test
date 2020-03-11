@@ -180,7 +180,7 @@ void * send_request(void * arg){
         if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
             snprintf((char *)req_kv->key, sizeof(req_kv->key), "%064llu", key_corpus[key_i]);     //set Key
 			req_kv->len = VALUE_SIZE;
-			memcpy((char *)req_kv->value, value_corpus + key_i * 256, VALUE_SIZE);   //set Value
+			memcpy((char *)req_kv->value, (char *)value_corpus + key_i * 256, VALUE_SIZE);   //set Value
 			key_i = (key_i + 1) & NUM_KEYS_;
 		}else{
 			key_i = rand() & NUM_KEYS_;

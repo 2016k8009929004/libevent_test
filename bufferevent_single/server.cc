@@ -75,7 +75,7 @@ void accept_cb(int fd, short events, void * arg){
     read_arg->thread_id = thread_id;
     read_arg->hi = hi; 
 
-//    bufferevent_setwatermark(bev, EV_READ, 0, 256);
+    bufferevent_setwatermark(bev, EV_READ, 0, KV_ITEM_SIZE);
     bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 
