@@ -93,6 +93,4 @@ static int cores[MAX_CPUS];
 void * client_thread(void * argv);
 void * server_thread(void * arg);
 
-int itoa(int n, char s[]);
-
 #endif

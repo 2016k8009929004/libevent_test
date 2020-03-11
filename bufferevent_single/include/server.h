@@ -1,5 +1,4 @@
 #include "common.h"
-#include "evallib.h"
 
 //#define __BIND_CORE__
 //#define __GET_CORE__
