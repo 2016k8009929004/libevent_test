@@ -179,7 +179,8 @@ void * send_request(void * arg){
     for(iter = 0;iter < NUM_ITER;iter++){
         if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
             printf("===== 1 =====\n");
-            snprintf((char *)req_kv->key, KEY_SIZE, "%064llu", key_corpus[key_i]);     //set Key
+            printf("key corpus: %llu\n", key_corpus[key_i]);
+            snprintf((char *)req_kv->key, sizeof(req_kv->key), "%064llu", key_corpus[key_i]);     //set Key
             printf("===== 2 =====\n");
 			req_kv->len = VALUE_SIZE;
 			memcpy((char *)req_kv->value, value_corpus + key_i * 256, VALUE_SIZE);   //set Value
