@@ -82,6 +82,8 @@ struct server_arg {
 };
 
 
+static int sequence_rw = 0;
+
 static int core_limit;
 static pthread_t sv_thread[MAX_CPUS];
 static struct server_arg sv_thread_arg[MAX_CPUS];

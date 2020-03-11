@@ -2,8 +2,6 @@
 
 #define __NR_gettid 186
 
-static int sequence_rw = 0;
-
 evutil_socket_t server_init(int port, int listen_num){
     evutil_socket_t sock;
     if((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
