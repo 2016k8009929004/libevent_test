@@ -15,7 +15,7 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
 	}
 
     FILE * fp = fopen("client-input.dat", "rb");
-    memcpy(value_corpus, fp, sizeof(value_corpus));
+    memcpy(value_corpus, fp, NUM_KEYS * sizeof(VALUE_SIZE));
     fclose(fp);
 
     return;
@@ -182,7 +182,7 @@ void * send_request(void * arg){
             snprintf((char *)req_kv->key, sizeof(req_kv->key), "%064llu", key_corpus[key_i]);     //set Key
             printf("===== 2 =====\n");
 			req_kv->len = VALUE_SIZE;
-			memcpy((char *)req_kv->value, (char *)value_corpus + key_i * 256, VALUE_SIZE);   //set Value
+			memcpy((char *)req_kv->value, (char *)value_corpus + key_i * VALUE_SIZE, VALUE_SIZE);   //set Value
             printf("===== 3 =====\n");
 			key_i = (key_i + 1) & NUM_KEYS_;
 		}else{
