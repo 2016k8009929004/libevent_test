@@ -43,7 +43,7 @@ void accept_cb(int fd, short events, void * arg){
     struct sockaddr_in client;
     socklen_t len = sizeof(client);
 
-    struct accept_args * args = (struct event_base *)arg;
+    struct accept_args * args = (struct accept_args *)arg;
     int thread_id = args->thread_id;
     struct event_base * base = args->base;
     struct hikv * hi = args->hi; 
@@ -243,6 +243,7 @@ void * server_thread(void * arg){
     uint64_t scan_all = hikv_thread_arg.scan_all;
 
     char pmem[128] = "/home/pmem0/pm";
+    char pmem_meta[128] = "/home/pmem0/pmMETA";
 
     cpu_set_t core_set;
 
@@ -254,7 +255,7 @@ void * server_thread(void * arg){
     }
 
     //Initialize Key-Value storage
-    struct hikv * hi = new hikv(pm_size * 1024 * 1024 * 1024, num_server_thread, num_backend_thread, num_server_thread * num_put_kv, pmem);
+    struct hikv *hi = new hikv(pm_size * 1024 * 1024 * 1024, num_server_thread, num_backend_thread, num_server_thread * (num_put_kv + num_warm_kv), pmem, pmem_meta);
 /*
     pthread_t tid[32];
 
