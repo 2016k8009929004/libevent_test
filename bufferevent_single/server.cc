@@ -2,7 +2,7 @@
 
 #define __NR_gettid 186
 
-int sequence_rw = 0;
+static int sequence_rw = 0;
 
 evutil_socket_t server_init(int port, int listen_num){
     evutil_socket_t sock;

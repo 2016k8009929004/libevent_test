@@ -49,10 +49,10 @@ int main(int argc, char * argv[]){
             100,    //scan_range
             1234,   //seed
             0       //scan_all
-        }
+        };
 
         int i;
-        
+
         for (i = 0; i < argc; i++){
             double d;
             uint64_t n;
