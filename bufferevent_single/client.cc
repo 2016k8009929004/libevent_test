@@ -164,6 +164,7 @@ void * send_request(void * arg){
 
     fclose(send_fp);
 #elif defined(__TEST_KV__)
+    printf("===== start real work ======\n");
     int i, iter, key_i;
     
     key_i = 0;
@@ -310,7 +311,7 @@ void * client_thread(void * argv){
 
     struct client_arg * server = (struct client_arg *)argv;
 
-    buf_size = server->buf_size;
+//    buf_size = server->buf_size;
     
     int send_byte, recv_byte;
     send_byte = recv_byte = 0;
@@ -349,10 +350,11 @@ int main(int argc, char * argv[]){
         struct client_arg arg;
         arg.ip_addr = &argv[2];
         arg.port = atoi(argv[3]);
-        arg.buf_size = atoi(argv[4]);
+//        arg.buf_size = atoi(argv[4]);
 #ifdef __BIND_CORE__
         arg.sequence = i;
 #endif
+        
         pthread_create(&threads[i], NULL, client_thread, (void *)&arg);
     }
 

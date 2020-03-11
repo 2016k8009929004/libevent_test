@@ -24,7 +24,7 @@ pthread_mutex_t rtt_lock;
 struct client_arg {
     char ** ip_addr;
     int port;
-    int buf_size;
+//    int buf_size;
 };
 
 struct debug_response_arg {
