@@ -1,5 +1,28 @@
 #include "client.h"
 
+// Generate keys and values for client number cn
+void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
+	int key_i;
+	LL temp;
+	
+	key_corpus = (LL *)malloc(NUM_KEYS * sizeof(LL));
+    value_corpus = (uint8_t *)malloc(NUM_KEYS * sizeof(VALUE_SIZE));
+
+	for(key_i = 0; key_i < NUM_KEYS; key_i ++) {
+		LL rand1 = (LL) lrand48();
+		LL rand2 = (LL) lrand48();
+		key_corpus[key_i] = (rand1 << 32) ^ rand2;
+		if((char) key_corpus[key_i] == 0) {
+			key_i --;
+		}
+	}
+
+    FILE * fp = fopen("client-input.dat", "rb");
+    memcpy(value_corpus, fp, sizeof(value_corpus));
+
+	return NULL;
+}
+
 int connect_server(char * server_ip, int port){
     int sockfd;
     
@@ -33,6 +56,10 @@ void * send_request(void * arg){
 
     int fd = *(info->sockfd);
 
+    //initial Key
+    gen_corpus(key_corpus, value_corpus);
+
+#ifdef __TEST_FILE__
     char send_buf[buf_size];
     char recv_buf[buf_size + 1];
     memset(recv_buf, 0, sizeof(recv_buf));
@@ -136,7 +163,33 @@ void * send_request(void * arg){
 #endif
 
     fclose(send_fp);
+#elif defined(__TEST_KV__)
+    int i, iter, key_i;
     
+    key_i = 0;
+    
+    volatile struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE)
+
+    for(iter = 0;iter < NUM_ITER;iter++){
+
+        if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
+			itoa(key_corpus[key_i], req_kv->key, 10);   //set Key
+			req_kv->len = VALUE_SIZE;
+			memcpy((char *)req_kv->value, value + key_i * 256, VALUE_SIZE);   //set Value
+			key_i = (key_i + 1) & NUM_KEYS_;
+		}else{
+			key_i = rand() & NUM_KEYS_;
+			req_kv->key[0] = key_corpus[key_i];
+			req_kv->len = 0;
+			memset((char *)req_kv->value, 0, VALUE_SIZE);
+		}
+
+        if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
+			perror("[CLIENT] send failed");
+	    	exit(1);
+    	}
+    }
+#endif
     return NULL;
 }
 #if 0
