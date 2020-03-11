@@ -178,9 +178,12 @@ void * send_request(void * arg){
     //PUT
     for(iter = 0;iter < NUM_ITER;iter++){
         if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
+            printf("===== 1 =====\n");
             snprintf((char *)req_kv->key, sizeof(req_kv->key), "%064llu", key_corpus[key_i]);     //set Key
+            printf("===== 2 =====\n");
 			req_kv->len = VALUE_SIZE;
 			memcpy((char *)req_kv->value, (char *)value_corpus + key_i * 256, VALUE_SIZE);   //set Value
+            printf("===== 3 =====\n");
 			key_i = (key_i + 1) & NUM_KEYS_;
 		}else{
 			key_i = rand() & NUM_KEYS_;
@@ -188,11 +191,13 @@ void * send_request(void * arg){
 			req_kv->len = 0;
 			memset((char *)req_kv->value, 0, VALUE_SIZE);
 		}
+        printf("===== 4 =====\n");
 
         if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
 			perror("[CLIENT] send failed");
 	    	exit(1);
     	}
+        printf("===== 5 =====\n");
 
         gettimeofday(&time2, NULL);
         if(time2.tv_sec - time1.tv_sec > 10){
