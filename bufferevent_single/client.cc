@@ -20,7 +20,7 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
     FILE * fp = fopen("client-input.dat", "rb");
     memcpy(value_corpus, fp, sizeof(value_corpus));
 
-	return NULL;
+    return;
 }
 
 int connect_server(char * server_ip, int port){
@@ -173,9 +173,10 @@ void * send_request(void * arg){
     struct timeval time1, time2;
     gettimeofday(&time1, NULL);
 
+    //PUT
     for(iter = 0;iter < NUM_ITER;iter++){
         if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
-			itoa(key_corpus[key_i], req_kv->key, 10);   //set Key
+            snprintf(req_kv->key, sizeof(KEY_SIZE), "%llu", key_corpus[key_i]);     //set Key
 			req_kv->len = VALUE_SIZE;
 			memcpy((char *)req_kv->value, value_corpus + key_i * 256, VALUE_SIZE);   //set Value
 			key_i = (key_i + 1) & NUM_KEYS_;
