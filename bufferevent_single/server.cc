@@ -75,7 +75,7 @@ void accept_cb(int fd, short events, void * arg){
     read_arg->thread_id = thread_id;
     read_arg->hi = hi; 
 
-    bufferevent_setwatermark(bev, EV_READ, 0, 256);
+//    bufferevent_setwatermark(bev, EV_READ, 0, 256);
     bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 
@@ -139,14 +139,16 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
     //receive
+/*
     char msg[BUF_SIZE + 1];
     int len = bufferevent_read(bev, msg, BUF_SIZE);
-//    struct kv_trans_item * item = (struct kv_trans_item *)malloc(BUF_SIZE);
-//    size_t len = bufferevent_read(bev, item, sizeof(item));
-//    int recv_num = len/KV_ITEM_SIZE;
     msg[len] = '\0';
+*/
+    struct kv_trans_item * item = (struct kv_trans_item *)malloc(BUF_SIZE);
+    size_t len = bufferevent_read(bev, (char *)item, sizeof(item));
+    int recv_num = len/KV_ITEM_SIZE;
 
-    printf("[SERVER] recv len: %d, msg: %s\n", len, msg);
+    printf("[SERVER] recv len: %d\n", len);
 /*
     //process request
     int i, res;
