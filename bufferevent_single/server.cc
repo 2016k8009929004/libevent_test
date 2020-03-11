@@ -230,6 +230,18 @@ void * server_thread(void * arg){
     int thread_id = thread_arg->thread_id;
     struct hikv_arg hikv_thread_arg = thread_arg->hikv_thread_arg;
 
+    size_t pm_size = hikv_thread_arg->pm_size;
+    uint64_t num_server_thread = hikv_thread_arg->num_server_thread;
+    uint64_t num_backend_thread = hikv_thread_arg->num_backend_thread;
+    uint64_t num_warm_kv = hikv_thread_arg->num_warm_kv;
+    uint64_t num_put_kv = hikv_thread_arg->num_put_kv;
+    uint64_t num_get_kv = hikv_thread_arg->num_get_kv;
+    uint64_t num_delete_kv = hikv_thread_arg->num_delete_kv;
+    uint64_t num_scan_kv = hikv_thread_arg->num_scan_kv;
+    uint64_t scan_range = hikv_thread_arg->scan_range;
+    uint64_t seed = hikv_thread_arg->seed;
+    uint64_t scan_all = hikv_thread_arg->scan_all;
+
     char pmem[128] = "/home/pmem0/pm";
 
     cpu_set_t core_set;
@@ -242,7 +254,6 @@ void * server_thread(void * arg){
     }
 
     //Initialize Key-Value storage
-    uniform_int_distribution<> range(0, 1000);
     struct hikv * hi = new hikv(pm_size * 1024 * 1024 * 1024, num_server_thread, num_backend_thread, num_server_thread * num_put_kv, pmem);
 /*
     pthread_t tid[32];
@@ -290,7 +301,7 @@ void * server_thread(void * arg){
 
     struct accept_args args = {thread_id, base, hi};
 
-    struct event * ev_listen = event_new(base, sock, EV_READ | EV_PERSIST, accept_cb, (void *)args);
+    struct event * ev_listen = event_new(base, sock, EV_READ | EV_PERSIST, accept_cb, (void *)&args);
     event_add(ev_listen, NULL);
 
     struct event * ev_signal = evsignal_new(base, SIGINT, signal_cb, (void *)base);
