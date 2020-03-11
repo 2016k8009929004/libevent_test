@@ -140,15 +140,15 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
     //receive
-
+/*
     char msg[BUF_SIZE + 1];
     int len = bufferevent_read(bev, msg, BUF_SIZE);
-//    msg[len] = '\0';
-/*
-    struct kv_trans_item * item = (struct kv_trans_item *)malloc(BUF_SIZE);
-    size_t len = bufferevent_read(bev, (char *)item, sizeof(item));
-    int recv_num = len/KV_ITEM_SIZE;
+    msg[len] = '\0';
 */
+    struct kv_trans_item * item = (struct kv_trans_item *)malloc(BUF_SIZE);
+    size_t len = bufferevent_read(bev, (char *)item, KV_ITEM_SIZE);
+    int recv_num = len/KV_ITEM_SIZE;
+
     printf("[SERVER] recv len: %d\n", len);
 /*
     //process request
