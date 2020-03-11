@@ -170,8 +170,10 @@ void * send_request(void * arg){
     
     volatile struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE)
 
-    for(iter = 0;iter < NUM_ITER;iter++){
+    struct timeval time1, time2;
+    gettimeofday(&time1, NULL);
 
+    for(iter = 0;iter < NUM_ITER;iter++){
         if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
 			itoa(key_corpus[key_i], req_kv->key, 10);   //set Key
 			req_kv->len = VALUE_SIZE;
@@ -188,6 +190,13 @@ void * send_request(void * arg){
 			perror("[CLIENT] send failed");
 	    	exit(1);
     	}
+
+        gettimeofday(&time2, NULL);
+        if(time2.tv_sec - time1.tv_sec > 10){
+            gettimeofday(&time2, NULL);
+            printf("[CLIENT] request complete\n");
+            break;
+        }
     }
 #endif
     return NULL;
