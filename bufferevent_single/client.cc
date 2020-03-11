@@ -19,6 +19,7 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
 
     FILE * fp = fopen("client-input.dat", "rb");
     memcpy(value_corpus, fp, sizeof(value_corpus));
+    fclose(fp);
 
     return;
 }
@@ -177,11 +178,12 @@ void * send_request(void * arg){
     //PUT
     for(iter = 0;iter < NUM_ITER;iter++){
         if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
-            snprintf((char *)req_kv->key, sizeof(KEY_SIZE), "%llu", key_corpus[key_i]);     //set Key
             printf("===== 1 =====\n");
+            snprintf((char *)req_kv->key, sizeof(KEY_SIZE), "%llu", key_corpus[key_i]);     //set Key
+            printf("===== 2 =====\n");
 			req_kv->len = VALUE_SIZE;
 			memcpy((char *)req_kv->value, value_corpus + key_i * 256, VALUE_SIZE);   //set Value
-            printf("===== 2 =====\n");
+            printf("===== 3 =====\n");
 			key_i = (key_i + 1) & NUM_KEYS_;
 		}else{
 			key_i = rand() & NUM_KEYS_;
@@ -190,7 +192,7 @@ void * send_request(void * arg){
 			memset((char *)req_kv->value, 0, VALUE_SIZE);
 		}
         
-        printf("===== 3 =====\n");
+        printf("===== 4 =====\n");
 
         if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
 			perror("[CLIENT] send failed");
