@@ -76,6 +76,9 @@ void accept_cb(int fd, short events, void * arg){
     read_arg->hi = hi; 
 
     bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
+
+    bufferevent_setwatermark(bev, EV_READ, 0, 256);
+
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 
 #ifdef __EVAL_CB__
