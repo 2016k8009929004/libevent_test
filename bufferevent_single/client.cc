@@ -168,7 +168,7 @@ void * send_request(void * arg){
     
     key_i = 0;
     
-    volatile struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE)
+    struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
 
     struct timeval time1, time2;
     gettimeofday(&time1, NULL);
@@ -177,7 +177,7 @@ void * send_request(void * arg){
         if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
 			itoa(key_corpus[key_i], req_kv->key, 10);   //set Key
 			req_kv->len = VALUE_SIZE;
-			memcpy((char *)req_kv->value, value + key_i * 256, VALUE_SIZE);   //set Value
+			memcpy((char *)req_kv->value, value_corpus + key_i * 256, VALUE_SIZE);   //set Value
 			key_i = (key_i + 1) & NUM_KEYS_;
 		}else{
 			key_i = rand() & NUM_KEYS_;
