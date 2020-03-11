@@ -27,13 +27,13 @@ server.o: common.cc evallib.cc server.cc
 		$(CC) -c $(CFLAGS) $< -o $@
 
 server: server.o
-		$(LD) $(LDFLAGS) $(OBJS) -o $(TARGET) $(LIBS)
+		$(LD) $(LDFLAGS) $(OBJS) -o $@ $(LIBS)
 
 client.o: common.cc evallib.cc client.cc
 		$(CC) -c $(CFLAGS) $< -o $@
 
 client: client.o
-		$(LD) $(LDFLAGS) $(OBJS) -o $(TARGET) $(LIBS)
+		$(LD) $(LDFLAGS) $(OBJS) -o $@ $(LIBS)
 
 clean:
 		rm -f *.o $(TARGET)
