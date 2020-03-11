@@ -52,39 +52,39 @@ int main(int argc, char * argv[]){
         }
 
         int i;
+        
         for (i = 0; i < argc; i++){
             double d;
             uint64_t n;
             char junk;
             if(sscanf(argv[i], "--pm_size=%llu%c", &n, &junk) == 1){
-                hikv_thread_arg->pm_size = n;
+                hikv_thread_arg.pm_size = n;
             }else if(sscanf(argv[i], "--num_server_thread=%llu%c", &n, &junk) == 1){
-                hikv_thread_arg->num_server_thread = n;
+                hikv_thread_arg.num_server_thread = n;
             }else if(sscanf(argv[i], "--num_backend_thread=%llu%c", &n, &junk) == 1){
-                hikv_thread_arg->num_backend_thread = n;
+                hikv_thread_arg.num_backend_thread = n;
             }else if(sscanf(argv[i], "--num_warm=%llu%c", &n, &junk) == 1){
-                hikv_thread_arg->num_warm_kv = n;
+                hikv_thread_arg.num_warm_kv = n;
             }else if(sscanf(argv[i], "--num_put=%llu%c", &n, &junk) == 1){
-                hikv_thread_arg->num_put_kv = n;
+                hikv_thread_arg.num_put_kv = n;
             }else if(sscanf(argv[i], "--num_get=%llu%c", &n, &junk) == 1){
-                hikv_thread_arg->num_get_kv = n;
+                hikv_thread_arg.num_get_kv = n;
             }else if(sscanf(argv[i], "--num_delete=%llu%c", &n, &junk) == 1){
-                hikv_thread_arg->num_delete_kv = n;
+                hikv_thread_arg.num_delete_kv = n;
             }else if(sscanf(argv[i], "--num_scan=%llu%c", &n, &junk) == 1){
-                hikv_thread_arg->num_scan_kv = n;
+                hikv_thread_arg.num_scan_kv = n;
             }else if(sscanf(argv[i], "--scan_range=%llu%c", &n, &junk) == 1){
-                hikv_thread_arg->scan_range = n;
+                hikv_thread_arg.scan_range = n;
             }else if(sscanf(argv[i], "--num_scan_all=%llu%c", &n, &junk) == 1){
-                hikv_thread_arg->scan_all = n;
+                hikv_thread_arg.scan_all = n;
             }else if(sscanf(argv[i], "--seed=%llu%c", &n, &junk) == 1){
-                hikv_thread_arg->seed = n;
+                hikv_thread_arg.seed = n;
             }else if (sscanf(argv[i], "--seq=%llu%c", &n, &junk) == 1){
                 if (n == 1){
                     sequence_rw = 1;
                 }
             }else if(i > 0){
                 printf("error (%s)!\n", argv[i]);
-                return 0;
             }
         }
 
