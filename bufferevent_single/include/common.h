@@ -25,23 +25,9 @@
 #include <event2/bufferevent.h>
 #include <event2/buffer.h>
 
-//HiKV library
-#include "city.h"
-#include "config.h"
-#include "pflush.h"
-#include "random.h"
-#include "pm_alloc.h"
-#include "hikv.h"
-
 //#define BUF_SIZE 256
 
 #define SWAP(a,b) do{a^=b;b^=a;a^=b;}while(0)
-
-struct client_arg {
-    char ** ip_addr;
-    int port;
-    int buf_size;
-};
 
 #define VALUE_SIZE 256
 #define KEY_SIZE 64
@@ -58,29 +44,6 @@ struct __attribute__((__packed__)) kv_trans_item {
 #ifndef MAX_CPUS
 #define MAX_CPUS		16
 #endif
-
-struct hikv_arg {
-    size_t pm_size;
-    uint64_t num_server_thread;
-    uint64_t num_backend_thread;
-    uint64_t num_warm_kv;
-    uint64_t num_put_kv;
-    uint64_t num_get_kv;
-    uint64_t num_delete_kv;
-    uint64_t num_scan_kv;
-    uint64_t scan_range;
-    uint64_t seed;
-    uint64_t scan_all;
-};
-
-#define HIKV_ARG_SIZE sizeof(struct hikv_arg)
-
-struct server_arg {
-    int core;
-    int thread_id;
-    struct hikv_arg hikv_thread_arg;
-};
-
 
 static int sequence_rw = 0;
 

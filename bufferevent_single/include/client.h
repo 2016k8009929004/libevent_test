@@ -18,6 +18,12 @@ int fin_client_thread = 0;
 pthread_mutex_t rtt_lock;
 #endif
 
+struct client_arg {
+    char ** ip_addr;
+    int port;
+    int buf_size;
+};
+
 struct debug_response_arg {
     struct event * read_ev;
     struct send_info * info;

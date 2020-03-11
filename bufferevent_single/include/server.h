@@ -1,5 +1,13 @@
 #include "common.h"
 
+//HiKV library
+#include "city.h"
+#include "config.h"
+#include "pflush.h"
+#include "random.h"
+#include "pm_alloc.h"
+#include "hikv.h"
+
 //#define __BIND_CORE__
 //#define __GET_CORE__
 
