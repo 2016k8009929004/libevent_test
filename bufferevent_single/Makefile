@@ -33,7 +33,7 @@ kv:
 #		-ltbb -lpmem -lpthread -levent
 
 server:
-		$(CC) -std=c++11 $(KV_SRCS) server.cc $(CFLAGS) -o $< $(LDFLAGS) $(LIBS)
+		$(CC) -std=c++11 $(KV_SRCS) server.cc $(CFLAGS) -o $@ $(LDFLAGS) $(LIBS)
 
 client.o: $(KV_SRCS) client.cc
 		$(CC) -c $(CFLAGS) $< -o $@
