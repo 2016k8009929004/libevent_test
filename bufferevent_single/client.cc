@@ -165,7 +165,7 @@ void * send_request(void * arg){
 
     fclose(send_fp);
 #elif defined(__TEST_KV__)
-    printf("===== start real work ======\n");
+//    printf("===== start real work ======\n");
     int i, iter, key_i;
     
     key_i = 0;
@@ -189,18 +189,14 @@ void * send_request(void * arg){
 			memset((char *)req_kv->value, 0, VALUE_SIZE);
 		}
 
-        int len;
-        if((len = write(fd, req_kv, KV_ITEM_SIZE)) < 0){
+        if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
 			perror("[CLIENT] send failed");
 	    	exit(1);
     	}
 
-        printf("[CLIENT] send len: %d\n", len);
-
         gettimeofday(&time2, NULL);
         if(time2.tv_sec - time1.tv_sec > 10){
-            gettimeofday(&time2, NULL);
-            printf("[CLIENT] request complete\n");
+            printf("[CLIENT] request complete, iter = %d\n", i);
             break;
         }
     }
