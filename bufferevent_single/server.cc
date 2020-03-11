@@ -312,7 +312,6 @@ void * server_thread(void * arg){
 }
 
 int main(int argc, char * argv[]){
-    core_limit = atoi(argv[1]);
 
     struct hikv_arg hikv_thread_arg = {
         2,      //pm_size
@@ -334,7 +333,9 @@ int main(int argc, char * argv[]){
         double d;
         uint64_t n;
         char junk;
-        if(sscanf(argv[i], "--pm_size=%llu%c", &n, &junk) == 1){
+        if(sscanf(argv[i], "--num_thread=%llu%c", &n, &junk) == 1){
+            core_limit = n;
+        }else if(sscanf(argv[i], "--pm_size=%llu%c", &n, &junk) == 1){
             hikv_thread_arg.pm_size = n;
         }else if(sscanf(argv[i], "--num_server_thread=%llu%c", &n, &junk) == 1){
             hikv_thread_arg.num_server_thread = n;

@@ -139,7 +139,7 @@ void * send_request(void * arg){
     
     return NULL;
 }
-
+#if 0
 void response_process(int sock, short event, void * arg){
 #ifdef RECEIVE_DEBUG
     struct debug_response_arg * debug_arg = (struct debug_response_arg *)arg;
@@ -154,7 +154,6 @@ void response_process(int sock, short event, void * arg){
     struct send_info * info = response_process_arg->info;
 #endif
 
-//    pthread_mutex_t * recv_lock = info->recv_lock;
     int * recv_byte = info->recv_byte;
     int * send_byte = info->send_byte;
 
@@ -173,9 +172,7 @@ void response_process(int sock, short event, void * arg){
     fflush(fp);
 #endif
 
-//    pthread_mutex_lock(recv_lock);
     (*recv_byte) += recv_size;
-//    pthread_mutex_unlock(recv_lock);
     
 //    printf("[CLIENT %d] receive reply: %s\n", sock, recv_buf);
 
@@ -185,6 +182,7 @@ void response_process(int sock, short event, void * arg){
         work_done_flag = 1;
 
         event_del(read_ev);
+
 #ifdef RECEIVE_DEBUG
         fclose(fp);
 #endif
@@ -236,7 +234,7 @@ void send_request_thread(struct send_info * info){
     pthread_create(&thread, NULL, send_request, (void *)info);
     pthread_detach(thread);
 }
-
+#endif
 void * client_thread(void * argv){
     cpu_set_t core_set;
 
