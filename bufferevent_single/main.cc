@@ -1,16 +1,11 @@
 #include "common.h"
 
-#define PTHREAD_TEST
-//#define FORK_TEST
-
 extern int client_thread_num;
 
 //extern pthread_mutex_t fin_client_thread_lock;
 
 int main(int argc, char * argv[]){
     if(argc == 5){
-#ifdef PTHREAD_TEST
-
         client_thread_num = atoi(argv[1]);
 
         pthread_t * threads = (pthread_t *)malloc(sizeof(pthread_t) * client_thread_num);
