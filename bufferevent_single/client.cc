@@ -178,8 +178,10 @@ void * send_request(void * arg){
     for(iter = 0;iter < NUM_ITER;iter++){
         if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
             snprintf((char *)req_kv->key, sizeof(KEY_SIZE), "%llu", key_corpus[key_i]);     //set Key
+            printf("===== 1 =====\n");
 			req_kv->len = VALUE_SIZE;
 			memcpy((char *)req_kv->value, value_corpus + key_i * 256, VALUE_SIZE);   //set Value
+            printf("===== 2 =====\n");
 			key_i = (key_i + 1) & NUM_KEYS_;
 		}else{
 			key_i = rand() & NUM_KEYS_;
@@ -187,6 +189,8 @@ void * send_request(void * arg){
 			req_kv->len = 0;
 			memset((char *)req_kv->value, 0, VALUE_SIZE);
 		}
+        
+        printf("===== 3 =====\n");
 
         if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
 			perror("[CLIENT] send failed");
