@@ -4,9 +4,6 @@
 void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
 	int key_i;
 	LL temp;
-	
-	key_corpus = (LL *)malloc(NUM_KEYS * sizeof(LL));
-    value_corpus = (uint8_t *)malloc(NUM_KEYS * sizeof(VALUE_SIZE));
 
 	for(key_i = 0; key_i < NUM_KEYS; key_i ++) {
 		LL rand1 = (LL) lrand48();
@@ -58,6 +55,9 @@ void * send_request(void * arg){
     int fd = *(info->sockfd);
 
     //initial Key
+    LL * key_corpus = (LL *)malloc(NUM_KEYS * sizeof(LL));
+    uint8_t * value_corpus = (uint8_t *)malloc(NUM_KEYS * sizeof(VALUE_SIZE));
+    
     gen_corpus(key_corpus, value_corpus);
 
 #ifdef __TEST_FILE__

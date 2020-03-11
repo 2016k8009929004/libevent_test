@@ -72,7 +72,4 @@ void response_process(int sock, short event, void * arg);
 #define NUM_KEYS M_1			// 51 * M_4 ~ 200 M keys
 #define NUM_KEYS_ M_1_
 
-LL * key_corpus;
-uint8_t * value_corpus;
-
 void gen_corpus(LL * key_corpus, uint8_t * value_corpus);
