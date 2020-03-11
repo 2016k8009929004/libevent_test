@@ -4,10 +4,10 @@ all: $(TARGET)
 CC = g++
 LD = g++
 
-CFLAGS = -std=c++11 -g -Wall -Iinclude
-LDFLAGS = -L/usr/local/lib/ 
+CFLAGS = -std=c++11 -g -Wall -Iinclude -Intstore -Imem -Ilib -Iobj -Itbb -Ipmdk/include 
+LDFLAGS = -L/usr/local/lib/ -L ./third-party/jemalloc-4.2.1/lib -L ./third-party/tbb 
 
-LIBS = -lpthread -levent
+LIBS = -lpthread -levent -ljemalloc -ltbb -lpmem -lpthread
 
 HDRS = ./include/*.h
 
