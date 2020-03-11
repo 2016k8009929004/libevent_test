@@ -15,7 +15,7 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
 	}
 
     FILE * fp = fopen("client-input.dat", "rb");
-    memcpy(value_corpus, fp, NUM_KEYS * sizeof(VALUE_SIZE));
+    fread(value_corpus, 1, NUM_KEYS * sizeof(VALUE_SIZE), fp);
     fclose(fp);
 
     return;
