@@ -56,7 +56,7 @@ void * send_request(void * arg){
 
     //initial Key
     LL * key_corpus = (LL *)malloc(NUM_KEYS * sizeof(LL));
-    uint8_t * value_corpus = (uint8_t *)malloc(NUM_KEYS * sizeof(VALUE_SIZE));
+    uint8_t * value_corpus = (uint8_t *)malloc(NUM_KEYS * VALUE_SIZE);
     
     gen_corpus(key_corpus, value_corpus);
 
