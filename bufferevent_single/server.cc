@@ -177,8 +177,6 @@ void read_cb(struct bufferevent * bev, void * arg){
     while (true)
     {
         bool flag = false;
-        int test_type = -1;
-        sum_opt_count++;
         if (put_count < num_put_kv){
             flag = true;
             memset(key, 0, sizeof(key));
@@ -189,8 +187,7 @@ void read_cb(struct bufferevent * bev, void * arg){
             put_sequence_id++;
             put_count++;
             res = hi->insert(thread_id, key, value);
-            if (res == true)
-            {
+            if (res == true){
                 match_insert++;
             }
         }
