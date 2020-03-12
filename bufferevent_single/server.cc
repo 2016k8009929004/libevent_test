@@ -167,40 +167,49 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     int res, i;
 
-    uint64_t put_sequence_id = 0;
-    uint64_t get_sequence_id = 0;
+    uint64_t put_sequence_id = 1;
+    uint64_t get_sequence_id = 1;
+    uint64_t get_count = 0;
+    uint64_t put_count = 0;
+    uint64_t match_insert = 0;
+    uint64_t match_search = 0;
 
-    for(i = 0;i < num_put_kv;i++){
-        memset(key, 0, sizeof(key));
-        memset(value, 0, sizeof(value));
-        
-        uint64_t seed = put_sequence_id;
-        
-        snprintf((char *)key, sizeof(key), "%016llu", seed);
-        snprintf((char *)value, sizeof(value), "%llu", seed);
-
-        put_sequence_id++;
-
-        res = hi->insert(thread_id, key, value);
-        if (res == true){
-            printf("[SERVER] test %d put success\n", i);
+    while (true)
+    {
+        bool flag = false;
+        int test_type = -1;
+        sum_opt_count++;
+        if (put_count < num_put_kv){
+            flag = true;
+            memset(key, 0, sizeof(key));
+            memset(value, 0, sizeof(value));
+            uint64_t seed = put_sequence_id;
+            snprintf((char *)key, sizeof(key), "%016llu", seed);
+            snprintf((char *)value, sizeof(value), "%llu", seed);
+            put_sequence_id++;
+            put_count++;
+            res = hi->insert(thread_id, key, value);
+            if (res == true)
+            {
+                match_insert++;
+            }
         }
-    }
-
-    for(i = 0;i < num_get_kv;i++){
-        memset(key, 0, sizeof(key));
-        memset(value, 0, sizeof(value));
-        
-        uint64_t seed = get_sequence_id;
-        
-        snprintf((char *)key, sizeof(key), "%016llu", seed);
-        snprintf((char *)value, sizeof(value), "%llu", seed);
-        
-        get_sequence_id++;
-
-        res = hi->search(thread_id, key, value);
-        if (res == true){
-            printf("[SERVER] test %d get success\n", i);
+        if (get_count < num_get_kv){
+            flag = true;
+            memset(key, 0, sizeof(key));
+            uint64_t seed = get_sequence_id;
+            snprintf((char *)key, sizeof(key), "%016llu", seed);
+            snprintf((char *)value, sizeof(value), "%llu", seed);
+            get_sequence_id++;
+            get_count++;
+            res = hi->search(thread_id, key, value);
+            if (res == true){
+                match_search++;
+            }
+        }
+        if (!flag){
+            printf("match_insert: %llu, match_search: %llu\n", match_insert, match_search);
+            break;
         }
     }
 
