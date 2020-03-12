@@ -188,6 +188,7 @@ void read_cb(struct bufferevent * bev, void * arg){
             put_count++;
             res = hi->insert(thread_id, key, value);
             if (res == true){
+                printf("[PUT] %d success\n", put_sequence_id);
                 match_insert++;
             }
         }
@@ -201,6 +202,7 @@ void read_cb(struct bufferevent * bev, void * arg){
             get_count++;
             res = hi->search(thread_id, key, value);
             if (res == true){
+                printf("[GET] %d success\n", get_sequence_id);
                 match_search++;
             }
         }
