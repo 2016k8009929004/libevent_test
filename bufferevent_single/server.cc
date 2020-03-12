@@ -157,9 +157,9 @@ void read_cb(struct bufferevent * bev, void * arg){
     for(i = 0;i < recv_num;i++){
         printf("[SERVER] len: %d\n", item[i].len);
         if(item[i].len > 0){
-            printf("[SERVER] put KV item");
-/*            res = hi->insert(thread_id, (uint8_t *)item[i].key, (uint8_t *)item[i].value);
-            if (res == true){
+            printf("[SERVER] put KV item\n");
+            res = hi->insert(thread_id, (uint8_t *)item[i].key, (uint8_t *)item[i].value);
+/*            if (res == true){
                 printf("[SERVER] insert success");
                 struct kv_trans_item * ret_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
                 memcpy((char *)ret_item->key, (char *)item[i].key, KEY_SIZE);
@@ -170,7 +170,7 @@ void read_cb(struct bufferevent * bev, void * arg){
                 }
             }*/
         }else if(item[i].len == 0){
-            printf("[SERVER] get KV item");
+            printf("[SERVER] get KV item\n");
 //            res = hi->search(thread_id, item[i].key, item[i].value);
         }
     }
