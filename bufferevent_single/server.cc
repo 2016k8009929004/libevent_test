@@ -221,7 +221,8 @@ void read_cb(struct bufferevent * bev, void * arg){
         }else if(item[i].len == 0){
             printf("[SERVER] get KV item\n");
             res = hi->search(thread_id, (uint8_t *)item[i].key, (uint8_t *)item[i].value);
-            if(ret == true){
+            printf("[SERVER] value: %.*s\n", VALUE_SIZE, item[i].value);
+            if(res == true){
                 printf("[SERVER] search success\n");
             }
             bufferevent_write(bev, (char *)item, KV_ITEM_SIZE);
