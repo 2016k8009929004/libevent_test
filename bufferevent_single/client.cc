@@ -178,7 +178,7 @@ void * send_request(void * arg){
     //PUT
     for(iter = 0;iter < 3;iter++){
         if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
-            snprintf((char *)req_kv->key, KEY_SIZE, "%064llu", key_corpus[key_i]);     //set Key
+            snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 			req_kv->len = VALUE_SIZE;
 			memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
 //            printf("[CLIENT] key: %.*s\nvalue: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
