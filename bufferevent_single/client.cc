@@ -232,7 +232,7 @@ void * send_request(void * arg){
 */
 
 //PUT
-    for(iter = 0;iter < 3;iter++){
+    for(iter = 0;iter < 1;iter++){
         snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 		req_kv->len = VALUE_SIZE;
 		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
@@ -249,6 +249,7 @@ void * send_request(void * arg){
     }
 
 //GET
+/*
     struct kv_trans_item * res_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
     
     for(iter = 0, key_i = 0;iter < 3;iter++){
@@ -282,6 +283,7 @@ void * send_request(void * arg){
         }
         key_i = (key_i + 1) & NUM_KEYS_;
     }
+*/
 #endif
 
     printf("====== end request ======\n");
