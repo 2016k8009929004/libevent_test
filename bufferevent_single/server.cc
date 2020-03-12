@@ -214,14 +214,14 @@ void read_cb(struct bufferevent * bev, void * arg){
         if(item[i].len > 0){
             printf("[SERVER] put KV item\n");
             res = hi->insert(thread_id, (uint8_t *)item[i].key, (uint8_t *)item[i].value);
-            printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SZIE, item[i].key, VALUE_SIZE, item[i].value);
+            printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, item[i].key, VALUE_SIZE, item[i].value);
             if (res == true){
                 printf("[SERVER] insert success\n");
             }
         }else if(item[i].len == 0){
             printf("[SERVER] get KV item\n");
             res = hi->search(thread_id, (uint8_t *)item[i].key, (uint8_t *)item[i].value);
-            printf("[SERVER] get key: %.*s\get value: %.*s\n", KEY_SZIE, item[i].key, VALUE_SIZE, item[i].value);
+            printf("[SERVER] get key: %.*s\get value: %.*s\n", KEY_SIZE, item[i].key, VALUE_SIZE, item[i].value);
             if(res == true){
                 printf("[SERVER] search success\n");
                 bufferevent_write(bev, (char *)item, KV_ITEM_SIZE);
