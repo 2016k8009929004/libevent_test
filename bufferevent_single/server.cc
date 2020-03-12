@@ -153,7 +153,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     //process request
     int i, res, ret;
     for(i = 0;i < recv_num;i++){
-        if(item[i].len > 0){s
+        if(item[i].len > 0){
             res = hi->insert(thread_id, (uint8_t *)item[i].key, (uint8_t *)item[i].value);
             if (res == true){
                 printf("[SERVER] insert success");
