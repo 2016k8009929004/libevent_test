@@ -150,8 +150,31 @@ void read_cb(struct bufferevent * bev, void * arg){
     size_t len = bufferevent_read(bev, (char *)item, KV_ITEM_SIZE);
     int recv_num = len/KV_ITEM_SIZE;
 
-    //process request
+    uint8_t key[KEY_LENGTH + 10];
+    uint8_t value[VALUE_LENGTH + 10];
 
+    memset(key, 0, sizeof(key));
+    memset(value, 0, sizeof(value));
+    snprintf((char *)key, sizeof(key), "%016llu", seed);
+    snprintf((char *)value, sizeof(value), "%llu", seed);
+
+    int res;
+    res = hi->insert(thread_id, key, value);
+    if (res == true){
+        printf("[SERVER] test put success\n");
+    }
+
+    memset(key, 0, sizeof(key));
+    snprintf((char *)key, sizeof(key), "%016llu", seed);
+    snprintf((char *)value, sizeof(value), "%llu", seed);
+
+    res = hi->search(thread_id, key, value);
+    if (res == true){
+        printf("[SERVER] test get success\n");
+    }
+
+    //process request
+/*
     printf("[SERVER] recv_num: %d\n", recv_num);
 
     int i, res, ret;
@@ -176,7 +199,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 //            res = hi->search(thread_id, item[i].key, item[i].value);
         }
     }
-
+*/
     //reply
 //    bufferevent_write(bev, item, len);
 
