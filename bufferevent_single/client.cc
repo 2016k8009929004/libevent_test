@@ -195,6 +195,8 @@ void * send_request(void * arg){
 	    	exit(1);
     	}
 
+        sleep(1);
+
         gettimeofday(&time2, NULL);
         if(time2.tv_sec - time1.tv_sec > 10){
             printf("[CLIENT] request complete\n");
