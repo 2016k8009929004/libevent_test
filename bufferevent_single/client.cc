@@ -248,6 +248,8 @@ void * send_request(void * arg){
         sleep(1);
     }
 
+    sleep(5);
+
 //GET
     struct kv_trans_item * res_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
     
