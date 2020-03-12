@@ -5,9 +5,9 @@
 LL str_to_ll(char * buff, int size){
     int i;
     LL temp;
-    for(i = 0, temp = 0;i < size;i++){
+    for(i = 0, temp = 0;(i < size) && (buff[i] >= '0') && (buff[i] <= '9');i++){
         printf("number: %c ", buff[i]);
-        temp = (temp << 8) | (buff[i] - '0');
+        temp = (temp * 10) | (buff[i] - '0');
         printf("temp: %llu\n", temp);
     }
 
