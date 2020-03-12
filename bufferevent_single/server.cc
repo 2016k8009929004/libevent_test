@@ -167,11 +167,13 @@ void read_cb(struct bufferevent * bev, void * arg){
 //    memset(key, 0, sizeof(key));
 //    snprintf((char *)key, sizeof(key), "%016llu", seed);
 //    snprintf((char *)value, sizeof(value), "%llu", seed);
-    sleep(2);
+    
 
     res = hi->search(thread_id, key, value);
     if (res == true){
         printf("[SERVER] test get success\n");
+    }else{
+        printf("[SERVER] test get failed\n");
     }
 
     //process request
