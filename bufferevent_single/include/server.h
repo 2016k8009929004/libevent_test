@@ -107,3 +107,5 @@ void accept_cb(int fd, short events, void * arg);
 void read_cb(struct bufferevent * bev, void * arg);
 
 void event_cb(struct bufferevent * bev, short event, void * arg);
+
+LL str_to_ll(char * buff, int size);
