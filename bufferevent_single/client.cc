@@ -245,7 +245,7 @@ void * send_request(void * arg){
 	    	exit(1);
     	}
 
-        usleep(1);
+        sleep(1);
     }
 
 //GET
