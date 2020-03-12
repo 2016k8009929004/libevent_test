@@ -205,6 +205,7 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 
     int thread_id = args->thread_id;
     struct hikv * hi = args->hi;
+
 //    printf("----- signal callback -----\n");
 #ifdef __REAL_TIME_STATS__
     double start_time = (double)g_start.tv_sec + ((double)g_start.tv_usec/(double)1000000);
@@ -240,7 +241,7 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 
 //    event_base_loopexit(base, NULL);
 
-    delete hikv;
+    delete (hikv);
 
 	exit(0);
 }
