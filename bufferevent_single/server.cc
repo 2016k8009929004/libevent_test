@@ -164,10 +164,10 @@ void read_cb(struct bufferevent * bev, void * arg){
                 printf("[SERVER] insert success\n");
                 struct kv_trans_item * ret_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
                 memcpy((char *)ret_item->key, (char *)item[i].key, KEY_SIZE);
-                ret = hi->search(thread_id, ret_item->key, ret_item->value);
+                ret = hi->search(thread_id, item[i].key, ret_item->value);
                 if(ret == true){
-                    printf("[SERVER] insert success\n");
-                    bufferevent_write(bev, ret_item, KV_ITEM_SIZE);
+                    printf("[SERVER] search success\n");
+                    bufferevent_write(bev, (char *)ret_item, KV_ITEM_SIZE);
                     printf("[SERVER] send success\n");
                 }
             }
