@@ -158,7 +158,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         printf("[SERVER] len: %d\n", item[i].len);
         if(item[i].len > 0){
             printf("[SERVER] put KV item");
-            res = hi->insert(thread_id, (uint8_t *)item[i].key, (uint8_t *)item[i].value);
+/*            res = hi->insert(thread_id, (uint8_t *)item[i].key, (uint8_t *)item[i].value);
             if (res == true){
                 printf("[SERVER] insert success");
                 struct kv_trans_item * ret_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
@@ -168,10 +168,10 @@ void read_cb(struct bufferevent * bev, void * arg){
                     printf("[SERVER] insert success");
                     bufferevent_write(bev, ret_item, len);
                 }
-            }
+            }*/
         }else if(item[i].len == 0){
             printf("[SERVER] get KV item");
-            res = hi->search(thread_id, item[i].key, item[i].value);
+//            res = hi->search(thread_id, item[i].key, item[i].value);
         }
     }
 
