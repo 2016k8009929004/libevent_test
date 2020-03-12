@@ -241,8 +241,6 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 
 //    event_base_loopexit(base, NULL);
 
-    delete (hikv);
-
 	exit(0);
 }
 
