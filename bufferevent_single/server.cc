@@ -164,9 +164,9 @@ void read_cb(struct bufferevent * bev, void * arg){
         printf("[SERVER] test put success\n");
     }
 
-    memset(key, 0, sizeof(key));
-    snprintf((char *)key, sizeof(key), "%016llu", seed);
-    snprintf((char *)value, sizeof(value), "%llu", seed);
+//    memset(key, 0, sizeof(key));
+//    snprintf((char *)key, sizeof(key), "%016llu", seed);
+//    snprintf((char *)value, sizeof(value), "%llu", seed);
 
     res = hi->search(thread_id, key, value);
     if (res == true){
