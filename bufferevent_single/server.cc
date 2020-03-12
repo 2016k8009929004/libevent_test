@@ -150,13 +150,11 @@ void read_cb(struct bufferevent * bev, void * arg){
     size_t len = bufferevent_read(bev, (char *)item, KV_ITEM_SIZE);
     int recv_num = len/KV_ITEM_SIZE;
 
-    printf("[SERVER] recv len: %d\n", len);
-
     //process request
     int i, res, ret;
     for(i = 0;i < recv_num;i++){
-        if(item[i].len > 0){
-            res = hi->insert(thread_id, item[i].key, item[i].value);
+        if(item[i].len > 0){s
+            res = hi->insert(thread_id, (uint8_t *)item[i].key, (uint8_t *)item[i].value);
             if (res == true){
                 printf("[SERVER] insert success");
                 struct kv_trans_item * ret_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
