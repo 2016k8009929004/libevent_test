@@ -45,6 +45,7 @@ void accept_cb(int fd, short events, void * arg){
     int thread_id = args->thread_id;
     struct event_base * base = args->base;
     struct hikv * hi = args->hi; 
+    struct hikv_arg * hikv_args = args->hikv_args; 
 
     evutil_socket_t * s = (evutil_socket_t *)malloc(sizeof(evutil_socket_t)); 
 
@@ -74,6 +75,7 @@ void accept_cb(int fd, short events, void * arg){
 
     read_arg->thread_id = thread_id;
     read_arg->hi = hi; 
+    read_arg->hikv_args = hikv_args;
 
     bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
@@ -125,7 +127,17 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     int thread_id = args->thread_id;
     struct hikv * hi = args->hi;
+    struct hikv_arg hikv_args = args->hikv_args;
 
+    size_t pm_size = hikv_args.pm_size;
+    uint64_t num_server_thread = hikv_args.num_server_thread;
+    uint64_t num_backend_thread = hikv_args.num_backend_thread;
+    uint64_t num_warm_kv = hikv_args.num_warm_kv;
+    uint64_t num_put_kv = hikv_args.num_put_kv;
+    uint64_t num_get_kv = hikv_args.num_get_kv;
+    uint64_t num_delete_kv = hikv_args.num_delete_kv;
+    uint64_t num_scan_kv = hikv_args.num_scan_kv;
+    uint64_t scan_range = hikv_args.scan_range;
 #ifdef __EVAL_READ__
     struct timeval start;
     gettimeofday(&start, NULL);
@@ -153,27 +165,42 @@ void read_cb(struct bufferevent * bev, void * arg){
     uint8_t key[KEY_LENGTH + 10];
     uint8_t value[VALUE_LENGTH + 10];
 
-    memset(key, 0, sizeof(key));
-    memset(value, 0, sizeof(value));
-    snprintf((char *)key, sizeof(key), "%016llu", seed);
-    snprintf((char *)value, sizeof(value), "%llu", seed);
+    int res, i;
+    uint64_t put_sequence_id = 0;
+    uint64_t get_sequence_id = 0;
 
-    int res;
-    res = hi->insert(thread_id, key, value);
-    if (res == true){
-        printf("[SERVER] test put success\n");
+    for(i = 0;i < num_put_kv;i++){
+        memset(key, 0, sizeof(key));
+        memset(value, 0, sizeof(value));
+        
+        uint64_t seed = put_sequence_id;
+        
+        snprintf((char *)key, sizeof(key), "%016llu", seed);
+        snprintf((char *)value, sizeof(value), "%llu", seed);
+
+        put_sequence_id++;
+
+        res = hi->insert(thread_id, key, value);
+        if (res == true){
+            printf("[SERVER] test %d put success\n", i);
+        }
     }
 
-//    memset(key, 0, sizeof(key));
-//    snprintf((char *)key, sizeof(key), "%016llu", seed);
-//    snprintf((char *)value, sizeof(value), "%llu", seed);
-    
+    for(i = 0;i < num_get_kv;i++){
+        memset(key, 0, sizeof(key));
+        memset(value, 0, sizeof(value));
+        
+        uint64_t seed = get_sequence_id;
+        
+        snprintf((char *)key, sizeof(key), "%016llu", seed);
+        snprintf((char *)value, sizeof(value), "%llu", seed);
+        
+        get_sequence_id++;
 
-    res = hi->search(thread_id, key, value);
-    if (res == true){
-        printf("[SERVER] test get success\n");
-    }else{
-        printf("[SERVER] test get failed\n");
+        res = hi->insert(thread_id, key, value);
+        if (res == true){
+            printf("[SERVER] test %d get success\n", i);
+        }
     }
 
     //process request
@@ -291,7 +318,7 @@ void * server_thread(void * arg){
     uint64_t num_scan_kv = hikv_thread_arg.num_scan_kv;
     uint64_t scan_range = hikv_thread_arg.scan_range;
 
-    seed = hikv_thread_arg.seed;
+    uint64_t seed = hikv_thread_arg.seed;
     
 //    uint64_t scan_all = hikv_thread_arg.scan_all;
 
@@ -353,7 +380,7 @@ void * server_thread(void * arg){
 
     struct event_base * base = event_base_new();
 
-    struct accept_args args = {thread_id, base, hi};
+    struct accept_args args = {thread_id, base, hi, &hikv_thread_arg};
 
     struct event * ev_listen = event_new(base, sock, EV_READ | EV_PERSIST, accept_cb, (void *)&args);
     event_add(ev_listen, NULL);

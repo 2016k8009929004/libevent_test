@@ -54,12 +54,14 @@ struct sock_ev_read {
 
     int thread_id;
     struct hikv * hi;
+    struct hikv_arg * hikv_args;
 };
 
 struct accept_args {
     int thread_id;
     struct event_base * base;
     struct hikv * hi;
+    struct hikv_arg * hikv_args;
 };
 
 pthread_mutex_t connect_lock;
