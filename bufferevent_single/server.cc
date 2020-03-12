@@ -167,6 +167,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 //    memset(key, 0, sizeof(key));
 //    snprintf((char *)key, sizeof(key), "%016llu", seed);
 //    snprintf((char *)value, sizeof(value), "%llu", seed);
+    sleep(2);
 
     res = hi->search(thread_id, key, value);
     if (res == true){
@@ -305,7 +306,7 @@ void * server_thread(void * arg){
     }
 
     //Initialize Key-Value storage
-    struct hikv *hi = new hikv(pm_size * 1024 * 1024 * 1024, num_server_thread, num_backend_thread, num_server_thread * (num_put_kv + num_warm_kv), pmem, pmem_meta);
+    struct hikv * hi = new hikv(pm_size * 1024 * 1024 * 1024, num_server_thread, num_backend_thread, num_server_thread * (num_put_kv + num_warm_kv), pmem, pmem_meta);
 /*
     pthread_t tid[32];
 
