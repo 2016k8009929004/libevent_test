@@ -181,7 +181,7 @@ void * send_request(void * arg){
             snprintf((char *)req_kv->key, KEY_SIZE, "%064llu", key_corpus[key_i]);     //set Key
 			req_kv->len = VALUE_SIZE;
 			memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
-            printf("[CLIENT] key: %llu\nvalue: %-N.Ms", req_kv->key, req_kv->value);
+            printf("[CLIENT] key: %llu\nvalue: %.*s\n", req_kv->key, req_kv->value, VALUE_SIZE);
 			key_i = (key_i + 1) & NUM_KEYS_;
 		}else{
 			key_i = rand() & NUM_KEYS_;
