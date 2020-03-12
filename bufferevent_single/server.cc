@@ -149,7 +149,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     size_t len = bufferevent_read(bev, (char *)item, KV_ITEM_SIZE);
     int recv_num = len/KV_ITEM_SIZE;
 
-//    printf("[SERVER] recv len: %d\n", len);
+    printf("[SERVER] recv len: %d\n", len);
 
     //process request
     int i, res;
