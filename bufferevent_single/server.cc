@@ -167,7 +167,7 @@ void read_cb(struct bufferevent * bev, void * arg){
                 ret = hi->search(thread_id, ret_item->key, ret_item->value);
                 if(ret == true){
                     printf("[SERVER] insert success\n");
-                    bufferevent_write(bev, ret_item, len);
+                    bufferevent_write(bev, ret_item, KV_ITEM_SIZE);
                 }
             }
         }else if(item[i].len == 0){

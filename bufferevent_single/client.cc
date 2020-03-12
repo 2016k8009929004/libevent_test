@@ -182,7 +182,7 @@ void * send_request(void * arg){
 			req_kv->len = VALUE_SIZE;
 			memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
 //            printf("[CLIENT] key: %.*s\nvalue: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
-            printf("[CLIENT] key: %llu, value: %.*s\n", key_corpus[key_i], KEY_SIZE, req_kv->key);
+            printf("[CLIENT] key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
 			key_i = (key_i + 1) & NUM_KEYS_;
 		}else{
 			key_i = rand() & NUM_KEYS_;
@@ -206,6 +206,8 @@ void * send_request(void * arg){
         
         while(1){
             recv_size = read(fd, recv_item, KV_ITEM_SIZE);
+            
+            printf("[CLIENT] recv len: %d\n", recv_size);
 
             if(recv_size == 0){
                 printf("[CLIENT] close connection\n");
