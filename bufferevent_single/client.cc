@@ -176,12 +176,12 @@ void * send_request(void * arg){
     gettimeofday(&time1, NULL);
 
     //PUT
-    for(iter = 0;iter < 3;iter++){
+    for(iter = 0;iter < 5;iter++){
         if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
             snprintf((char *)req_kv->key, KEY_SIZE, "%064llu", key_corpus[key_i]);     //set Key
 			req_kv->len = VALUE_SIZE;
 			memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
-            printf("[CLIENT] key: %.*s\nvalue: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
+            //printf("[CLIENT] key: %.*s\nvalue: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
 			key_i = (key_i + 1) & NUM_KEYS_;
 		}else{
 			key_i = rand() & NUM_KEYS_;
