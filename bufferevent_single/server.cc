@@ -168,6 +168,7 @@ void read_cb(struct bufferevent * bev, void * arg){
                 if(ret == true){
                     printf("[SERVER] insert success\n");
                     bufferevent_write(bev, ret_item, KV_ITEM_SIZE);
+                    printf("[SERVER] send success\n");
                 }
             }
         }else if(item[i].len == 0){
