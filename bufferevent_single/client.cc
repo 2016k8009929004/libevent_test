@@ -197,6 +197,7 @@ void * send_request(void * arg){
     	}
 
         //test PUT
+/*
         int temp = 0;
         
         struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
@@ -218,7 +219,9 @@ void * send_request(void * arg){
                 break;
             }
         }
-
+*/
+        sleep(1);
+        
         gettimeofday(&time2, NULL);
         if(time2.tv_sec - time1.tv_sec > 10){
             printf("[CLIENT] request complete\n");
