@@ -155,7 +155,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     //process request
     int i, res, ret;
     for(i = 0;i < recv_num;i++){
-        printf("[SERVER] len: %d\n", i, item[i].len);
+        printf("[SERVER] len: %d\n", item[i].len);
         if(item[i].len > 0){
             printf("[SERVER] put KV item");
             res = hi->insert(thread_id, (uint8_t *)item[i].key, (uint8_t *)item[i].value);
