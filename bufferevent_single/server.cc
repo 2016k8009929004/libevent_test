@@ -150,21 +150,8 @@ void read_cb(struct bufferevent * bev, void * arg){
     size_t len = bufferevent_read(bev, (char *)item, KV_ITEM_SIZE);
     int recv_num = len/KV_ITEM_SIZE;
 
-    uint8_t key[KEY_LENGTH + 10];
-    uint8_t value[VALUE_LENGTH + 10];
-
-    memset(key, 0, sizeof(key));
-    memset(value, 0, sizeof(value));
-    snprintf((char *)key, sizeof(key), "%016llu", seed);
-    snprintf((char *)value, sizeof(value), "%llu", seed);
-
-    bool res = hi->insert(thread_id, key, value);
-    if (res == true){
-        printf("[SERVER] insert KV item\n");
-    }
-
     //process request
-/*
+
     printf("[SERVER] recv_num: %d\n", recv_num);
 
     int i, res, ret;
@@ -188,7 +175,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 //            res = hi->search(thread_id, item[i].key, item[i].value);
         }
     }
-*/
+
     //reply
 //    bufferevent_write(bev, item, len);
 
@@ -214,7 +201,10 @@ void read_cb(struct bufferevent * bev, void * arg){
 }
 
 static void signal_cb(evutil_socket_t sig, short events, void * arg){
-    struct event_base * base = (struct event_base *)arg;
+    struct sock_ev_read * args = (struct sock_ev_read *)arg;
+
+    int thread_id = args->thread_id;
+    struct hikv * hi = args->hi;
 //    printf("----- signal callback -----\n");
 #ifdef __REAL_TIME_STATS__
     double start_time = (double)g_start.tv_sec + ((double)g_start.tv_usec/(double)1000000);
@@ -249,6 +239,8 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 #endif
 
 //    event_base_loopexit(base, NULL);
+
+    ~hikv();
 
 	exit(0);
 }
@@ -338,7 +330,7 @@ void * server_thread(void * arg){
     struct event * ev_listen = event_new(base, sock, EV_READ | EV_PERSIST, accept_cb, (void *)&args);
     event_add(ev_listen, NULL);
 
-    struct event * ev_signal = evsignal_new(base, SIGINT, signal_cb, (void *)base);
+    struct event * ev_signal = evsignal_new(base, SIGINT, signal_cb, (void *)&args);
     event_add(ev_signal, NULL);
 
     event_base_dispatch(base);
