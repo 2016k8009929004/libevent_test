@@ -112,6 +112,7 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
         gettimeofday(&g_end, NULL);
         pthread_mutex_unlock(&end_lock);
 #endif
+        printf("====== close connection ======\n");
         bufferevent_free(bev);
 
     }
@@ -156,7 +157,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     for(i = 0;i < recv_num;i++){
         if(item[i].len > 0){
 //            res = hi->insert(thread_id, item[i].key, item[i].value);
-            printf("[SERVER] key: %.*s\nvalue: %.*s\n", KEY_SIZE, item[i].key, VALUE_SIZE, item[i].value);
+//            printf("[SERVER] key: %.*s\nvalue: %.*s\n", KEY_SIZE, item[i].key, VALUE_SIZE, item[i].value);
         }else if(item[i].len == 0){
             res = hi->search(thread_id, item[i].key, item[i].value);
         }
