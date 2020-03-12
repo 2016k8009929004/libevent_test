@@ -220,13 +220,11 @@ void read_cb(struct bufferevent * bev, void * arg){
             }
         }else if(item[i].len == 0){
             printf("[SERVER] get KV item\n");
-            res = hi->search(thread_id, item[i].key, item[i].value);
-            struct kv_trans_item * ret_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
-            memcpy((char *)ret_item->key, (char *)item[i].key, KEY_SIZE);
-            ret = hi->search(thread_id, item[i].key, ret_item->value);
+            res = hi->search(thread_id, (uint8_t *)item[i].key, (uint8_t *)item[i].value);
             if(ret == true){
                 printf("[SERVER] search success\n");
             }
+            bufferevent_write(bev, (char *)item, KV_ITEM_SIZE);
         }
     }
 
