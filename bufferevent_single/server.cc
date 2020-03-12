@@ -161,12 +161,12 @@ void read_cb(struct bufferevent * bev, void * arg){
     struct kv_trans_item * item = (struct kv_trans_item *)malloc(BUF_SIZE);
     size_t len = bufferevent_read(bev, (char *)item, KV_ITEM_SIZE);
     int recv_num = len/KV_ITEM_SIZE;
-
+/*
     uint8_t key[KEY_LENGTH + 10];
     uint8_t value[VALUE_LENGTH + 10];
 
     int res, i;
-/*
+
     uint64_t put_sequence_id = 0;
     uint64_t get_sequence_id = 0;
 
