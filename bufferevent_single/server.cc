@@ -158,7 +158,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     snprintf((char *)key, sizeof(key), "%016llu", seed);
     snprintf((char *)value, sizeof(value), "%llu", seed);
 
-    res = hi->insert(thread_id, key, value);
+    bool res = hi->insert(thread_id, key, value);
     if (res == true){
         printf("[SERVER] insert KV item\n");
     }
