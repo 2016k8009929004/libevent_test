@@ -256,6 +256,11 @@ void * send_request(void * arg){
 		req_kv->len = 0;
 		memset((char *)req_kv->value, 0, VALUE_SIZE);
 
+        if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
+			perror("[CLIENT] send failed");
+	    	exit(1);
+    	}
+
         int temp = 0;
 
 	    int recv_size;
