@@ -214,7 +214,7 @@ void * send_request(void * arg){
             temp += recv_size;
 
             if(temp == KV_ITEM_SIZE){
-                printf("[CLIENT] reply key: %llu, value: %.*s\n", str_to_ll((char *)item[i].key, KEY_SIZE), KEY_SIZE, VALUE_SIZE, req_kv->value);
+                printf("[CLIENT] reply key: %llu, value: %.*s\n", str_to_ll((char *)req_kv->key, KEY_SIZE), KEY_SIZE, VALUE_SIZE, req_kv->value);
                 break;
             }
         }
