@@ -127,17 +127,17 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     int thread_id = args->thread_id;
     struct hikv * hi = args->hi;
-    struct hikv_arg hikv_args = args->hikv_args;
+    struct hikv_arg * hikv_args = args->hikv_args;
 
-    size_t pm_size = hikv_args.pm_size;
-    uint64_t num_server_thread = hikv_args.num_server_thread;
-    uint64_t num_backend_thread = hikv_args.num_backend_thread;
-    uint64_t num_warm_kv = hikv_args.num_warm_kv;
-    uint64_t num_put_kv = hikv_args.num_put_kv;
-    uint64_t num_get_kv = hikv_args.num_get_kv;
-    uint64_t num_delete_kv = hikv_args.num_delete_kv;
-    uint64_t num_scan_kv = hikv_args.num_scan_kv;
-    uint64_t scan_range = hikv_args.scan_range;
+    size_t pm_size = hikv_args->pm_size;
+    uint64_t num_server_thread = hikv_args->num_server_thread;
+    uint64_t num_backend_thread = hikv_args->num_backend_thread;
+    uint64_t num_warm_kv = hikv_args->num_warm_kv;
+    uint64_t num_put_kv = hikv_args->num_put_kv;
+    uint64_t num_get_kv = hikv_args->num_get_kv;
+    uint64_t num_delete_kv = hikv_args->num_delete_kv;
+    uint64_t num_scan_kv = hikv_args->num_scan_kv;
+    uint64_t scan_range = hikv_args->scan_range;
 #ifdef __EVAL_READ__
     struct timeval start;
     gettimeofday(&start, NULL);
