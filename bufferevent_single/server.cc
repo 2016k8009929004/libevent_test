@@ -150,18 +150,18 @@ void read_cb(struct bufferevent * bev, void * arg){
     int recv_num = len/KV_ITEM_SIZE;
 
 //    printf("[SERVER] recv len: %d\n", len);
-/*
+
     //process request
     int i, res;
     for(i = 0;i < recv_num;i++){
         if(item[i].len > 0){
 //            res = hi->insert(thread_id, item[i].key, item[i].value);
-            printf("[SERVER] key: %llu, value: %-N.Ms", item[i].key, item[i].value);
+            printf("[SERVER] key: %llu\nvalue: %-N.Ms", item[i].key, item[i].value);
         }else if(item[i].len == 0){
             res = hi->search(thread_id, item[i].key, item[i].value);
         }
     }
-*/
+
     //reply
 //    bufferevent_write(bev, item, len);
 
