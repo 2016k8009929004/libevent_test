@@ -27,6 +27,18 @@
 
 //#define BUF_SIZE 256
 
+#define LL long long
+
+#define NUM_ITER 1000000000
+
+#define PUT_PERCENT 5			// Percentage of PUT operations
+
+#define M_1 1048576
+#define M_1_ 1048575
+
+#define NUM_KEYS M_1			// 51 * M_4 ~ 200 M keys
+#define NUM_KEYS_ M_1_
+
 #define SWAP(a,b) do{a^=b;b^=a;a^=b;}while(0)
 
 #define VALUE_SIZE 256
