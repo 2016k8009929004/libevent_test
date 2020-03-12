@@ -196,7 +196,28 @@ void * send_request(void * arg){
 	    	exit(1);
     	}
 
-        sleep(1);
+        //test PUT
+        int temp = 0;
+        
+        struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
+
+	    int recv_size;
+        
+        while(1){
+            recv_size = read(fd, recv_item, KV_ITEM_SIZE);
+
+            if(recv_size == 0){
+                printf("[CLIENT] close connection\n");
+                close(fd);
+            }
+
+            temp += recv_size;
+
+            if(temp == KV_ITEM_SIZE){
+                printf("[CLIENT] reply key: %llu, value: %.*s\n", str_to_ll((char *)item[i].key, KEY_SIZE), KEY_SIZE, VALUE_SIZE, req_kv->value);
+                break;
+            }
+        }
 
         gettimeofday(&time2, NULL);
         if(time2.tv_sec - time1.tv_sec > 10){

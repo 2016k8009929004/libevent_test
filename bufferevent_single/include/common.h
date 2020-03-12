@@ -87,6 +87,16 @@ static struct server_arg sv_thread_arg[MAX_CPUS];
 static int done[MAX_CPUS];
 static int cores[MAX_CPUS];
 
+static LL str_to_ll(char * buff, int size){
+    int i;
+    LL temp;
+    for(i = 0, temp = 0;(i < size) && (buff[i] >= '0') && (buff[i] <= '9');i++){
+        temp = (temp * 10) + (buff[i] - '0');
+    }
+
+    return temp;
+}
+
 void * client_thread(void * argv);
 void * server_thread(void * arg);
 

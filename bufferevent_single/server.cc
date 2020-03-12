@@ -2,18 +2,6 @@
 
 #define __NR_gettid 186
 
-LL str_to_ll(char * buff, int size){
-    int i;
-    LL temp;
-    for(i = 0, temp = 0;(i < size) && (buff[i] >= '0') && (buff[i] <= '9');i++){
-        printf("number: %c ", buff[i]);
-        temp = (temp * 10) + (buff[i] - '0');
-        printf("temp: %llu\n", temp);
-    }
-
-    return temp;
-}
-
 evutil_socket_t server_init(int port, int listen_num){
     evutil_socket_t sock;
     if((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
@@ -165,11 +153,21 @@ void read_cb(struct bufferevent * bev, void * arg){
     printf("[SERVER] recv len: %d\n", len);
 
     //process request
-    int i, res;
+    int i, res, ret;
     for(i = 0;i < recv_num;i++){
         if(item[i].len > 0){
-//            res = hi->insert(thread_id, item[i].key, item[i].value);
-            printf("[SERVER] key: %llu, %.*s\n", str_to_ll((char *)item[i].key, KEY_SIZE), KEY_SIZE, item[i].key);
+            res = hi->insert(thread_id, item[i].key, item[i].value);
+            if (res == true){
+                printf("[SERVER] insert success");
+                struct kv_trans_item * ret_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
+                memcpy((char *)ret_item->key, (char *)item[i].key, KEY_SIZE);
+                ret = hi->search(thread_id, ret_item->key, ret_item->value);
+                if(ret == true){
+                    printf("[SERVER] insert success");
+                    bufferevent_write(bev, ret_item, len);
+                }
+            }
+//            printf("[SERVER] key: %llu, %.*s\n", str_to_ll((char *)item[i].key, KEY_SIZE), KEY_SIZE, item[i].key);
         }else if(item[i].len == 0){
             res = hi->search(thread_id, item[i].key, item[i].value);
         }
