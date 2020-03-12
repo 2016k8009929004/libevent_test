@@ -175,13 +175,14 @@ void * send_request(void * arg){
     struct timeval time1, time2;
     gettimeofday(&time1, NULL);
 
-    //PUT
+//PUT
+/*
     for(iter = 0;iter < 3;iter++){
         if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 			req_kv->len = VALUE_SIZE;
 			memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
-//            printf("[CLIENT] key: %.*s\nvalue: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
+            //printf("[CLIENT] key: %.*s\nvalue: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
             printf("[CLIENT] key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
 			key_i = (key_i + 1) & NUM_KEYS_;
 		}else{
@@ -196,7 +197,7 @@ void * send_request(void * arg){
 	    	exit(1);
     	}
 
-        //test PUT
+//test PUT
 
         int temp = 0;
         
@@ -222,16 +223,61 @@ void * send_request(void * arg){
             }
         }
 
-//        sleep(1);
-
         gettimeofday(&time2, NULL);
         if(time2.tv_sec - time1.tv_sec > 10){
             printf("[CLIENT] request complete\n");
             break;
         }
     }
+*/
+
+//PUT
+    for(iter = 0;iter < 3;iter++){
+        snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
+		req_kv->len = VALUE_SIZE;
+		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
+        //printf("[CLIENT] key: %.*s\nvalue: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
+        printf("[CLIENT] key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
+		key_i = (key_i + 1) & NUM_KEYS_;
+
+        if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
+			perror("[CLIENT] send failed");
+	    	exit(1);
+    	}
+    }
+
+//GET
+    struct kv_trans_item * res_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
+    
+    for(iter = 0, key_i = 0;iter < 3;iter++){
+        snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
+		req_kv->len = 0;
+		memset((char *)req_kv->value, 0, VALUE_SIZE);
+
+        int temp = 0;
+
+	    int recv_size;
+
+        while(1){
+            recv_size = read(fd, res_kv, KV_ITEM_SIZE);
+
+            if(recv_size == 0){
+                printf("[CLIENT] close connection\n");
+                close(fd);
+            }
+
+            temp += recv_size;
+
+            if(temp == KV_ITEM_SIZE){
+                printf("[CLIENT] key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, res_kv->value);
+                break;
+            }
+        }
+        key_i = (key_i + 1) & NUM_KEYS_;
+    }
 #endif
-    sleep(2);
+
+    printf("====== end request ======\n");
 
     return NULL;
 }

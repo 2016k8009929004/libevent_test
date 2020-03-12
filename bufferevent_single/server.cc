@@ -166,6 +166,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     uint8_t value[VALUE_LENGTH + 10];
 
     int res, i;
+/*
     uint64_t put_sequence_id = 0;
     uint64_t get_sequence_id = 0;
 
@@ -202,9 +203,9 @@ void read_cb(struct bufferevent * bev, void * arg){
             printf("[SERVER] test %d get success\n", i);
         }
     }
-
+*/
     //process request
-/*
+
     printf("[SERVER] recv_num: %d\n", recv_num);
 
     int i, res, ret;
@@ -215,21 +216,20 @@ void read_cb(struct bufferevent * bev, void * arg){
             res = hi->insert(thread_id, (uint8_t *)item[i].key, (uint8_t *)item[i].value);
             if (res == true){
                 printf("[SERVER] insert success\n");
-                struct kv_trans_item * ret_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
-                memcpy((char *)ret_item->key, (char *)item[i].key, KEY_SIZE);
-                ret = hi->search(thread_id, item[i].key, ret_item->value);
-                if(ret == true){
-                    printf("[SERVER] search success\n");
-                    bufferevent_write(bev, (char *)ret_item, KV_ITEM_SIZE);
-                    printf("[SERVER] send success\n");
-                }
+                
             }
         }else if(item[i].len == 0){
             printf("[SERVER] get KV item\n");
-//            res = hi->search(thread_id, item[i].key, item[i].value);
+            res = hi->search(thread_id, item[i].key, item[i].value);
+            struct kv_trans_item * ret_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
+            memcpy((char *)ret_item->key, (char *)item[i].key, KEY_SIZE);
+            ret = hi->search(thread_id, item[i].key, ret_item->value);
+            if(ret == true){
+                printf("[SERVER] search success\n");
+            }
         }
     }
-*/
+
     //reply
 //    bufferevent_write(bev, item, len);
 
@@ -294,8 +294,6 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 #endif
 
 //    event_base_loopexit(base, NULL);
-
-    delete (hi);
 
 	exit(0);
 }
