@@ -167,7 +167,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     for(i = 0;i < recv_num;i++){
         if(item[i].len > 0){
 //            res = hi->insert(thread_id, item[i].key, item[i].value);
-            printf("[SERVER] key: %llu, %.*s\n", str_to_ll(item[i].key, KEY_SIZE), KEY_SIZE, item[i].key);
+            printf("[SERVER] key: %llu, %.*s\n", str_to_ll((char *)item[i].key, KEY_SIZE), KEY_SIZE, item[i].key);
         }else if(item[i].len == 0){
             res = hi->search(thread_id, item[i].key, item[i].value);
         }
