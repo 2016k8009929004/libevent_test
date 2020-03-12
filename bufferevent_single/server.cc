@@ -161,7 +161,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     struct kv_trans_item * item = (struct kv_trans_item *)malloc(BUF_SIZE);
     size_t len = bufferevent_read(bev, (char *)item, KV_ITEM_SIZE);
     int recv_num = len/KV_ITEM_SIZE;
-/*
+
     uint8_t key[KEY_LENGTH + 10];
     uint8_t value[VALUE_LENGTH + 10];
 
@@ -198,14 +198,14 @@ void read_cb(struct bufferevent * bev, void * arg){
         
         get_sequence_id++;
 
-        res = hi->insert(thread_id, key, value);
+        res = hi->search(thread_id, key, value);
         if (res == true){
             printf("[SERVER] test %d get success\n", i);
         }
     }
-*/
-    //process request
 
+    //process request
+/*
     printf("[SERVER] recv_num: %d\n", recv_num);
 
     int i, res, ret;
@@ -228,7 +228,7 @@ void read_cb(struct bufferevent * bev, void * arg){
             }
         }
     }
-
+*/
     //reply
 //    bufferevent_write(bev, item, len);
 
