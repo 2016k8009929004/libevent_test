@@ -323,8 +323,8 @@ void * send_request(void * arg){
 */
 
 //[Version 3.0 - mixed tests]
-    for(iter = 0;iter < NUM_ITER;iter++){
-        if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS) {
+    for(iter = 0;iter < num_kv;iter++){
+        if(iter < num_put_kv) {
         //PUT
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 		    req_kv->len = VALUE_SIZE;
@@ -538,17 +538,17 @@ void * client_thread(void * argv){
 
 int main(int argc, char * argv[]){
     struct hikv_arg hikv_thread_arg = {
-        2,      //pm_size
-        1,      //num_server_thread
-        1,      //num_backend_thread
-        0,      //num_warm_kv
-        0,      //num_put_kv
-        0,      //num_get_kv
-        0,      //num_delete_kv
-        0,      //num_scan_kv
-        100,    //scan_range
-        1234,   //seed
-        0       //scan_all
+        2,                              //pm_size
+        1,                              //num_server_thread
+        1,                              //num_backend_thread
+        0,                              //num_warm_kv
+        NUM_KEYS,                       //num_put_kv
+        (100 - PUT_PERCENT) * NUM_KEYS, //num_get_kv
+        0,                              //num_delete_kv
+        0,                              //num_scan_kv
+        100,                            //scan_range
+        1234,                           //seed
+        0                               //scan_all
     };
 
     int i;
