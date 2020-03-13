@@ -324,7 +324,7 @@ void * send_request(void * arg){
         printf("  [Result]insert match:%llu/%llu(%.2f%%)\n", match_insert, put_count, 100.0 * match_insert / put_count);
     }
     if (get_count > 0){
-        printf("  [Result]search match:%llu/%llu(%.2f%%)\n", match_search, real_get_count, 100.0 * match_search / real_get_count);
+        printf("  [Result]search match:%llu/%llu(%.2f%%)\n", match_search, get_count, 100.0 * match_search / get_count);
     }
     if (delete_count > 0){
         printf("  [Result]delete match:%llu/%llu(%.2f%%)\n", match_delete, delete_count, 100.0 * match_delete / delete_count);
