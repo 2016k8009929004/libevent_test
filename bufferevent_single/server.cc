@@ -121,7 +121,7 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
-    printf("====== read_cb ======\n");
+//    printf("====== read_cb ======\n");
 
 //    printf("[read cb] pid: %d, tid:%ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
@@ -227,23 +227,23 @@ void read_cb(struct bufferevent * bev, void * arg){
     int i, res, ret;
     for(i = 0;i < recv_num;i++){
         if(recv_item[i].len > 0){
-            printf("[SERVER] put KV item\n");
+//            printf("[SERVER] put KV item\n");
             res = hi->insert(thread_id, (uint8_t *)recv_item[i].key, (uint8_t *)recv_item[i].value);
-            printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item[i].key, VALUE_SIZE, recv_item[i].value);
+//            printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item[i].key, VALUE_SIZE, recv_item[i].value);
             if (res == true){
 //                printf("[SERVER] insert success\n");
             }
         }else if(recv_item[i].len == 0){
-            printf("[SERVER] get KV item\n");
+//            printf("[SERVER] get KV item\n");
             memcpy((char *)reply_item, (char *)&recv_item[i], KV_ITEM_SIZE);
             res = hi->search(thread_id, (uint8_t *)reply_item->key, (uint8_t *)reply_item->value);
-            printf("[SERVER] get key: %.*s\nget value: %.*s\n", KEY_SIZE, reply_item->key, VALUE_SIZE, reply_item->value);
+//            printf("[SERVER] get key: %.*s\nget value: %.*s\n", KEY_SIZE, reply_item->key, VALUE_SIZE, reply_item->value);
             if(res == true){
-                printf("[SERVER] search success\n");
+//                printf("[SERVER] search success\n");
                 reply_item->len = VALUE_SIZE;
                 bufferevent_write(bev, (char *)reply_item, KV_ITEM_SIZE);
             }else{
-                printf("[SERVER] search failed\n");
+//                printf("[SERVER] search failed\n");
                 reply_item->len = -1;
                 bufferevent_write(bev, (char *)reply_item, KV_ITEM_SIZE);
             }
