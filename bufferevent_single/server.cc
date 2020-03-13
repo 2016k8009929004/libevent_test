@@ -415,7 +415,7 @@ int main(int argc, char * argv[]){
         1,      //num_server_thread
         1,      //num_backend_thread
         0,      //num_warm_kv
-        0,      //num_put_kv
+        NUM_KEYS,      //num_put_kv
         0,      //num_get_kv
         0,      //num_delete_kv
         0,      //num_scan_kv
