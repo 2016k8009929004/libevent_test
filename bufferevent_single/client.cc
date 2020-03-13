@@ -568,7 +568,7 @@ int main(int argc, char * argv[]){
             hikv_thread_arg.num_put_kv = n;
         }else if(sscanf(argv[i], "--put_percent=%d%c", &n, &junk) == 1){
             hikv_thread_arg.num_get_kv = hikv_thread_arg.num_put_kv * (100 - n) / n;
-            printf("[CLIENT] [PUT]: %llu [GET]: %llu\n", hikv_thread_arg.num_put_kv, hikv_thread_arg.num_get_kv);
+//            printf("[CLIENT] [PUT]: %llu [GET]: %llu\n", hikv_thread_arg.num_put_kv, hikv_thread_arg.num_get_kv);
         }else if(sscanf(argv[i], "--num_get=%llu%c", &n, &junk) == 1){
             hikv_thread_arg.num_get_kv = n;
         }else if(sscanf(argv[i], "--num_delete=%llu%c", &n, &junk) == 1){
