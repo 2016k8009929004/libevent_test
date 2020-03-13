@@ -25,7 +25,7 @@
 #include <event2/bufferevent.h>
 #include <event2/buffer.h>
 
-#include "size.h"
+#include "sizes.h"
 
 //#define BUF_SIZE 256
 
