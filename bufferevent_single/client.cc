@@ -181,8 +181,6 @@ void * send_request(void * arg){
 //    printf("===== start real work ======\n");
     int i, iter, key_i;
     
-    key_i = 0;
-    
     struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
     struct kv_trans_item * res_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
 
@@ -323,7 +321,7 @@ void * send_request(void * arg){
 */
 
 //[Version 3.0 - mixed tests]
-    for(iter = 0;iter < num_kv;iter++){
+    for(iter = 0, key_i = 0;iter < num_kv;iter++){
         if(iter < num_put_kv) {
         //PUT
 //            printf("[CLIENT] put KV item\n");
@@ -381,6 +379,10 @@ void * send_request(void * arg){
             }
             key_i = (key_i + 1) & NUM_KEYS_;
 		}
+
+        if(iter == num_put_kv - 1){
+            key_i = 0;
+        }
     }
 
     if (put_count > 0){
