@@ -232,7 +232,7 @@ void * send_request(void * arg){
 */
 
 //PUT
-    for(iter = 0;iter < 1;iter++){
+    for(iter = 0;iter < 3;iter++){
         snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 		req_kv->len = VALUE_SIZE;
 		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
