@@ -494,8 +494,8 @@ int main(int argc, char * argv[]){
     }
 
     for(i = 0;i < client_thread_num;i++){
-        cl_thread_arg[i].ip_addr = &argv[2];
-        cl_thread_arg[i].port = atoi(argv[3]);
+        cl_thread_arg[i].ip_addr = &server_ip;
+        cl_thread_arg[i].port = server_port;
 //        arg.buf_size = atoi(argv[4]);
 #ifdef __BIND_CORE__
         arg.sequence = i;
