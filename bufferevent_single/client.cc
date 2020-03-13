@@ -243,22 +243,37 @@ void * send_request(void * arg){
         }
     }
 */
+    uint64_t num_kv = get_num_kv + put_num_kv + delete_num_kv + scan_num_kv;
+    uint64_t get_count = 0;
+    uint64_t put_count = 0;
+    uint64_t delete_count = 0;
+    uint64_t scan_count = 0;
+    uint64_t scan_kv_count = 0;
+    uint64_t scan_all_count = 0;
+    uint64_t seq_count = 0;
+    uint64_t real_get_count = 0;
+
+    uint64_t match_search = 0;
+    uint64_t match_insert = 0;
 
 //PUT
     for(iter = 0;iter < num_put_kv;iter++){
+        memset((char *)req_kv->key, 0, KEY_SIZE);
+        memset((char *)req_kv->value, 0, VALUE_SIZE);
         snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 		req_kv->len = VALUE_SIZE;
 		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
-        //printf("[CLIENT] key: %.*s\nvalue: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
         printf("[CLIENT] key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
 		key_i = (key_i + 1) & NUM_KEYS_;
+
+        put_count++;
 
         if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
 			perror("[CLIENT] send failed");
 	    	exit(1);
-    	}
-
-        sleep(1);
+    	}else{
+            match_search++;
+        }
     }
 
 //GET
@@ -274,7 +289,9 @@ void * send_request(void * arg){
 	    	exit(1);
     	}
 
-        int temp = 0;
+        get_count++;
+
+        int tot_recv = 0;
 
 	    int recv_size;
 
@@ -286,22 +303,35 @@ void * send_request(void * arg){
                 close(fd);
             }
 
-            temp += recv_size;
+            tot_recv += recv_size;
 
-            if(temp == KV_ITEM_SIZE){
+            if(tot_recv == KV_ITEM_SIZE){
+
                 if(res_kv->len == VALUE_SIZE){
-                    printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
+//                    printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
+                    match_search++;
                 }else{
-                    printf("[CLIENT] GET failed! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
+//                    printf("[CLIENT] GET failed! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
                 }
                 break;
             }
         }
         key_i = (key_i + 1) & NUM_KEYS_;
     }
-#endif
 
-    printf("====== end request ======\n");
+    if (put_count > 0){
+        printf("  [Result]insert match:%llu/%llu(%.2f%%)\n", match_insert, put_count, 100.0 * match_insert / put_count);
+    }
+    if (get_count > 0){
+        printf("  [Result]search match:%llu/%llu(%.2f%%)\n", match_search, real_get_count, 100.0 * match_search / real_get_count);
+    }
+    if (delete_count > 0){
+        printf("  [Result]delete match:%llu/%llu(%.2f%%)\n", match_delete, delete_count, 100.0 * match_delete / delete_count);
+    }
+    if (scan_count > 0){
+        printf("  [Result]scan match:%llu/%llu/%llu\n", scan_kv_count, scan_count, scan_kv_count / scan_count);
+    }
+#endif
 
     return NULL;
 }
