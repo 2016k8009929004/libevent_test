@@ -326,7 +326,7 @@ void * server_thread(void * arg){
     uint64_t num_backend_thread = hikv_thread_arg.num_backend_thread;
     uint64_t num_warm_kv = hikv_thread_arg.num_warm_kv;
     uint64_t num_put_kv = hikv_thread_arg.num_put_kv;
-
+    uint64_t num_get_kv = hikv_thread_arg.num_get_kv;
     uint64_t num_delete_kv = hikv_thread_arg.num_delete_kv;
     uint64_t num_scan_kv = hikv_thread_arg.num_scan_kv;
     uint64_t scan_range = hikv_thread_arg.scan_range;

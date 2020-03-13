@@ -60,7 +60,7 @@ void * send_request(void * arg){
     uint64_t num_backend_thread = hikv_args->num_backend_thread;
     uint64_t num_warm_kv = hikv_args->num_warm_kv;
     uint64_t num_put_kv = hikv_args->num_put_kv;
-
+    uint64_t num_get_kv = hikv_args->num_get_kv;
     uint64_t num_delete_kv = hikv_args->num_delete_kv;
     uint64_t num_scan_kv = hikv_args->num_scan_kv;
     uint64_t scan_range = hikv_args->scan_range;
