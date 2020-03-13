@@ -273,7 +273,7 @@ void * send_request(void * arg){
 			perror("[CLIENT] send failed");
 	    	exit(1);
     	}else{
-            match_search++;
+            match_insert++;
         }
     }
 
