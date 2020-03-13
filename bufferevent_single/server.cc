@@ -232,6 +232,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 //            printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item[i].key, VALUE_SIZE, recv_item[i].value);
             if (res == true){
 //                printf("[SERVER] insert success\n");
+                free(recv_item);
             }
         }else if(recv_item[i].len == 0){
             printf("[SERVER] get KV item\n");
@@ -248,6 +249,8 @@ void read_cb(struct bufferevent * bev, void * arg){
                 reply_item->len = -1;
                 bufferevent_write(bev, (char *)reply_item, KV_ITEM_SIZE);
             }
+            free(recv_item);
+            free(reply_item);
         }
     }
 
