@@ -445,8 +445,6 @@ void * client_thread(void * argv){
 }
 
 int main(int argc, char * argv[]){
-    client_thread_num = atoi(argv[1]);
-
     struct hikv_arg hikv_thread_arg = {
         2,      //pm_size
         1,      //num_server_thread
@@ -462,6 +460,9 @@ int main(int argc, char * argv[]){
     };
 
     int i;
+
+    char server_ip[20];
+    int server_port;
 
     for (i = 0; i < argc; i++){
         double d;
@@ -483,6 +484,10 @@ int main(int argc, char * argv[]){
             hikv_thread_arg.scan_range = n;
         }else if(sscanf(argv[i], "--num_scan_all=%llu%c", &n, &junk) == 1){
             hikv_thread_arg.scan_all = n;
+        }else if(sscanf(argv[i], "--server_ip=%s%c", server_ip, &junk) == 1){
+            printf("[CLIENT] server ip: %s\n", server_ip);
+        }else if(sscanf(argv[i], "--server_port=%d%c", &server_port, &junk) == 1){
+            printf("[CLIENT] server port: %d\n", server_port);
         }else if(i > 0){
             printf("error (%s)!\n", argv[i]);
         }
