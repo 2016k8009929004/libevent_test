@@ -33,7 +33,7 @@
 
 #define NUM_ITER 1000000000
 
-#define PUT_PERCENT 5			// Percentage of PUT operations
+#define PUT_PERCENT 50			// Percentage of PUT operations
 
 #define NUM_KEYS 100			// 51 * M_4 ~ 200 M keys
 #define NUM_KEYS_ 99
