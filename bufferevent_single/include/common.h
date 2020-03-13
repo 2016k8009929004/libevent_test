@@ -75,6 +75,13 @@ struct server_arg {
     struct hikv_arg hikv_thread_arg;
 };
 
+struct client_arg {
+    char ** ip_addr;
+    int port;
+//    int buf_size;
+    struct hikv_arg hikv_thread_arg;
+};
+
 #ifndef MAX_CPUS
 #define MAX_CPUS		16
 #endif
