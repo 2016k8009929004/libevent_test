@@ -55,17 +55,17 @@ void * send_request(void * arg){
     int fd = *(info->sockfd);
     struct hikv_arg * hikv_args = info->hikv_thread_arg;
 
-    size_t pm_size = hikv_args.pm_size;
-    uint64_t num_server_thread = hikv_args.num_server_thread;
-    uint64_t num_backend_thread = hikv_args.num_backend_thread;
-    uint64_t num_warm_kv = hikv_args.num_warm_kv;
-    uint64_t num_put_kv = hikv_args.num_put_kv;
+    size_t pm_size = hikv_args->pm_size;
+    uint64_t num_server_thread = hikv_args->num_server_thread;
+    uint64_t num_backend_thread = hikv_args->num_backend_thread;
+    uint64_t num_warm_kv = hikv_args->num_warm_kv;
+    uint64_t num_put_kv = hikv_args->num_put_kv;
 
-    uint64_t num_delete_kv = hikv_args.num_delete_kv;
-    uint64_t num_scan_kv = hikv_args.num_scan_kv;
-    uint64_t scan_range = hikv_args.scan_range;
+    uint64_t num_delete_kv = hikv_args->num_delete_kv;
+    uint64_t num_scan_kv = hikv_args->num_scan_kv;
+    uint64_t scan_range = hikv_args->scan_range;
 
-    uint64_t seed = hikv_args.seed;
+    uint64_t seed = hikv_args->seed;
 
     //initial Key
     LL * key_corpus = (LL *)malloc(NUM_KEYS * sizeof(LL));
@@ -489,17 +489,17 @@ int main(int argc, char * argv[]){
     }
 
     for(i = 0;i < client_thread_num;i++){
-        arg.ip_addr = &argv[2];
-        arg.port = atoi(argv[3]);
+        cl_thread_arg[i].ip_addr = &argv[2];
+        cl_thread_arg[i].port = atoi(argv[3]);
 //        arg.buf_size = atoi(argv[4]);
 #ifdef __BIND_CORE__
         arg.sequence = i;
 #endif
         memcpy(&cl_thread_arg[i].hikv_thread_arg, &hikv_thread_arg, HIKV_ARG_SIZE);
-        pthread_create(&cl_thread[i], NULL, client_thread, (void *)&arg);
+        pthread_create(&cl_thread[i], NULL, client_thread, (void *)&cl_thread_arg[i]);
     }
 
     for(i = 0;i < client_thread_num;i++){
-        pthread_join(threads[i], NULL);
+        pthread_join(cl_thread[i], NULL);
     }
 }
