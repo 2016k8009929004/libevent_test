@@ -121,6 +121,8 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
+    printf("====== read_cb ======\n");
+
 //    printf("[read cb] pid: %d, tid:%ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
     struct sock_ev_read * args = (struct sock_ev_read *)arg;
@@ -236,11 +238,11 @@ void read_cb(struct bufferevent * bev, void * arg){
             res = hi->search(thread_id, (uint8_t *)reply_item->key, (uint8_t *)reply_item->value);
 //            printf("[SERVER] get key: %.*s\nget value: %.*s\n", KEY_SIZE, reply_item->key, VALUE_SIZE, reply_item->value);
             if(res == true){
-                printf("[SERVER] search success\n");
+//                printf("[SERVER] search success\n");
                 reply_item->len = VALUE_SIZE;
                 bufferevent_write(bev, (char *)reply_item, KV_ITEM_SIZE);
             }else{
-                printf("[SERVER] search failed\n");
+//                printf("[SERVER] search failed\n");
                 reply_item->len = -1;
                 bufferevent_write(bev, (char *)reply_item, KV_ITEM_SIZE);
             }
