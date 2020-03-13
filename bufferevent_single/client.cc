@@ -184,10 +184,11 @@ void * send_request(void * arg){
     key_i = 0;
     
     struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
+    struct kv_trans_item * res_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
 
     struct timeval time1, time2;
     gettimeofday(&time1, NULL);
-/*
+/* [Version 1.0 - seperated tasks 1]
 //PUT
 
     for(iter = 0;iter < 3;iter++){
@@ -257,6 +258,7 @@ void * send_request(void * arg){
     uint64_t match_insert = 0;
     uint64_t match_delete = 0;
 
+/*[Version 2.0 - seperated tasks 2]
 //PUT
     for(iter = 0;iter < num_put_kv;iter++){
         memset((char *)req_kv->key, 0, KEY_SIZE);
@@ -278,7 +280,6 @@ void * send_request(void * arg){
     }
 
 //GET
-    struct kv_trans_item * res_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
     
     for(iter = 0, key_i = 0;iter < num_get_kv;iter++){
         snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
@@ -318,6 +319,66 @@ void * send_request(void * arg){
             }
         }
         key_i = (key_i + 1) & NUM_KEYS_;
+    }
+*/
+
+//[Version 3.0 - mixed tests]
+    for(iter = 0;iter < NUM_ITER;iter++){
+        if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS) {
+        //PUT
+            snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
+		    req_kv->len = VALUE_SIZE;
+    		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
+            printf("[CLIENT] key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
+		    key_i = (key_i + 1) & NUM_KEYS_;
+
+            put_count++;
+
+            if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
+	    		perror("[CLIENT] send failed");
+	        	exit(1);
+        	}else{
+                match_insert++;
+            }
+		} else {
+		//GET
+            snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
+	    	req_kv->len = 0;
+		    memset((char *)req_kv->value, 0, VALUE_SIZE);
+
+            if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
+	    		perror("[CLIENT] send failed");
+	        	exit(1);
+    	    }
+
+            get_count++;
+
+            int recv_size, tot_recv;
+
+	        tot_recv = 0;
+
+            while(1){
+                recv_size = read(fd, res_kv, KV_ITEM_SIZE);
+
+                if(recv_size == 0){
+                    printf("[CLIENT] close connection\n");
+                    close(fd);
+                }
+
+                tot_recv += recv_size;
+
+                if(tot_recv == KV_ITEM_SIZE){
+                    if(res_kv->len == VALUE_SIZE){
+                        printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
+                        match_search++;
+                    }else{
+                        printf("[CLIENT] GET failed! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
+                    }
+                    break;
+                }
+            }
+            key_i = (key_i + 1) & NUM_KEYS_;
+		}
     }
 
     if (put_count > 0){
