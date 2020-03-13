@@ -218,7 +218,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
     //process request
-//    printf("[SERVER] recv_num: %d\n", recv_num);
+    printf("[SERVER] recv_num: %d\n", recv_num);
 
     int i, res, ret;
     for(i = 0;i < recv_num;i++){
