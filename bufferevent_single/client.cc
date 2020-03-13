@@ -179,7 +179,7 @@ void * send_request(void * arg){
     fclose(send_fp);
 #elif defined(__TEST_KV__)
 //    printf("===== start real work ======\n");
-    int i, iter, key_i;
+    int i, iter, key_i, key_j;
     
     struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
     struct kv_trans_item * res_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
@@ -321,7 +321,7 @@ void * send_request(void * arg){
 */
 
 //[Version 3.0 - mixed tests]
-    for(iter = 0, key_i = 0;iter < num_kv;iter++){
+    for(iter = 0, key_i = 0, key_j = 0;iter < num_kv;iter++){
         if(iter < num_put_kv) {
         //PUT
 //            printf("[CLIENT] put KV item\n");
@@ -342,7 +342,7 @@ void * send_request(void * arg){
 		} else {
 		//GET
 //            printf("[CLIENT] get KV item\n");
-            snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
+            snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_j]);     //set Key
 	    	req_kv->len = 0;
 		    memset((char *)req_kv->value, 0, VALUE_SIZE);
 
@@ -377,12 +377,8 @@ void * send_request(void * arg){
                     break;
                 }
             }
-            key_i = (key_i + 1) & NUM_KEYS_;
+            key_j = (key_j + 1) & NUM_KEYS_;
 		}
-
-        if(iter == num_put_kv - 1){
-            key_i = 0;
-        }
     }
 
     if (put_count > 0){
