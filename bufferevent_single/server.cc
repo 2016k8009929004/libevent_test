@@ -223,14 +223,14 @@ void read_cb(struct bufferevent * bev, void * arg){
     int i, res, ret;
     for(i = 0;i < recv_num;i++){
         if(recv_item[i].len > 0){
-//            printf("[SERVER] put KV item\n");
+            printf("[SERVER] put KV item\n");
             res = hi->insert(thread_id, (uint8_t *)recv_item[i].key, (uint8_t *)recv_item[i].value);
 //            printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item[i].key, VALUE_SIZE, recv_item[i].value);
             if (res == true){
 //                printf("[SERVER] insert success\n");
             }
         }else if(recv_item[i].len == 0){
-//            printf("[SERVER] get KV item\n");
+            printf("[SERVER] get KV item\n");
             struct kv_trans_item * reply_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
             memcpy((char *)reply_item, (char *)&recv_item[i], KV_ITEM_SIZE);
             res = hi->search(thread_id, (uint8_t *)reply_item->key, (uint8_t *)reply_item->value);

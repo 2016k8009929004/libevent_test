@@ -326,6 +326,7 @@ void * send_request(void * arg){
     for(iter = 0;iter < num_kv;iter++){
         if(iter < num_put_kv) {
         //PUT
+            printf("[CLIENT] put KV item\n");
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 		    req_kv->len = VALUE_SIZE;
     		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
@@ -342,6 +343,7 @@ void * send_request(void * arg){
             }
 		} else {
 		//GET
+            printf("[CLIENT] get KV item\n");
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 	    	req_kv->len = 0;
 		    memset((char *)req_kv->value, 0, VALUE_SIZE);
