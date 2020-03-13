@@ -193,7 +193,7 @@ void read_cb(struct bufferevent * bev, void * arg){
                 match_insert++;
             }
         }
-        if (get_count < num_get_kv){
+        else if (get_count < num_get_kv){
             flag = true;
             memset(key, 0, sizeof(key));
             uint64_t seed = get_sequence_id;
