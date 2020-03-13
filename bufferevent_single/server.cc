@@ -153,20 +153,15 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
     //receive
-/*
-    char msg[BUF_SIZE + 1];
-    int len = bufferevent_read(bev, msg, BUF_SIZE);
-    msg[len] = '\0';
-*/
     struct kv_trans_item * item = (struct kv_trans_item *)malloc(BUF_SIZE);
     size_t len = bufferevent_read(bev, (char *)item, KV_ITEM_SIZE);
     int recv_num = len/KV_ITEM_SIZE;
 
+    int res, i;
+#if 0
     uint8_t key[KEY_LENGTH + 10];
     uint8_t value[VALUE_LENGTH + 10];
-
-    int res, i;
-
+    
     uint64_t put_sequence_id = 1;
     uint64_t get_sequence_id = 1;
     uint64_t get_count = 0;
@@ -213,9 +208,15 @@ void read_cb(struct bufferevent * bev, void * arg){
             break;
         }
     }
+#endif
+
+    char msg[BUF_SIZE + 1];
+    int len = bufferevent_read(bev, msg, BUF_SIZE);
+    msg[len] = '\0';
+
 
     //process request
-/*
+
     printf("[SERVER] recv_num: %d\n", recv_num);
 
     int i, res, ret;
@@ -235,10 +236,14 @@ void read_cb(struct bufferevent * bev, void * arg){
             if(res == true){
                 printf("[SERVER] search success\n");
                 bufferevent_write(bev, (char *)item, KV_ITEM_SIZE);
+            }else{
+                printf("[SERVER] search failed\n");
+                item[i].len = -1;
+                bufferevent_write(bev, (char *)item, KV_ITEM_SIZE);
             }
         }
     }
-*/
+
     //reply
 //    bufferevent_write(bev, item, len);
 
@@ -319,8 +324,8 @@ void * server_thread(void * arg){
     uint64_t num_server_thread = hikv_thread_arg.num_server_thread;
     uint64_t num_backend_thread = hikv_thread_arg.num_backend_thread;
     uint64_t num_warm_kv = hikv_thread_arg.num_warm_kv;
-    uint64_t num_put_kv = hikv_thread_arg.num_put_kv;
-    uint64_t num_get_kv = hikv_thread_arg.num_get_kv;
+    uint64_t num_put_kv = hikv_thread_arg.num_put_kv;aA<>MB_LEN_MAX
+
     uint64_t num_delete_kv = hikv_thread_arg.num_delete_kv;
     uint64_t num_scan_kv = hikv_thread_arg.num_scan_kv;
     uint64_t scan_range = hikv_thread_arg.scan_range;

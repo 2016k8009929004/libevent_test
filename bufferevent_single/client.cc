@@ -174,9 +174,9 @@ void * send_request(void * arg){
 
     struct timeval time1, time2;
     gettimeofday(&time1, NULL);
-
-//PUT
 /*
+//PUT
+
     for(iter = 0;iter < 3;iter++){
         if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
@@ -197,7 +197,7 @@ void * send_request(void * arg){
 	    	exit(1);
     	}
 
-//test PUT
+//GET
 
         int temp = 0;
         
@@ -249,7 +249,6 @@ void * send_request(void * arg){
     }
 
 //GET
-/*
     struct kv_trans_item * res_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
     
     for(iter = 0, key_i = 0;iter < 3;iter++){
@@ -277,13 +276,16 @@ void * send_request(void * arg){
             temp += recv_size;
 
             if(temp == KV_ITEM_SIZE){
-                printf("[CLIENT] key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, res_kv->value);
+                if(res_kv.len > 0){
+                    printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
+                }else{
+                    printf("[CLIENT] GET failed! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
+                }
                 break;
             }
         }
         key_i = (key_i + 1) & NUM_KEYS_;
     }
-*/
 #endif
 
     printf("====== end request ======\n");
