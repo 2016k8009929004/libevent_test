@@ -53,6 +53,19 @@ void * send_request(void * arg){
     struct send_info * info = (struct send_info *)arg;
 
     int fd = *(info->sockfd);
+    struct hikv_arg * hikv_args = info->hikv_thread_arg;
+
+    size_t pm_size = hikv_args.pm_size;
+    uint64_t num_server_thread = hikv_args.num_server_thread;
+    uint64_t num_backend_thread = hikv_args.num_backend_thread;
+    uint64_t num_warm_kv = hikv_args.num_warm_kv;
+    uint64_t num_put_kv = hikv_args.num_put_kv;
+
+    uint64_t num_delete_kv = hikv_args.num_delete_kv;
+    uint64_t num_scan_kv = hikv_args.num_scan_kv;
+    uint64_t scan_range = hikv_args.scan_range;
+
+    uint64_t seed = hikv_args.seed;
 
     //initial Key
     LL * key_corpus = (LL *)malloc(NUM_KEYS * sizeof(LL));
@@ -232,7 +245,7 @@ void * send_request(void * arg){
 */
 
 //PUT
-    for(iter = 0;iter < 3;iter++){
+    for(iter = 0;iter < num_put_kv;iter++){
         snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 		req_kv->len = VALUE_SIZE;
 		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
@@ -251,7 +264,7 @@ void * send_request(void * arg){
 //GET
     struct kv_trans_item * res_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
     
-    for(iter = 0, key_i = 0;iter < 3;iter++){
+    for(iter = 0, key_i = 0;iter < num_get_kv;iter++){
         snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 		req_kv->len = 0;
 		memset((char *)req_kv->value, 0, VALUE_SIZE);
@@ -292,6 +305,7 @@ void * send_request(void * arg){
 
     return NULL;
 }
+
 #if 0
 void response_process(int sock, short event, void * arg){
 #ifdef RECEIVE_DEBUG
@@ -419,6 +433,7 @@ void * client_thread(void * argv){
     info->sockfd = &sockfd;
     info->send_byte = &send_byte;
     info->recv_byte = &recv_byte;
+    info->hikv_thread_arg = &server->hikv_thread_arg;
 
     send_request(info);
 
@@ -432,19 +447,56 @@ void * client_thread(void * argv){
 int main(int argc, char * argv[]){
     client_thread_num = atoi(argv[1]);
 
-    pthread_t * threads = (pthread_t *)malloc(sizeof(pthread_t) * client_thread_num);
+    struct hikv_arg hikv_thread_arg = {
+        2,      //pm_size
+        1,      //num_server_thread
+        1,      //num_backend_thread
+        0,      //num_warm_kv
+        0,      //num_put_kv
+        0,      //num_get_kv
+        0,      //num_delete_kv
+        0,      //num_scan_kv
+        100,    //scan_range
+        1234,   //seed
+        0       //scan_all
+    };
 
     int i;
+
+    for (i = 0; i < argc; i++){
+        double d;
+        uint64_t n;
+        char junk;
+        if(sscanf(argv[i], "--num_thread=%llu%c", &n, &junk) == 1){
+            client_thread_num = n;
+        }else if(sscanf(argv[i], "--num_warm=%llu%c", &n, &junk) == 1){
+            hikv_thread_arg.num_warm_kv = n;
+        }else if(sscanf(argv[i], "--num_put=%llu%c", &n, &junk) == 1){
+            hikv_thread_arg.num_put_kv = n;
+        }else if(sscanf(argv[i], "--num_get=%llu%c", &n, &junk) == 1){
+            hikv_thread_arg.num_get_kv = n;
+        }else if(sscanf(argv[i], "--num_delete=%llu%c", &n, &junk) == 1){
+            hikv_thread_arg.num_delete_kv = n;
+        }else if(sscanf(argv[i], "--num_scan=%llu%c", &n, &junk) == 1){
+            hikv_thread_arg.num_scan_kv = n;
+        }else if(sscanf(argv[i], "--scan_range=%llu%c", &n, &junk) == 1){
+            hikv_thread_arg.scan_range = n;
+        }else if(sscanf(argv[i], "--num_scan_all=%llu%c", &n, &junk) == 1){
+            hikv_thread_arg.scan_all = n;
+        }else if(i > 0){
+            printf("error (%s)!\n", argv[i]);
+        }
+    }
+
     for(i = 0;i < client_thread_num;i++){
-        struct client_arg arg;
         arg.ip_addr = &argv[2];
         arg.port = atoi(argv[3]);
 //        arg.buf_size = atoi(argv[4]);
 #ifdef __BIND_CORE__
         arg.sequence = i;
 #endif
-        
-        pthread_create(&threads[i], NULL, client_thread, (void *)&arg);
+        memcpy(&cl_thread_arg[i].hikv_thread_arg, &hikv_thread_arg, HIKV_ARG_SIZE);
+        pthread_create(&cl_thread[i], NULL, client_thread, (void *)&arg);
     }
 
     for(i = 0;i < client_thread_num;i++){

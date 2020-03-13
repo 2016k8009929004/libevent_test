@@ -25,6 +25,7 @@ struct client_arg {
     char ** ip_addr;
     int port;
 //    int buf_size;
+    struct hikv_arg hikv_thread_arg;
 };
 
 struct debug_response_arg {
@@ -46,6 +47,7 @@ struct send_info {
     int * send_byte;
 //    pthread_mutex_t * recv_lock;
     int * recv_byte;
+    struct hikv_arg * hikv_thread_arg;
 };
 
 #define SEND_INFO_SIZE sizeof(struct send_info)
