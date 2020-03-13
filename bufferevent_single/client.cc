@@ -423,7 +423,7 @@ void * client_thread(void * argv){
     pthread_mutex_init(&rtt_lock, NULL);
 #endif
 
-    int sockfd = connect_server(*(server->ip_addr), server->port);
+    int sockfd = connect_server(server->ip_addr, server->port);
     if(sockfd == -1){
         perror("[CLIENT] tcp connect error");
         exit(1);
@@ -494,7 +494,7 @@ int main(int argc, char * argv[]){
     }
 
     for(i = 0;i < client_thread_num;i++){
-        cl_thread_arg[i].ip_addr = &server_ip;
+        cl_thread_arg[i].ip_addr = server_ip;
         cl_thread_arg[i].port = server_port;
 //        arg.buf_size = atoi(argv[4]);
 #ifdef __BIND_CORE__

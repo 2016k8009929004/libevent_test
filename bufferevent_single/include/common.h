@@ -76,7 +76,7 @@ struct server_arg {
 };
 
 struct client_arg {
-    char ** ip_addr;
+    char * ip_addr;
     int port;
 //    int buf_size;
     struct hikv_arg hikv_thread_arg;
