@@ -325,7 +325,7 @@ void * server_thread(void * arg){
     uint64_t num_server_thread = hikv_thread_arg.num_server_thread;
     uint64_t num_backend_thread = hikv_thread_arg.num_backend_thread;
     uint64_t num_warm_kv = hikv_thread_arg.num_warm_kv;
-    uint64_t num_put_kv = hikv_thread_arg.num_put_kv;aA<>MB_LEN_MAX
+    uint64_t num_put_kv = hikv_thread_arg.num_put_kv;
 
     uint64_t num_delete_kv = hikv_thread_arg.num_delete_kv;
     uint64_t num_scan_kv = hikv_thread_arg.num_scan_kv;
@@ -333,7 +333,7 @@ void * server_thread(void * arg){
 
     uint64_t seed = hikv_thread_arg.seed;
     
-//    uint64_t scan_all = hikv_thread_arg.scan_all;
+//  uint64_t scan_all = hikv_thread_arg.scan_all;
 
     char pmem[128] = "/home/pmem0/pm";
     char pmem_meta[128] = "/home/pmem0/pmMETA";
