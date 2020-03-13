@@ -153,8 +153,8 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
     //receive
-    struct kv_trans_item * item = (struct kv_trans_item *)malloc(BUF_SIZE);
-    size_t len = bufferevent_read(bev, (char *)item, KV_ITEM_SIZE);
+    struct kv_trans_item * item = (struct kv_trans_item *)malloc(BUF_SIZE));
+    size_t len = bufferevent_read(bev, (char *)item, BUF_SIZE);
     int recv_num = len/KV_ITEM_SIZE;
 
 #if 0
@@ -224,14 +224,14 @@ void read_cb(struct bufferevent * bev, void * arg){
     for(i = 0;i < recv_num;i++){
         printf("[SERVER] len: %d\n", item[i].len);
         if(item[i].len > 0){
-            printf("[SERVER] put KV item\n");
+//            printf("[SERVER] put KV item\n");
             res = hi->insert(thread_id, (uint8_t *)item[i].key, (uint8_t *)item[i].value);
             printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, item[i].key, VALUE_SIZE, item[i].value);
             if (res == true){
                 printf("[SERVER] insert success\n");
             }
         }else if(item[i].len == 0){
-            printf("[SERVER] get KV item\n");
+//            printf("[SERVER] get KV item\n");
             res = hi->search(thread_id, (uint8_t *)item[i].key, (uint8_t *)item[i].value);
             printf("[SERVER] get key: %.*s\nget value: %.*s\n", KEY_SIZE, item[i].key, VALUE_SIZE, item[i].value);
             if(res == true){
