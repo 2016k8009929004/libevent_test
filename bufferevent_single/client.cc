@@ -289,7 +289,7 @@ void * send_request(void * arg){
             temp += recv_size;
 
             if(temp == KV_ITEM_SIZE){
-                if(res_kv->len > 0){
+                if(res_kv->len == VALUE_SIZE){
                     printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
                 }else{
                     printf("[CLIENT] GET failed! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);

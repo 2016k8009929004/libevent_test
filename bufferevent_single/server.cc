@@ -236,6 +236,7 @@ void read_cb(struct bufferevent * bev, void * arg){
             printf("[SERVER] get key: %.*s\nget value: %.*s\n", KEY_SIZE, item[i].key, VALUE_SIZE, item[i].value);
             if(res == true){
                 printf("[SERVER] search success\n");
+                item[i].len = VALUE_SIZE;
                 bufferevent_write(bev, (char *)item, KV_ITEM_SIZE);
             }else{
                 printf("[SERVER] search failed\n");
