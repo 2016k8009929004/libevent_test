@@ -156,6 +156,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     //receive
     struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE);
+    struct kv_trans_item * reply_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
     printf("====== 1 ======\n");
     size_t len = bufferevent_read(bev, (char *)recv_item, BUF_SIZE);
     printf("====== 2 ======\n");
@@ -235,7 +236,6 @@ void read_cb(struct bufferevent * bev, void * arg){
             }
         }else if(recv_item[i].len == 0){
             printf("[SERVER] get KV item\n");
-            struct kv_trans_item * reply_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
             memcpy((char *)reply_item, (char *)&recv_item[i], KV_ITEM_SIZE);
             res = hi->search(thread_id, (uint8_t *)reply_item->key, (uint8_t *)reply_item->value);
 //            printf("[SERVER] get key: %.*s\nget value: %.*s\n", KEY_SIZE, reply_item->key, VALUE_SIZE, reply_item->value);
@@ -251,13 +251,8 @@ void read_cb(struct bufferevent * bev, void * arg){
         }
     }
 
-    if(recv_item){
-        free(recv_item);
-    }
-    
-    if(reply_item){
-        free(reply_item);
-    }
+    free(recv_item);
+    free(reply_item);
 
     //reply
 //    bufferevent_write(bev, item, len);
