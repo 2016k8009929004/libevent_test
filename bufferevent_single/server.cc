@@ -80,7 +80,7 @@ void accept_cb(int fd, short events, void * arg){
     bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 
-//    bufferevent_setwatermark(bev, EV_READ, 0, KV_ITEM_SIZE);
+    bufferevent_setwatermark(bev, EV_READ, 0, KV_ITEM_SIZE);
 
 #ifdef __EVAL_CB__
     struct timeval end;
@@ -121,7 +121,7 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
-    printf("====== read_cb ======\n");
+//    printf("====== read_cb ======\n");
 
 //    printf("[read cb] pid: %d, tid:%ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
@@ -157,9 +157,8 @@ void read_cb(struct bufferevent * bev, void * arg){
     //receive
     struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE);
     struct kv_trans_item * reply_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
-    printf("====== 1 ======\n");
+
     size_t len = bufferevent_read(bev, (char *)recv_item, BUF_SIZE);
-    printf("====== 2 ======\n");
     int recv_num = len / KV_ITEM_SIZE;
 
 #if 0
@@ -223,19 +222,19 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
     //process request
-    printf("[SERVER] recv_num: %d\n", recv_num);
+//    printf("[SERVER] recv_num: %d\n", recv_num);
 
     int i, res, ret;
     for(i = 0;i < recv_num;i++){
         if(recv_item[i].len > 0){
-            printf("[SERVER] put KV item\n");
+//            printf("[SERVER] put KV item\n");
             res = hi->insert(thread_id, (uint8_t *)recv_item[i].key, (uint8_t *)recv_item[i].value);
 //            printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item[i].key, VALUE_SIZE, recv_item[i].value);
             if (res == true){
 //                printf("[SERVER] insert success\n");
             }
         }else if(recv_item[i].len == 0){
-            printf("[SERVER] get KV item\n");
+//            printf("[SERVER] get KV item\n");
             memcpy((char *)reply_item, (char *)&recv_item[i], KV_ITEM_SIZE);
             res = hi->search(thread_id, (uint8_t *)reply_item->key, (uint8_t *)reply_item->value);
 //            printf("[SERVER] get key: %.*s\nget value: %.*s\n", KEY_SIZE, reply_item->key, VALUE_SIZE, reply_item->value);
