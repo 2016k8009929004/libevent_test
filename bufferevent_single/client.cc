@@ -243,7 +243,7 @@ void * send_request(void * arg){
         }
     }
 */
-    uint64_t num_kv = get_num_kv + put_num_kv + delete_num_kv + scan_num_kv;
+    uint64_t num_kv = num_get_kv + num_put_kv + num_delete_kv + num_scan_kv;
     uint64_t get_count = 0;
     uint64_t put_count = 0;
     uint64_t delete_count = 0;
@@ -255,6 +255,7 @@ void * send_request(void * arg){
 
     uint64_t match_search = 0;
     uint64_t match_insert = 0;
+    uint64_t match_delete = 0;
 
 //PUT
     for(iter = 0;iter < num_put_kv;iter++){
