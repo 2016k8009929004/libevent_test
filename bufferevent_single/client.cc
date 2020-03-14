@@ -329,7 +329,7 @@ void * send_request(void * arg){
 		    req_kv->len = VALUE_SIZE;
     		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
 //            printf("[CLIENT] key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
-		    key_i = (key_i + 1) & NUM_KEYS_;
+		    key_i = (key_i + 1) & (num_put_kv - 1);
 
             put_count++;
 
@@ -377,7 +377,7 @@ void * send_request(void * arg){
                     break;
                 }
             }
-            key_j = (key_j + 1) & NUM_KEYS_;
+            key_j = (key_j + 1) & (num_put_kv - 1);
 		}
     }
 
@@ -537,18 +537,21 @@ void * client_thread(void * argv){
 }
 
 int main(int argc, char * argv[]){
+    int tot_test = NUM_KEYS;
+    int put_percent = PUT_PERCENT;
+
     struct hikv_arg hikv_thread_arg = {
-        2,          //pm_size
-        1,          //num_server_thread
-        1,          //num_backend_thread
-        0,          //num_warm_kv
-        NUM_KEYS,   //num_put_kv
-        0,          //num_get_kv
-        0,          //num_delete_kv
-        0,          //num_scan_kv
-        100,        //scan_range
-        1234,       //seed
-        0           //scan_all
+        2,                                      //pm_size
+        1,                                      //num_server_thread
+        1,                                      //num_backend_thread
+        0,                                      //num_warm_kv
+        tot_test * put_percent / 100,           //num_put_kv
+        tot_test * (100 - put_percent) / 100,   //num_get_kv
+        0,                                      //num_delete_kv
+        0,                                      //num_scan_kv
+        100,                                    //scan_range
+        1234,                                   //seed
+        0                                       //scan_all
     };
 
     int i;
@@ -564,11 +567,15 @@ int main(int argc, char * argv[]){
             client_thread_num = n;
         }else if(sscanf(argv[i], "--num_warm=%llu%c", &n, &junk) == 1){
             hikv_thread_arg.num_warm_kv = n;
+        }else if(sscanf(argv[i], "--num_test=%llu%c", &n, &junk) == 1){
+            tot_test = n;
         }else if(sscanf(argv[i], "--num_put=%llu%c", &n, &junk) == 1){
             hikv_thread_arg.num_put_kv = n;
         }else if(sscanf(argv[i], "--put_percent=%d%c", &n, &junk) == 1){
-            hikv_thread_arg.num_get_kv = hikv_thread_arg.num_put_kv * (100 - n) / n;
+//            hikv_thread_arg.num_get_kv = hikv_thread_arg.num_put_kv * (100 - n) / n;
 //            printf("[CLIENT] [PUT]: %llu [GET]: %llu\n", hikv_thread_arg.num_put_kv, hikv_thread_arg.num_get_kv);
+            hikv_thread_arg.num_put_kv = tot_test * put_percent / 100;
+            hikv_thread_arg.num_get_kv = tot_test * (100 - put_percent) / 100;
         }else if(sscanf(argv[i], "--num_get=%llu%c", &n, &junk) == 1){
             hikv_thread_arg.num_get_kv = n;
         }else if(sscanf(argv[i], "--num_delete=%llu%c", &n, &junk) == 1){
