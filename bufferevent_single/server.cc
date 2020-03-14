@@ -446,7 +446,7 @@ int main(int argc, char * argv[]){
 
 	size_t pm_size;
     uint64_t num_server_thread, num_backend_thread;
-	uint64_t num_warm_kv, num_put_kv, num_get_kv, num_delete_kv, num_scan_kv, scan_range;
+	uint64_t num_warm_kv, num_put_kv, num_get_kv, num_delete_kv, num_scan_kv, scan_range, scan_all;
 
     for (i = 0; i < argc; i++){
         double d;
