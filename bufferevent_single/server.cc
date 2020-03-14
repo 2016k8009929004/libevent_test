@@ -358,9 +358,6 @@ void * server_thread(void * arg){
     
 //  uint64_t scan_all = hikv_thread_arg.scan_all;
 
-    char pmem[128] = "/home/pmem0/pm";
-    char pmem_meta[128] = "/home/pmem0/pmMETA";
-
     cpu_set_t core_set;
 
     CPU_ZERO(&core_set);
@@ -502,6 +499,8 @@ int main(int argc, char * argv[]){
     }
 
     //Initialize Key-Value storage
+    char pmem[128] = "/home/pmem0/pm";
+    char pmem_meta[128] = "/home/pmem0/pmMETA";
     struct hikv * hi = new hikv(pm_size * 1024 * 1024 * 1024, num_server_thread, num_backend_thread, num_server_thread * (num_put_kv + num_warm_kv), pmem, pmem_meta);
 
     for(i = 0;i < core_limit;i++){
