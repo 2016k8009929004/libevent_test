@@ -329,7 +329,7 @@ void * send_request(void * arg){
 		    req_kv->len = VALUE_SIZE;
     		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
             printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
-		    key_i = (key_i + 1) & (num_put_kv - 1);
+		    key_i = (key_i + 1) % num_put_kv;
 
             put_count++;
 
@@ -377,7 +377,7 @@ void * send_request(void * arg){
                     break;
                 }
             }
-            key_j = (key_j + 1) & (num_put_kv - 1);
+            key_j = (key_j + 1) % num_put_kv;
 		}
     }
 
