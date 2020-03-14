@@ -155,10 +155,11 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
     //receive
-    struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE);
+    int buf_size = BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE;
+    struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(buf_size);
     struct kv_trans_item * reply_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
 
-    size_t len = bufferevent_read(bev, (char *)recv_item, BUF_SIZE);
+    size_t len = bufferevent_read(bev, (char *)recv_item, buf_size);
     int recv_num = len / KV_ITEM_SIZE;
 
 #if 0
@@ -234,31 +235,29 @@ void read_cb(struct bufferevent * bev, void * arg){
 //                printf("[SERVER] insert success\n");
             }
         }else if(recv_item[i].len == 0){
-            printf("[SERVER] get KV item\n");
 /*
+            printf("[SERVER] get KV item\n");
             memcpy((char *)reply_item, (char *)&recv_item[i], KV_ITEM_SIZE);
             res = hi->search(thread_id, (uint8_t *)reply_item->key, (uint8_t *)reply_item->value);
 
-//            printf("[SERVER] get key: %.*s\nget value: %.*s\n", KEY_SIZE, reply_item->key, VALUE_SIZE, reply_item->value);
+            //printf("[SERVER] get key: %.*s\nget value: %.*s\n", KEY_SIZE, reply_item->key, VALUE_SIZE, reply_item->value);
             if(res == true){
-//                printf("[SERVER] search success\n");
+                //printf("[SERVER] search success\n");
                 reply_item->len = VALUE_SIZE;
                 bufferevent_write(bev, (char *)reply_item, KV_ITEM_SIZE);
             }else{
-//                printf("[SERVER] search failed\n");
+                //printf("[SERVER] search failed\n");
                 reply_item->len = -1;
                 bufferevent_write(bev, (char *)reply_item, KV_ITEM_SIZE);
             }
 */
-//            printf("[SERVER] 1 GET key: %.*s\n, value: %.*s\n", KEY_SIZE, recv_item[i].key, VALUE_SIZE, recv_item[i].value);
             res = hi->search(thread_id, (uint8_t *)recv_item[i].key, (uint8_t *)recv_item[i].value);
-            printf("[SERVER] GET key: %.*s, value: %.*s\n", KEY_SIZE, recv_item[i].key, VALUE_SIZE, recv_item[i].value);
             if(res == true){
-                printf("[SERVER] search success\n");
+//                printf("[SERVER] search success\n");
                 recv_item[i].len = VALUE_SIZE;
                 bufferevent_write(bev, (char *)&recv_item[i], KV_ITEM_SIZE);
             }else{
-                printf("[SERVER] search failed\n");
+//                printf("[SERVER] search failed\n");
                 recv_item[i].len = -1;
                 bufferevent_write(bev, (char *)&recv_item[i], KV_ITEM_SIZE);
             }
@@ -342,6 +341,7 @@ void * server_thread(void * arg){
     struct server_arg * thread_arg = (struct server_arg *)arg;
     int core = thread_arg->core;
     int thread_id = thread_arg->thread_id;
+    struct hikv * hi = thread_arg->hi;
     struct hikv_arg hikv_thread_arg = thread_arg->hikv_thread_arg;
 
     size_t pm_size = hikv_thread_arg.pm_size;
@@ -370,8 +370,6 @@ void * server_thread(void * arg){
         printf("warning: could not set CPU affinity, continuing...\n");
     }
 
-    //Initialize Key-Value storage
-    struct hikv * hi = new hikv(pm_size * 1024 * 1024 * 1024, num_server_thread, num_backend_thread, num_server_thread * (num_put_kv + num_warm_kv), pmem, pmem_meta);
 /*
     pthread_t tid[32];
 
@@ -449,6 +447,10 @@ int main(int argc, char * argv[]){
 
     int i;
 
+	size_t pm_size;
+    uint64_t num_server_thread, num_backend_thread;
+	uint64_t num_warm_kv, num_put_kv, num_get_kv, num_delete_kv, num_scan_kv, scan_range;
+
     for (i = 0; i < argc; i++){
         double d;
         uint64_t n;
@@ -456,48 +458,58 @@ int main(int argc, char * argv[]){
         if(sscanf(argv[i], "--num_thread=%llu%c", &n, &junk) == 1){
             core_limit = n;
         }else if(sscanf(argv[i], "--pm_size=%llu%c", &n, &junk) == 1){
+			pm_size = n;
             hikv_thread_arg.pm_size = n;
         }else if(sscanf(argv[i], "--num_server_thread=%llu%c", &n, &junk) == 1){
+			num_server_thread = n;
             hikv_thread_arg.num_server_thread = n;
         }else if(sscanf(argv[i], "--num_backend_thread=%llu%c", &n, &junk) == 1){
+			num_backend_thread = n;
             hikv_thread_arg.num_backend_thread = n;
         }else if(sscanf(argv[i], "--num_warm=%llu%c", &n, &junk) == 1){
+			num_warm_kv = n;
             hikv_thread_arg.num_warm_kv = n;
         }else if(sscanf(argv[i], "--num_test=%llu%c", &n, &junk) == 1){
             tot_test = n;
         }else if(sscanf(argv[i], "--num_put=%llu%c", &n, &junk) == 1){
+			num_put_kv = n;
             hikv_thread_arg.num_put_kv = n;
         }else if(sscanf(argv[i], "--put_percent=%d%c", &n, &junk) == 1){
 //            hikv_thread_arg.num_get_kv = hikv_thread_arg.num_put_kv * (100 - n) / n;
 //            printf("[CLIENT] [PUT]: %llu [GET]: %llu\n", hikv_thread_arg.num_put_kv, hikv_thread_arg.num_get_kv);
-            hikv_thread_arg.num_put_kv = tot_test * put_percent / 100;
-            hikv_thread_arg.num_get_kv = tot_test * (100 - put_percent) / 100;
+            num_put_kv = tot_test * put_percent / 100;
+            hikv_thread_arg.num_put_kv = num_put_kv;
+			num_get_kv = tot_test * (100 - put_percent) / 100;
+            hikv_thread_arg.num_get_kv = num_get_kv;            
         }else if(sscanf(argv[i], "--num_get=%llu%c", &n, &junk) == 1){
+			num_get_kv = n;
             hikv_thread_arg.num_get_kv = n;
         }else if(sscanf(argv[i], "--num_delete=%llu%c", &n, &junk) == 1){
+			num_delete_kv = n;
             hikv_thread_arg.num_delete_kv = n;
         }else if(sscanf(argv[i], "--num_scan=%llu%c", &n, &junk) == 1){
+			num_scan_kv = n;
             hikv_thread_arg.num_scan_kv = n;
         }else if(sscanf(argv[i], "--scan_range=%llu%c", &n, &junk) == 1){
+			scan_range = n;
             hikv_thread_arg.scan_range = n;
         }else if(sscanf(argv[i], "--num_scan_all=%llu%c", &n, &junk) == 1){
+			scan_all = n;
             hikv_thread_arg.scan_all = n;
-        }else if(sscanf(argv[i], "--seed=%llu%c", &n, &junk) == 1){
-            hikv_thread_arg.seed = n;
-        }else if (sscanf(argv[i], "--seq=%llu%c", &n, &junk) == 1){
-            if (n == 1){
-                sequence_rw = 1;
-            }
         }else if(i > 0){
             printf("error (%s)!\n", argv[i]);
         }
     }
+
+    //Initialize Key-Value storage
+    struct hikv * hi = new hikv(pm_size * 1024 * 1024 * 1024, num_server_thread, num_backend_thread, num_server_thread * (num_put_kv + num_warm_kv), pmem, pmem_meta);
 
     for(i = 0;i < core_limit;i++){
 		cores[i] = i;
         done[i] = 0;
         sv_thread_arg[i].core = i;
         sv_thread_arg[i].thread_id = i;
+        sv_thread_arg[i].hi = hi;
         memcpy(&sv_thread_arg[i].hikv_thread_arg, &hikv_thread_arg, HIKV_ARG_SIZE);
         pthread_create(&sv_thread[i], NULL, server_thread, (void *)&sv_thread_arg[i]);
     }
