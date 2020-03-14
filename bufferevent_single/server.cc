@@ -234,7 +234,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 //                printf("[SERVER] insert success\n");
             }
         }else if(recv_item[i].len == 0){
-//            printf("[SERVER] get KV item\n");
+            printf("[SERVER] get KV item\n");
 /*
             memcpy((char *)reply_item, (char *)&recv_item[i], KV_ITEM_SIZE);
             res = hi->search(thread_id, (uint8_t *)reply_item->key, (uint8_t *)reply_item->value);
@@ -251,6 +251,7 @@ void read_cb(struct bufferevent * bev, void * arg){
             }
 */
             res = hi->insert(thread_id, (uint8_t *)recv_item[i].key, (uint8_t *)recv_item[i].value);
+            printf("[SERVER] GET key: %.*s\n, value: %.*s\n", KEY_SIZE, reply_item->key, VALUE_SIZE, reply_item->value);
             if(res == true){
 //                printf("[SERVER] search success\n");
                 recv_item[i].len = VALUE_SIZE;
