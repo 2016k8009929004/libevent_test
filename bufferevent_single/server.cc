@@ -254,11 +254,11 @@ void read_cb(struct bufferevent * bev, void * arg){
             if(res == true){
 //                printf("[SERVER] search success\n");
                 recv_item[i].len = VALUE_SIZE;
-                bufferevent_write(bev, (char *)recv_item[i], KV_ITEM_SIZE);
+                bufferevent_write(bev, (char *)&recv_item[i], KV_ITEM_SIZE);
             }else{
 //                printf("[SERVER] search failed\n");
                 recv_item[i].len = -1;
-                bufferevent_write(bev, (char *)recv_item[i], KV_ITEM_SIZE);
+                bufferevent_write(bev, (char *)&recv_item[i], KV_ITEM_SIZE);
             }
         }
     }
