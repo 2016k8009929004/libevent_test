@@ -444,10 +444,6 @@ int main(int argc, char * argv[]){
 
     int i;
 
-	size_t pm_size;
-    uint64_t num_server_thread, num_backend_thread;
-	uint64_t num_warm_kv, num_put_kv, num_get_kv, num_delete_kv, num_scan_kv, scan_range, scan_all;
-
     for (i = 0; i < argc; i++){
         double d;
         uint64_t n;
@@ -455,48 +451,46 @@ int main(int argc, char * argv[]){
         if(sscanf(argv[i], "--num_thread=%llu%c", &n, &junk) == 1){
             core_limit = n;
         }else if(sscanf(argv[i], "--pm_size=%llu%c", &n, &junk) == 1){
-			pm_size = n;
             hikv_thread_arg.pm_size = n;
         }else if(sscanf(argv[i], "--num_server_thread=%llu%c", &n, &junk) == 1){
-			num_server_thread = n;
             hikv_thread_arg.num_server_thread = n;
         }else if(sscanf(argv[i], "--num_backend_thread=%llu%c", &n, &junk) == 1){
-			num_backend_thread = n;
             hikv_thread_arg.num_backend_thread = n;
         }else if(sscanf(argv[i], "--num_warm=%llu%c", &n, &junk) == 1){
-			num_warm_kv = n;
             hikv_thread_arg.num_warm_kv = n;
         }else if(sscanf(argv[i], "--num_test=%llu%c", &n, &junk) == 1){
             tot_test = n;
         }else if(sscanf(argv[i], "--num_put=%llu%c", &n, &junk) == 1){
-			num_put_kv = n;
             hikv_thread_arg.num_put_kv = n;
         }else if(sscanf(argv[i], "--put_percent=%d%c", &n, &junk) == 1){
 //            hikv_thread_arg.num_get_kv = hikv_thread_arg.num_put_kv * (100 - n) / n;
 //            printf("[CLIENT] [PUT]: %llu [GET]: %llu\n", hikv_thread_arg.num_put_kv, hikv_thread_arg.num_get_kv);
-            num_put_kv = tot_test * put_percent / 100;
-            hikv_thread_arg.num_put_kv = num_put_kv;
-			num_get_kv = tot_test * (100 - put_percent) / 100;
-            hikv_thread_arg.num_get_kv = num_get_kv;            
+            hikv_thread_arg.num_put_kv = tot_test * put_percent / 100;
+            hikv_thread_arg.num_get_kv = tot_test * (100 - put_percent) / 100;            
         }else if(sscanf(argv[i], "--num_get=%llu%c", &n, &junk) == 1){
-			num_get_kv = n;
             hikv_thread_arg.num_get_kv = n;
         }else if(sscanf(argv[i], "--num_delete=%llu%c", &n, &junk) == 1){
-			num_delete_kv = n;
             hikv_thread_arg.num_delete_kv = n;
         }else if(sscanf(argv[i], "--num_scan=%llu%c", &n, &junk) == 1){
-			num_scan_kv = n;
             hikv_thread_arg.num_scan_kv = n;
         }else if(sscanf(argv[i], "--scan_range=%llu%c", &n, &junk) == 1){
-			scan_range = n;
             hikv_thread_arg.scan_range = n;
         }else if(sscanf(argv[i], "--num_scan_all=%llu%c", &n, &junk) == 1){
-			scan_all = n;
             hikv_thread_arg.scan_all = n;
         }else if(i > 0){
             printf("error (%s)!\n", argv[i]);
         }
     }
+
+    size_t pm_size = hikv_thread_arg.pm_size;
+    uint64_t num_server_thread = hikv_thread_arg.num_server_thread;
+    uint64_t num_backend_thread = hikv_thread_arg.num_backend_thread;
+    uint64_t num_warm_kv = hikv_thread_arg.num_warm_kv;
+    uint64_t num_put_kv = hikv_thread_arg.num_put_kv;
+    uint64_t num_get_kv = hikv_thread_arg.num_get_kv;
+    uint64_t num_delete_kv = hikv_thread_arg.num_delete_kv;
+    uint64_t num_scan_kv = hikv_thread_arg.num_scan_kv;
+    uint64_t scan_range = hikv_thread_arg.scan_range;
 
     //Initialize Key-Value storage
     char pmem[128] = "/home/pmem0/pm";
