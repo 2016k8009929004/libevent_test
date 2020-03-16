@@ -194,7 +194,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     //printf("[SERVER] read: %d, write: %d, recv len: %d\n", recv_buf->buf_read, recv_buf->buf_write, len);
     //int recv_num = len / KV_ITEM_SIZE;
     
-    printf("[SERVER] recv len: %d\n", len);
+//    printf("[SERVER] recv len: %d\n", len);
 
 #if 0
     int res, i;
