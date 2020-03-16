@@ -288,7 +288,7 @@ void read_cb(struct bufferevent * bev, void * arg){
             res = hi->insert(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
             //printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
             if (res == true){
-                //printf("[SERVER] insert success\n");
+                printf("[SERVER] insert success\n");
             }
         }else if(recv_item->len == 0){
             res = hi->search(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
