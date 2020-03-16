@@ -6,6 +6,8 @@ int init_ring_buff(struct ring_buf * buffer){
     buffer->buf_len = BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE;
     buffer->buf_start = (struct kv_trans_item *)malloc(buffer->buf_len);
     buffer->buf_end = buffer->buf_start;
+    printf("[SERVER] ring buffer start: %p, end: %p, len: %d\n", 
+            buffer->buf_start, buffer->buf_end, buffer->buf_len);
     return 1;
 }
 
