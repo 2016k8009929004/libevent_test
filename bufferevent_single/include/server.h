@@ -43,8 +43,8 @@ int total_time;
 
 //ring buffer
 struct ring_buf {
-    struct kv_trans_item * buf_start;
-    struct kv_trans_item * buf_end;
+    char * buf_start;
+    char * buf_end;
     int buf_len;
 };
 
