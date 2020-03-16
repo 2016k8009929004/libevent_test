@@ -11,7 +11,7 @@ int init_ring_buff(struct ring_buf * buffer){
 }
 
 int ring_buff_free(struct ring_buf * buffer){
-    if(buffer->buf_start == buffer->buf_end){
+    if(buffer->buf_read == buffer->buf_write){
         return buffer->buf_len - KV_ITEM_SIZE;
     }else{
         return buffer->buf_len - KV_ITEM_SIZE - ring_buff_used(buffer);
@@ -19,13 +19,10 @@ int ring_buff_free(struct ring_buf * buffer){
 }
 
 int ring_buff_used(struct ring_buf * buffer){
-    char * start = buffer->buf_start;
-    char * end = buffer->buf_end;
-    int len = buffer->buf_len;
-    if(start == end){
+    if(buffer->buf_read == buffer->buf_write){
         return 0;
     }else{
-        return (end + len - start) % len;
+        return (buffer->buf_write + len - buffer->buf_read) % len;
     }
 }
 
@@ -153,7 +150,7 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
-    printf("====== read_cb ======\n");
+//    printf("====== read_cb ======\n");
 
 //    printf("[read cb] pid: %d, tid:%ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
@@ -287,13 +284,13 @@ void read_cb(struct bufferevent * bev, void * arg){
         if(recv_item->len > 0){
             //printf("[SERVER] put KV item\n");
             res = hi->insert(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
-            //printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
+            printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
             if (res == true){
                 printf("[SERVER] insert success\n");
             }
         }else if(recv_item->len == 0){
             res = hi->search(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
-            //printf("[SERVER] GET key: %.*s\n value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
+            printf("[SERVER] GET key: %.*s\n value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
             if(res == true){
                 printf("[SERVER] get KV item success\n");
                 recv_item->len = VALUE_SIZE;
