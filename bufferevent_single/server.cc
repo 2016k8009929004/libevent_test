@@ -189,6 +189,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 //    struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(buf_size);
     size_t len = bufferevent_read(bev, (char *)(recv_buf->buf_start + recv_buf->buf_write), ring_buff_free(recv_buf));
     recv_buf->buf_write = (recv_buf->buf_write + len) % recv_buf->buf_len;
+    printf("[SERVER] read: %d, write: %d, recv len: %d\n", recv_buf->buf_read, recv_buf->buf_write, len);
     int recv_num = len / KV_ITEM_SIZE;
     
 //    printf("[SERVER] recv len: %d\n", len);
@@ -302,7 +303,7 @@ void read_cb(struct bufferevent * bev, void * arg){
             }
         }
         recv_buf->buf_read == (recv_buf->buf_read + KV_ITEM_SIZE) % recv_buf->buf_len;
-        printf("[SERVER] remain len: %d\n", ring_buff_used(recv_buf));
+        printf("[SERVER] read: %d, write: %d, remain len: %d\n", recv_buf->buf_read, recv_buf->buf_write, ring_buff_used(recv_buf));
     }
 
 #ifdef __REAL_TIME_STATS__
