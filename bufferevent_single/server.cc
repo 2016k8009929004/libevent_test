@@ -283,7 +283,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 */
     int res;
     while(ring_buff_used(recv_buf) >= KV_ITEM_SIZE){
-        struct kv_trans_item * recv_item = (struct kv_trans_item *)(recv_buf->buf_start + recv_buf->read);
+        struct kv_trans_item * recv_item = (struct kv_trans_item *)(recv_buf->buf_start + recv_buf->buf_read);
         if(recv_item->len > 0){
             //printf("[SERVER] put KV item\n");
             res = hi->insert(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
