@@ -383,6 +383,7 @@ void * send_request(void * arg){
                         printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
                         match_search++;
                     }else{
+                        printf("[CLIENT] receive value: %.*s\nexpected value: %.*s\n", VALUE_SIZE, res_kv->value, VALUE_SIZE, (char *)&value_corpus[key_j * VALUE_SIZE]);
                         printf("[CLIENT] GET failed! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
                     }
                     break;
