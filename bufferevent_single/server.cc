@@ -190,7 +190,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 //    int buf_size = BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE;
 //    struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(buf_size);
     size_t len = bufferevent_read(bev, (char *)recv_buf->buf_end, ring_buff_free(recv_buf));
-    recv_buf->buf_end == (recv_buf->buf_end + len) % recv_buf->len;
+    recv_buf->buf_end == (recv_buf->buf_end + len) % recv_buf->buf_len;
     int recv_num = len / KV_ITEM_SIZE;
     
 //    printf("[SERVER] recv len: %d\n", len);
@@ -303,7 +303,7 @@ void read_cb(struct bufferevent * bev, void * arg){
                 bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
             }
         }
-        recv_buf->buf_start == (recv_buf->buf_start + KV_ITEM_SIZE) % recv_buf->len;
+        recv_buf->buf_start == (recv_buf->buf_start + KV_ITEM_SIZE) % recv_buf->buf_len;
         printf("[SERVER] remain len: %d\n", ring_buff_used(recv_buf));
     }
 
