@@ -22,9 +22,10 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
 }
 
 int bufcmp(char * a, char * b, int buf_len){
-    int i = 0;
+    int i;
     for(i = 0;i < buf_len;i++){
         if(a[i] != b[i]){
+            printf("[bufcmp] diff bitween %c and %c, i = %d\n", a[i], b[i], i);
             break;
         }
     }
