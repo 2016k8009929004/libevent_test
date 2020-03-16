@@ -22,7 +22,7 @@ int ring_buff_used(struct ring_buf * buffer){
     if(buffer->buf_read == buffer->buf_write){
         return 0;
     }else{
-        return (buffer->buf_write + len - buffer->buf_read) % len;
+        return (buffer->buf_write + buffer->buf_len - buffer->buf_read) % buffer->buf_len;
     }
 }
 
