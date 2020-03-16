@@ -2,6 +2,32 @@
 
 #define __NR_gettid 186
 
+int init_ring_buff(struct ring_buf * buffer){
+    buffer->buf_len = BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE;
+    buffer->buf_start = (struct kv_trans_item *)malloc(buffer->buf_len);
+    buffer->buf_end = buffer->buf_start;
+    return 1;
+}
+
+int ring_buff_free(struct ring_buf * buffer){
+    if(buffer->buf_start == buffer->buf_end){
+        return buffer->buf_len - KV_ITEM_SIZE;
+    }else{
+        return buffer->buf_len - KV_ITEM_SIZE - ring_buff_used(buffer);
+    }
+}
+
+int ring_buff_used(struct ring_buf * buffer){
+    char * start = (char *)buffer->buf_start;
+    char * end = (char *)buffer->buf_end;
+    int len = buffer->buf_len;
+    if(start == end){
+        return 0;
+    }else{
+        return (end + len - start) % len;
+    }
+}
+
 evutil_socket_t server_init(int port, int listen_num){
     evutil_socket_t sock;
     if((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
@@ -46,6 +72,7 @@ void accept_cb(int fd, short events, void * arg){
     struct event_base * base = args->base;
     struct hikv * hi = args->hi; 
     struct hikv_arg * hikv_args = args->hikv_args; 
+    struct ring_buf * recv_buf = args->recv_buf;
 
     evutil_socket_t * s = (evutil_socket_t *)malloc(sizeof(evutil_socket_t)); 
 
@@ -76,11 +103,12 @@ void accept_cb(int fd, short events, void * arg){
     read_arg->thread_id = thread_id;
     read_arg->hi = hi; 
     read_arg->hikv_args = hikv_args;
+    read_arg->recv_buf = recv_buf;
 
     bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 
-    bufferevent_setwatermark(bev, EV_READ, 0, KV_ITEM_SIZE);
+//    bufferevent_setwatermark(bev, EV_READ, 0, KV_ITEM_SIZE);
 
 #ifdef __EVAL_CB__
     struct timeval end;
@@ -130,6 +158,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     int thread_id = args->thread_id;
     struct hikv * hi = args->hi;
     struct hikv_arg * hikv_args = args->hikv_args;
+    struct ring_buf * recv_buf = args->recv_buf;
 
     size_t pm_size = hikv_args->pm_size;
     uint64_t num_server_thread = hikv_args->num_server_thread;
@@ -155,11 +184,10 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
     //receive
-    int buf_size = BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE;
-    struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(buf_size);
-    struct kv_trans_item * reply_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
+//    int buf_size = BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE;
+//    struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(buf_size);
 
-    size_t len = bufferevent_read(bev, (char *)recv_item, buf_size);
+    size_t len = bufferevent_read(bev, (char *)ring_buf->buf_end, ring_buff_free(ring_buf));
     int recv_num = len / KV_ITEM_SIZE;
 
 #if 0
@@ -223,52 +251,54 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
     //process request
-//    printf("[SERVER] recv_num: %d\n", recv_num);
-
+    printf("[SERVER] recv_len: %d\n", len);
+/*
     int i, res, ret;
     for(i = 0;i < recv_num;i++){
         if(recv_item[i].len > 0){
-//            printf("[SERVER] put KV item\n");
+            //printf("[SERVER] put KV item\n");
             res = hi->insert(thread_id, (uint8_t *)recv_item[i].key, (uint8_t *)recv_item[i].value);
-//            printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item[i].key, VALUE_SIZE, recv_item[i].value);
+            //printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item[i].key, VALUE_SIZE, recv_item[i].value);
             if (res == true){
-//                printf("[SERVER] insert success\n");
+                //printf("[SERVER] insert success\n");
             }
         }else if(recv_item[i].len == 0){
-/*
-            printf("[SERVER] get KV item\n");
-            memcpy((char *)reply_item, (char *)&recv_item[i], KV_ITEM_SIZE);
-            res = hi->search(thread_id, (uint8_t *)reply_item->key, (uint8_t *)reply_item->value);
-
-            //printf("[SERVER] get key: %.*s\nget value: %.*s\n", KEY_SIZE, reply_item->key, VALUE_SIZE, reply_item->value);
-            if(res == true){
-                //printf("[SERVER] search success\n");
-                reply_item->len = VALUE_SIZE;
-                bufferevent_write(bev, (char *)reply_item, KV_ITEM_SIZE);
-            }else{
-                //printf("[SERVER] search failed\n");
-                reply_item->len = -1;
-                bufferevent_write(bev, (char *)reply_item, KV_ITEM_SIZE);
-            }
-*/
             res = hi->search(thread_id, (uint8_t *)recv_item[i].key, (uint8_t *)recv_item[i].value);
             if(res == true){
-//                printf("[SERVER] search success\n");
+                //printf("[SERVER] search success\n");
                 recv_item[i].len = VALUE_SIZE;
                 bufferevent_write(bev, (char *)&recv_item[i], KV_ITEM_SIZE);
             }else{
-//                printf("[SERVER] search failed\n");
+                //printf("[SERVER] search failed\n");
                 recv_item[i].len = -1;
                 bufferevent_write(bev, (char *)&recv_item[i], KV_ITEM_SIZE);
             }
         }
     }
-
-    free(recv_item);
-    free(reply_item);
-
-    //reply
-//    bufferevent_write(bev, item, len);
+*/
+    while(ring_buff_used(recv_buff) >= KV_ITEM_SIZE){
+        struct kv_trans_item * recv_item = recv_buff->buf_start;
+        if(recv_item->len > 0){
+            //printf("[SERVER] put KV item\n");
+            res = hi->insert(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
+            //printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item[i].key, VALUE_SIZE, recv_item[i].value);
+            if (res == true){
+                //printf("[SERVER] insert success\n");
+            }
+        }else if(recv_item->len == 0){
+            res = hi->search(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
+            if(res == true){
+                //printf("[SERVER] search success\n");
+                recv_item->len = VALUE_SIZE;
+                bufferevent_write(bev, (char *)&recv_item, KV_ITEM_SIZE);
+            }else{
+                //printf("[SERVER] search failed\n");
+                recv_item->len = -1;
+                bufferevent_write(bev, (char *)&recv_item, KV_ITEM_SIZE);
+            }
+        }
+        recv_buff->buf_start++;
+    }
 
 #ifdef __REAL_TIME_STATS__
     pthread_mutex_lock(&record_lock);
@@ -343,6 +373,7 @@ void * server_thread(void * arg){
     int thread_id = thread_arg->thread_id;
     struct hikv * hi = thread_arg->hi;
     struct hikv_arg hikv_thread_arg = thread_arg->hikv_thread_arg;
+    struct ring_buf * recv_buf = thread_arg->recv_buf;
 
     size_t pm_size = hikv_thread_arg.pm_size;
     uint64_t num_server_thread = hikv_thread_arg.num_server_thread;
@@ -411,7 +442,7 @@ void * server_thread(void * arg){
 
     struct event_base * base = event_base_new();
 
-    struct accept_args args = {thread_id, base, hi, &hikv_thread_arg};
+    struct accept_args args = {thread_id, base, hi, &hikv_thread_arg, recv_buf};
 
     struct event * ev_listen = event_new(base, sock, EV_READ | EV_PERSIST, accept_cb, (void *)&args);
     event_add(ev_listen, NULL);
@@ -497,12 +528,17 @@ int main(int argc, char * argv[]){
     char pmem_meta[128] = "/home/pmem0/pmMETA";
     struct hikv * hi = new hikv(pm_size * 1024 * 1024 * 1024, num_server_thread, num_backend_thread, num_server_thread * (num_put_kv + num_warm_kv), pmem, pmem_meta);
 
+    //init ring buffer for recv
+    struct ring_buf recv_buf;
+    init_ring_buff(&recv_buf);
+
     for(i = 0;i < core_limit;i++){
 		cores[i] = i;
         done[i] = 0;
         sv_thread_arg[i].core = i;
         sv_thread_arg[i].thread_id = i;
         sv_thread_arg[i].hi = hi;
+        sv_thread_arg[i].recv_buf = &recv_buf;
         memcpy(&sv_thread_arg[i].hikv_thread_arg, &hikv_thread_arg, HIKV_ARG_SIZE);
         pthread_create(&sv_thread[i], NULL, server_thread, (void *)&sv_thread_arg[i]);
     }

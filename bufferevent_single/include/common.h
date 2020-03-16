@@ -73,6 +73,7 @@ struct server_arg {
     int thread_id;
     struct hikv * hi;
     struct hikv_arg hikv_thread_arg;
+    struct ring_buf * recv_buf;
 };
 
 struct client_arg {

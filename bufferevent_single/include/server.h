@@ -41,6 +41,17 @@ int request_cnt;
 int total_time;
 #endif
 
+//ring buffer
+struct ring_buf {
+    struct kv_trans_item * buf_start;
+    struct kv_trans_item * buf_end;
+    int buf_len;
+};
+
+int init_ring_buff(struct ring_buf * buffer);
+int ring_buff_free(struct ring_buf * buffer);
+int ring_buff_used(struct ring_buf * buffer);
+
 struct sock_ev_read {
     int fd;
     
@@ -55,6 +66,7 @@ struct sock_ev_read {
     int thread_id;
     struct hikv * hi;
     struct hikv_arg * hikv_args;
+    struct ring_buf * recv_buf;
 };
 
 struct accept_args {
@@ -62,6 +74,7 @@ struct accept_args {
     struct event_base * base;
     struct hikv * hi;
     struct hikv_arg * hikv_args;
+    struct ring_buf * recv_buf;
 };
 
 pthread_mutex_t connect_lock;

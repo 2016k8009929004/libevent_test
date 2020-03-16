@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "random": "cpp",
-        "locale": "cpp"
+        "locale": "cpp",
+        "type_traits": "cpp"
     }
 }
