@@ -251,7 +251,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
     //process request
-    printf("[SERVER] recv_len: %d\n", len);
+    printf("[SERVER] recv_len: %d, used ring buffer: %d\n", len, ring_buff_used(recv_buf));
 /*
     int i, res, ret;
     for(i = 0;i < recv_num;i++){
