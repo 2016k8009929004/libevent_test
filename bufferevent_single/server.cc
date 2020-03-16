@@ -6,6 +6,7 @@ int init_ring_buff(struct ring_buf * buffer){
     buffer->buf_len = BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE;
     buffer->buf_start = (char *)malloc(buffer->buf_len);
     buffer->buf_end = buffer->buf_start;
+    buffer->buf_read = buffer->buf_write = 0;
     return 1;
 }
 
@@ -190,7 +191,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 //    int buf_size = BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE;
 //    struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(buf_size);
     size_t len = bufferevent_read(bev, (char *)recv_buf->buf_end, ring_buff_free(recv_buf));
-    recv_buf->buf_end == (recv_buf->buf_end + len) % recv_buf->buf_len;
+    recv_buf->buf_write = (recv_buf->buf_write + len) % recv_buf->buf_len;
     int recv_num = len / KV_ITEM_SIZE;
     
 //    printf("[SERVER] recv len: %d\n", len);
@@ -282,7 +283,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 */
     int res;
     while(ring_buff_used(recv_buf) >= KV_ITEM_SIZE){
-        struct kv_trans_item * recv_item = (struct kv_trans_item *)recv_buf->buf_start;
+        struct kv_trans_item * recv_item = (struct kv_trans_item *)(recv_buf->buf_start + recv_buf->read);
         if(recv_item->len > 0){
             //printf("[SERVER] put KV item\n");
             res = hi->insert(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
@@ -303,7 +304,7 @@ void read_cb(struct bufferevent * bev, void * arg){
                 bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
             }
         }
-        recv_buf->buf_start == (recv_buf->buf_start + KV_ITEM_SIZE) % recv_buf->buf_len;
+        recv_buf->buf_read == (recv_buf->buf_read + KV_ITEM_SIZE) % recv_buf->buf_len;
         printf("[SERVER] remain len: %d\n", ring_buff_used(recv_buf));
     }
 

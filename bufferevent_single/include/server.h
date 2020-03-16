@@ -45,6 +45,8 @@ int total_time;
 struct ring_buf {
     char * buf_start;
     char * buf_end;
+    int buf_read;
+    int buf_write;
     int buf_len;
 };
 
