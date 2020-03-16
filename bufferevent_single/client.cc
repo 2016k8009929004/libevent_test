@@ -21,6 +21,17 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
     return;
 }
 
+int bufcmp(char * a, char * b, int buf_len){
+    int i = 0;
+    for(i = 0;i < buf_len;i++){
+        if(a[i] != b[i]){
+            break;
+        }
+    }
+
+    return (i == buf_len)? 1: 0;
+}
+
 int connect_server(char * server_ip, int port){
     int sockfd;
     
@@ -368,7 +379,7 @@ void * send_request(void * arg){
                 tot_recv += recv_size;
 
                 if(tot_recv == KV_ITEM_SIZE){
-                    if(res_kv->len == VALUE_SIZE){
+                    if(res_kv->len == VALUE_SIZE && bufcmp((char *)req_kv->value, (char *)&value_corpus[key_j * VALUE_SIZE], VALUE_SIZE)){
 //                        printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
                         match_search++;
                     }else{
