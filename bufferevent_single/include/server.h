@@ -48,6 +48,8 @@ struct ring_buf {
     int buf_len;
 };
 
+#define RING_BUF_SIZE sizeof(struct ring_buf)
+
 int init_ring_buff(struct ring_buf * buffer);
 int ring_buff_free(struct ring_buf * buffer);
 int ring_buff_used(struct ring_buf * buffer);
@@ -74,7 +76,6 @@ struct accept_args {
     struct event_base * base;
     struct hikv * hi;
     struct hikv_arg * hikv_args;
-    struct ring_buf * recv_buf;
 };
 
 pthread_mutex_t connect_lock;

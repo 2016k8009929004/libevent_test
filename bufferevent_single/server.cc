@@ -72,7 +72,10 @@ void accept_cb(int fd, short events, void * arg){
     struct event_base * base = args->base;
     struct hikv * hi = args->hi; 
     struct hikv_arg * hikv_args = args->hikv_args; 
-    struct ring_buf * recv_buf = args->recv_buf;
+
+    //init ring buffer for recv
+    struct ring_buf * recv_buf = (struct ring_buf *)malloc(RING_BUF_SIZE);
+    init_ring_buff(recv_buf);
 
     evutil_socket_t * s = (evutil_socket_t *)malloc(sizeof(evutil_socket_t)); 
 
@@ -374,7 +377,6 @@ void * server_thread(void * arg){
     int thread_id = thread_arg->thread_id;
     struct hikv * hi = thread_arg->hi;
     struct hikv_arg hikv_thread_arg = thread_arg->hikv_thread_arg;
-    struct ring_buf * recv_buf = thread_arg->recv_buf;
 
     size_t pm_size = hikv_thread_arg.pm_size;
     uint64_t num_server_thread = hikv_thread_arg.num_server_thread;
@@ -443,7 +445,7 @@ void * server_thread(void * arg){
 
     struct event_base * base = event_base_new();
 
-    struct accept_args args = {thread_id, base, hi, &hikv_thread_arg, recv_buf};
+    struct accept_args args = {thread_id, base, hi, &hikv_thread_arg};
 
     struct event * ev_listen = event_new(base, sock, EV_READ | EV_PERSIST, accept_cb, (void *)&args);
     event_add(ev_listen, NULL);
@@ -529,17 +531,12 @@ int main(int argc, char * argv[]){
     char pmem_meta[128] = "/home/pmem0/pmMETA";
     struct hikv * hi = new hikv(pm_size * 1024 * 1024 * 1024, num_server_thread, num_backend_thread, num_server_thread * (num_put_kv + num_warm_kv), pmem, pmem_meta);
 
-    //init ring buffer for recv
-    struct ring_buf recv_buf;
-    init_ring_buff(&recv_buf);
-
     for(i = 0;i < core_limit;i++){
 		cores[i] = i;
         done[i] = 0;
         sv_thread_arg[i].core = i;
         sv_thread_arg[i].thread_id = i;
         sv_thread_arg[i].hi = hi;
-        sv_thread_arg[i].recv_buf = &recv_buf;
         memcpy(&sv_thread_arg[i].hikv_thread_arg, &hikv_thread_arg, HIKV_ARG_SIZE);
         pthread_create(&sv_thread[i], NULL, server_thread, (void *)&sv_thread_arg[i]);
     }

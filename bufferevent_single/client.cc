@@ -55,7 +55,7 @@ int connect_server(char * server_ip, int port){
         return -1;
     }
 
-//    evutil_make_socket_nonblocking(sockfd);
+    //evutil_make_socket_nonblocking(sockfd);
 
     return sockfd;
 
@@ -116,7 +116,7 @@ void * send_request(void * arg){
         gettimeofday(&record_start[request_cnt], NULL);
 #endif
 
-//send request
+        //send request
         send_size = fread(send_buf, 1, buf_size, send_fp);
 
         if(write(fd, send_buf, send_size) < 0){
@@ -124,7 +124,7 @@ void * send_request(void * arg){
 	    	exit(1);
     	}
 
-//receive reply
+        //receive reply
         int temp = 0;
         while(1){
             recv_size = read(fd, recv_buf, buf_size);
@@ -190,7 +190,7 @@ void * send_request(void * arg){
 
     fclose(send_fp);
 #elif defined(__TEST_KV__)
-//    printf("===== start real work ======\n");
+    //printf("===== start real work ======\n");
     int i, iter, key_i, key_j;
     
     struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
@@ -199,8 +199,7 @@ void * send_request(void * arg){
     struct timeval time1, time2;
     gettimeofday(&time1, NULL);
 /* [Version 1.0 - seperated tasks 1]
-//PUT
-
+    //PUT
     for(iter = 0;iter < 3;iter++){
         if(rand() % 100 <= PUT_PERCENT || iter < NUM_KEYS){
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
@@ -221,7 +220,7 @@ void * send_request(void * arg){
 	    	exit(1);
     	}
 
-//GET
+    //GET
 
         int temp = 0;
         
@@ -269,7 +268,7 @@ void * send_request(void * arg){
     uint64_t match_delete = 0;
 
 /*[Version 2.0 - seperated tasks 2]
-//PUT
+    //PUT
     for(iter = 0;iter < num_put_kv;iter++){
         memset((char *)req_kv->key, 0, KEY_SIZE);
         memset((char *)req_kv->value, 0, VALUE_SIZE);
@@ -289,7 +288,7 @@ void * send_request(void * arg){
         }
     }
 
-//GET
+    //GET
     
     for(iter = 0, key_i = 0;iter < num_get_kv;iter++){
         snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
@@ -336,11 +335,11 @@ void * send_request(void * arg){
     for(iter = 0, key_i = 0, key_j = 0;iter < num_kv;iter++){
         if(iter < num_put_kv) {
         //PUT
-//            printf("[CLIENT] put KV item\n");
+            //printf("[CLIENT] put KV item\n");
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 		    req_kv->len = VALUE_SIZE;
     		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
-//            printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
+            //printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
 		    key_i = (key_i + 1) % num_put_kv;
 
             put_count++;
@@ -353,7 +352,7 @@ void * send_request(void * arg){
             }
 		} else {
 		//GET
-//            printf("[CLIENT] get KV item\n");
+            //printf("[CLIENT] get KV item\n");
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_j]);     //set Key
 	    	req_kv->len = 0;
 		    memset((char *)req_kv->value, 0, VALUE_SIZE);
@@ -381,11 +380,10 @@ void * send_request(void * arg){
 
                 if(tot_recv == KV_ITEM_SIZE){
                     if(res_kv->len == VALUE_SIZE && bufcmp((char *)res_kv->value, (char *)&value_corpus[key_j * VALUE_SIZE], VALUE_SIZE)){
-                        printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
+                        //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
                         match_search++;
                     }else{
-                        printf("[CLIENT] receive value: %.*s\nexpected value: %.*s\n", VALUE_SIZE, res_kv->value, VALUE_SIZE, (char *)&value_corpus[key_j * VALUE_SIZE]);
-                        printf("[CLIENT] GET failed! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
+                        //printf("[CLIENT] GET failed! key: %.*s, value: %.*s\n", KEY_SIZE, res_kv->key, VALUE_SIZE, res_kv->value);
                     }
                     break;
                 }
