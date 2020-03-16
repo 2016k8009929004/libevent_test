@@ -6,8 +6,6 @@ int init_ring_buff(struct ring_buf * buffer){
     buffer->buf_len = BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE;
     buffer->buf_start = (struct kv_trans_item *)malloc(buffer->buf_len);
     buffer->buf_end = buffer->buf_start;
-    printf("[SERVER] ring buffer start: %p, end: %p, len: %d\n", 
-            buffer->buf_start, buffer->buf_end, buffer->buf_len);
     return 1;
 }
 
@@ -190,7 +188,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 //    struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(buf_size);
     printf("[SERVER] free ring buffer: %d\n", ring_buff_free(recv_buf));
 
-    size_t len = bufferevent_read(bev, (char *)recv_buf->buf_end, ring_buff_free(recv_buf));
+    size_t len = bufferevent_read(bev, (char *)recv_buf->buf_end, KV_ITEM_SIZE);
     int recv_num = len / KV_ITEM_SIZE;
 
 #if 0
