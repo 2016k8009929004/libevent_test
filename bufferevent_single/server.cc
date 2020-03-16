@@ -298,6 +298,7 @@ void read_cb(struct bufferevent * bev, void * arg){
                 bufferevent_write(bev, (char *)&recv_item, KV_ITEM_SIZE);
             }
         }
+        printf("[SERVER] used buffer size: %d\n", ring_buff_used(recv_buf));
         recv_buf->buf_start++;
     }
 
