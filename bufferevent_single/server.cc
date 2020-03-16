@@ -185,11 +185,11 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
     //receive
-    struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
-    int len = bufferevent_read(bev, (char *)recv_item, KV_ITEM_SIZE);
+    //struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
+    //int len = bufferevent_read(bev, (char *)recv_item, KV_ITEM_SIZE);
 
-    //size_t len = bufferevent_read(bev, (char *)(recv_buf->buf_start + recv_buf->buf_write), ring_buff_free(recv_buf));
-    //recv_buf->buf_write = (recv_buf->buf_write + len) % recv_buf->buf_len;
+    size_t len = bufferevent_read(bev, (char *)(recv_buf->buf_start + recv_buf->buf_write), ring_buff_free(recv_buf));
+    recv_buf->buf_write = (recv_buf->buf_write + len) % recv_buf->buf_len;
 
     //printf("[SERVER] read: %d, write: %d, recv len: %d\n", recv_buf->buf_read, recv_buf->buf_write, len);
     //int recv_num = len / KV_ITEM_SIZE;
@@ -283,7 +283,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     free(recv_item);
 */
-/*
+
     int res;
     while(ring_buff_used(recv_buf) >= KV_ITEM_SIZE){
         struct kv_trans_item * recv_item = (struct kv_trans_item *)(recv_buf->buf_start + recv_buf->buf_read);
@@ -311,7 +311,8 @@ void read_cb(struct bufferevent * bev, void * arg){
         //printf("[SERVER] read: %d, write: %d, remain len: %d\n", recv_buf->buf_read, recv_buf->buf_write, ring_buff_used(recv_buf));
     }
     printf("[SERVER] read: %d, write: %d, remain len: %d\n", recv_buf->buf_read, recv_buf->buf_write, ring_buff_used(recv_buf));
-*/
+
+/*
     int res, ret;
     if(recv_item->len > 0){
         //printf("[SERVER] put KV item\n");
@@ -334,6 +335,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     }
 
     free(recv_item);
+*/
 #ifdef __REAL_TIME_STATS__
     pthread_mutex_lock(&record_lock);
     request_cnt++;
