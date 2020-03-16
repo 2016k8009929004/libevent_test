@@ -292,10 +292,10 @@ void read_cb(struct bufferevent * bev, void * arg){
             printf("[SERVER] GET key: %.*s\n value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
             if(res == true){
                 recv_item->len = VALUE_SIZE;
-                bufferevent_write(bev, (char *)&recv_item, KV_ITEM_SIZE);
+                bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
             }else{
                 recv_item->len = -1;
-                bufferevent_write(bev, (char *)&recv_item, KV_ITEM_SIZE);
+                bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
             }
         }
         recv_buf->buf_start += KV_ITEM_SIZE;
