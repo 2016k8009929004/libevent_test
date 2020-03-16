@@ -278,16 +278,16 @@ void read_cb(struct bufferevent * bev, void * arg){
     int res;
     while(ring_buff_used(recv_buf) >= KV_ITEM_SIZE){
         struct kv_trans_item * recv_item = recv_buf->buf_start;
-        printf("[SERVER] recv_item len: %d\n", recv_item->len);
         if(recv_item->len > 0){
             //printf("[SERVER] put KV item\n");
             res = hi->insert(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
-            printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
+//            printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
             if (res == true){
-                printf("[SERVER] insert success\n");
+//                printf("[SERVER] insert success\n");
             }
         }else if(recv_item->len == 0){
             res = hi->search(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
+            printf("[SERVER] GET key: %.*s\n", KEY_SIZE, recv_item->key);
             if(res == true){
                 printf("[SERVER] GET success! key: %.*s\n value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
                 recv_item->len = VALUE_SIZE;
