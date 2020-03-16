@@ -152,7 +152,7 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
-//    printf("====== read_cb ======\n");
+    printf("====== read_cb ======\n");
 
 //    printf("[read cb] pid: %d, tid:%ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
