@@ -150,7 +150,7 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
-    printf("====== read_cb ======\n");
+//    printf("====== read_cb ======\n");
 
 //    printf("[read cb] pid: %d, tid:%ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
@@ -186,6 +186,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     //receive
     struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
+    int len = bufferevent_read(bev, (char *)recv_item, KV_ITEM_SIZE);
 
     //size_t len = bufferevent_read(bev, (char *)(recv_buf->buf_start + recv_buf->buf_write), ring_buff_free(recv_buf));
     //recv_buf->buf_write = (recv_buf->buf_write + len) % recv_buf->buf_len;
