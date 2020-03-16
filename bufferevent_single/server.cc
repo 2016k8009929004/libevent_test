@@ -187,7 +187,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 //    int buf_size = BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE;
 //    struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(buf_size);
 
-    size_t len = bufferevent_read(bev, (char *)ring_buf->buf_end, ring_buff_free(ring_buf));
+    size_t len = bufferevent_read(bev, (char *)recv_buf->buf_end, ring_buff_free(recv_buf));
     int recv_num = len / KV_ITEM_SIZE;
 
 #if 0
@@ -276,8 +276,9 @@ void read_cb(struct bufferevent * bev, void * arg){
         }
     }
 */
-    while(ring_buff_used(recv_buff) >= KV_ITEM_SIZE){
-        struct kv_trans_item * recv_item = recv_buff->buf_start;
+    int res;
+    while(ring_buff_used(recv_buf) >= KV_ITEM_SIZE){
+        struct kv_trans_item * recv_item = recv_buf->buf_start;
         if(recv_item->len > 0){
             //printf("[SERVER] put KV item\n");
             res = hi->insert(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
@@ -297,7 +298,7 @@ void read_cb(struct bufferevent * bev, void * arg){
                 bufferevent_write(bev, (char *)&recv_item, KV_ITEM_SIZE);
             }
         }
-        recv_buff->buf_start++;
+        recv_buf->buf_start++;
     }
 
 #ifdef __REAL_TIME_STATS__
