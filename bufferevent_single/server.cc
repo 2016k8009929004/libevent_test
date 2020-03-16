@@ -185,16 +185,15 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
     //receive
-    int buf_size = BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE;
-    struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(buf_size);
+    struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
 
-//    size_t len = bufferevent_read(bev, (char *)(recv_buf->buf_start + recv_buf->buf_write), ring_buff_free(recv_buf));
-//    recv_buf->buf_write = (recv_buf->buf_write + len) % recv_buf->buf_len;
+    //size_t len = bufferevent_read(bev, (char *)(recv_buf->buf_start + recv_buf->buf_write), ring_buff_free(recv_buf));
+    //recv_buf->buf_write = (recv_buf->buf_write + len) % recv_buf->buf_len;
 
     //printf("[SERVER] read: %d, write: %d, recv len: %d\n", recv_buf->buf_read, recv_buf->buf_write, len);
-    int recv_num = len / KV_ITEM_SIZE;
+    //int recv_num = len / KV_ITEM_SIZE;
     
-//    printf("[SERVER] recv len: %d\n", len);
+    //printf("[SERVER] recv len: %d\n", len);
 
 #if 0
     int res, i;
@@ -257,7 +256,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
     //process request
-
+/*
     int i, res, ret;
     for(i = 0;i < recv_num;i++){
         if(recv_item[i].len > 0){
@@ -282,7 +281,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     }
 
     free(recv_item);
-
+*/
 /*
     int res;
     while(ring_buff_used(recv_buf) >= KV_ITEM_SIZE){
@@ -312,6 +311,28 @@ void read_cb(struct bufferevent * bev, void * arg){
     }
     printf("[SERVER] read: %d, write: %d, remain len: %d\n", recv_buf->buf_read, recv_buf->buf_write, ring_buff_used(recv_buf));
 */
+    int res, ret;
+    if(recv_item->len > 0){
+        //printf("[SERVER] put KV item\n");
+        res = hi->insert(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
+        //printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item[i].key, VALUE_SIZE, recv_item[i].value);
+        if (res == true){
+            //printf("[SERVER] insert success\n");
+        }
+    }else if(recv_item->len == 0){
+        res = hi->search(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
+        if(res == true){
+            //printf("[SERVER] search success\n");
+            recv_item->len = VALUE_SIZE;
+            bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
+        }else{
+            //printf("[SERVER] search failed\n");
+            recv_item->len = -1;
+            bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
+        }
+    }
+
+    free(recv_item);
 #ifdef __REAL_TIME_STATS__
     pthread_mutex_lock(&record_lock);
     request_cnt++;
