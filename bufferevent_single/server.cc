@@ -301,7 +301,7 @@ void read_cb(struct bufferevent * bev, void * arg){
             }
         }
         printf("[SERVER] used buffer size: %d\n", ring_buff_used(recv_buf));
-        recv_buf->buf_start++;
+        recv_buf->buf_start += KV_ITEM_SIZE;
     }
 
 #ifdef __REAL_TIME_STATS__
