@@ -302,7 +302,7 @@ void read_cb(struct bufferevent * bev, void * arg){
                 bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
             }
         }
-        recv_buf->buf_read == (recv_buf->buf_read + KV_ITEM_SIZE) % recv_buf->buf_len;
+        recv_buf->buf_read = (recv_buf->buf_read + KV_ITEM_SIZE) % recv_buf->buf_len;
         printf("[SERVER] read: %d, write: %d, remain len: %d\n", recv_buf->buf_read, recv_buf->buf_write, ring_buff_used(recv_buf));
     }
 
