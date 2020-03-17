@@ -212,7 +212,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 	len = 0;
 
     while(1){
-		printf(buff, "[SERVER] to write len: %d, read: %d, write: %d\n", ring_buff_to_write(recv_buf), recv_buf->buf_read, recv_buf->buf_write);
+		printf("[SERVER] to write len: %d, read: %d, write: %d\n", ring_buff_to_write(recv_buf), recv_buf->buf_read, recv_buf->buf_write);
 		recv_len = bufferevent_read(bev, (char *)(recv_buf->buf_start + recv_buf->buf_write), ring_buff_to_write(recv_buf));
     	if(recv_len < 0) {
 			if (errno == EAGAIN) {
