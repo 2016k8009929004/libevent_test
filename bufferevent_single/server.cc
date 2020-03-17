@@ -219,6 +219,8 @@ void read_cb(struct bufferevent * bev, void * arg){
 	fwrite(buff, strlen(buff), 1, fp);
 	fflush(fp);
 
+    int len, recv_len;
+
     while(1){
 		sprintf(buff, "[SERVER] to write len: %d, read: %d, write: %d\n", ring_buff_to_write(recv_buf), recv_buf->buf_read, recv_buf->buf_write);
 		fwrite(buff, strlen(buff), 1, fp);
@@ -360,7 +362,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         recv_buf->buf_read = (recv_buf->buf_read + KV_ITEM_SIZE) % recv_buf->buf_len;
         //printf("[SERVER] read: %d, write: %d, remain len: %d\n", recv_buf->buf_read, recv_buf->buf_write, ring_buff_used(recv_buf));
     }
-    
+
     sprintf(buff, "[SERVER] read: %d, write: %d, remain len: %d\n", recv_buf->buf_read, recv_buf->buf_write, ring_buff_used(recv_buf));
 	fwrite(buff, strlen(buff), 1, fp);
 	fflush(fp);
