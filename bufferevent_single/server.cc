@@ -18,6 +18,18 @@ int ring_buff_free(struct ring_buf * buffer){
     }
 }
 
+int ring_buff_to_write(struct ring_buf * buffer){
+    if(buffer->buf_write >= buffer->buf_read){
+		if(buffer->buf_read == 0){
+			return buffer->buf_len - buffer->buf_write - KV_ITEM_SIZE;
+		}else{
+			return buffer->buf_len - buffer->buf_write;
+		}
+	}else if(buffer->buf_read > buffer->buf_write){
+		return buffer->buf_read - buffer->buf_write - KV_ITEM_SIZE;
+	}
+}
+
 int ring_buff_used(struct ring_buf * buffer){
     if(buffer->buf_read == buffer->buf_write){
         return 0;
@@ -188,13 +200,30 @@ void read_cb(struct bufferevent * bev, void * arg){
     //struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
     //int len = bufferevent_read(bev, (char *)recv_item, KV_ITEM_SIZE);
 
-    size_t len = bufferevent_read(bev, (char *)(recv_buf->buf_start + recv_buf->buf_write), ring_buff_free(recv_buf));
-    recv_buf->buf_write = (recv_buf->buf_write + len) % recv_buf->buf_len;
+    //size_t len = bufferevent_read(bev, (char *)(recv_buf->buf_start + recv_buf->buf_write), ring_buff_free(recv_buf));
+    //recv_buf->buf_write = (recv_buf->buf_write + len) % recv_buf->buf_len;
 
     //printf("[SERVER] read: %d, write: %d, recv len: %d\n", recv_buf->buf_read, recv_buf->buf_write, len);
     //int recv_num = len / KV_ITEM_SIZE;
     
-//    printf("[SERVER] recv len: %d\n", len);
+    //printf("[SERVER] recv len: %d\n", len);
+
+    int len, recv_len;
+	len = 0;
+
+    while(1){
+		printf(buff, "[SERVER] to write len: %d, read: %d, write: %d\n", ring_buff_to_write(recv_buf), recv_buf->buf_read, recv_buf->buf_write);
+		recv_len = mtcp_recv(ctx->mctx, sockid, (char *)(recv_buf->buf_start + recv_buf->buf_write), ring_buff_to_write(recv_buf), 0);
+    	if(recv_len < 0) {
+			if (errno == EAGAIN) {
+				break;
+			}
+		}
+		len += recv_len;
+		recv_buf->buf_write = (recv_buf->buf_write + recv_len) % recv_buf->buf_len;
+	}
+
+    printf("[SERVER] recv_len: %d\n", len);
 
 #if 0
     int res, i;
