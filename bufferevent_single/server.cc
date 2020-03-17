@@ -226,14 +226,15 @@ void read_cb(struct bufferevent * bev, void * arg){
 		fwrite(buff, strlen(buff), 1, fp);
 		fflush(fp);
         recv_len = bufferevent_read(bev, (char *)(recv_buf->buf_start + recv_buf->buf_write), ring_buff_to_write(recv_buf));
-    	if(recv_len < 0) {
-			if (errno == EAGAIN) {
-				break;
-			}
+    	if(recv_len == 0) {
+			break;
 		}
 		len += recv_len;
 		recv_buf->buf_write = (recv_buf->buf_write + recv_len) % recv_buf->buf_len;
-	}
+        sprintf(buff, "[SERVER] recv_len: %d, len: %d\n", recv_len, len);
+		fwrite(buff, strlen(buff), 1, fp);
+		fflush(fp);
+    }
 
     sprintf(buff, "[SERVER] recv_len: %d\n", len);
 	fwrite(buff, strlen(buff), 1, fp);
