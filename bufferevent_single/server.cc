@@ -220,6 +220,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 	fflush(fp);
 
     int len, recv_len;
+    len = 0;
 
     while(1){
 		sprintf(buff, "[SERVER] to write len: %d, read: %d, write: %d\n", ring_buff_to_write(recv_buf), recv_buf->buf_read, recv_buf->buf_write);
