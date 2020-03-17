@@ -121,7 +121,7 @@ void accept_cb(int fd, short events, void * arg){
     bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 
-    bufferevent_setwatermark(bev, EV_READ, 0, KV_ITEM_SIZE);
+//    bufferevent_setwatermark(bev, EV_READ, 0, KV_ITEM_SIZE);
 
 #ifdef __EVAL_CB__
     struct timeval end;
