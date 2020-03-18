@@ -43,9 +43,6 @@ struct send_info {
     struct hikv_arg * hikv_thread_arg;
 };
 
-static LL * key_corpus;
-static uint8_t * value_corpus;
-
 #define SEND_INFO_SIZE sizeof(struct send_info)
 
 int connect_server(char * server_ip, int port);
