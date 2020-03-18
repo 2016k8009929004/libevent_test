@@ -330,11 +330,11 @@ void * send_request(void * arg){
         if(iter < num_put_kv) {
         //PUT
             struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
-            printf("[CLIENT] PUT %d\n", iter);
+            //printf("[CLIENT] PUT %d\n", iter);
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 		    req_kv->len = VALUE_SIZE;
     		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
-            printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
+            //printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
             //printf("[CLIENT] PUT key: %llu\n", key_corpus[key_i]);
 		    key_i = (key_i + 1) % num_put_kv;
 
@@ -362,11 +362,11 @@ void * send_request(void * arg){
                 if(tot_recv == KV_ITEM_SIZE){
                     if(req_kv->len == VALUE_SIZE){
                         //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
-                        printf("[CLIENT] PUT success! key: %.*s\n", KEY_SIZE, req_kv->key);
+                        //printf("[CLIENT] PUT success! key: %.*s\n", KEY_SIZE, req_kv->key);
                         match_insert++;
                     }else{
                         //printf("[CLIENT] GET failed! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
-                        printf("[CLIENT] PUT failed! key: %.*s\n", KEY_SIZE, req_kv->key);
+                        //printf("[CLIENT] PUT failed! key: %.*s\n", KEY_SIZE, req_kv->key);
                     }
                     break;
                 }
@@ -374,7 +374,7 @@ void * send_request(void * arg){
             free(req_kv);
 		} else {
 		//GET
-            printf("[CLIENT] GET %d\n", iter);
+            //printf("[CLIENT] GET %d\n", iter);
             struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_j]);     //set Key
 	    	req_kv->len = 0;
