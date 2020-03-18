@@ -5,7 +5,10 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
 	int key_i;
 	LL temp;
     
-    srand(getpid());
+    struct timeval time1;
+    gettimeofday(&time1, NULL);
+
+    srand(time1.tv_sec ^ time1.tv_usec);
 
 	for(key_i = 0; key_i < NUM_KEYS; key_i ++) {
 		LL rand1 = (LL) rand();
