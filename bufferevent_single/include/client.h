@@ -45,6 +45,10 @@ struct send_info {
 
 #define SEND_INFO_SIZE sizeof(struct send_info)
 
+    //initial Key
+static LL * key_corpus;
+static uint8_t * value_corpus;
+
 int connect_server(char * server_ip, int port);
 
 void send_request_thread(struct send_info * info);

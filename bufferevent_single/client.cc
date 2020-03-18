@@ -79,12 +79,6 @@ void * send_request(void * arg){
 
     uint64_t seed = hikv_args->seed;
 
-    //initial Key
-    LL * key_corpus = (LL *)malloc(NUM_KEYS * sizeof(LL));
-    uint8_t * value_corpus = (uint8_t *)malloc(NUM_KEYS * VALUE_SIZE);
-    
-    gen_corpus(key_corpus, value_corpus);
-
 #ifdef __TEST_FILE__
     char send_buf[buf_size];
     char recv_buf[buf_size + 1];
@@ -336,7 +330,7 @@ void * send_request(void * arg){
         if(iter < num_put_kv) {
         //PUT
             struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
-            //printf("[CLIENT] put KV item %d\n", iter);
+            printf("[CLIENT] PUT %d\n", iter);
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 		    req_kv->len = VALUE_SIZE;
     		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
@@ -380,7 +374,7 @@ void * send_request(void * arg){
             free(req_kv);
 		} else {
 		//GET
-            //printf("[CLIENT] get KV item\n");
+            printf("[CLIENT] GET %d\n", iter);
             struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_j]);     //set Key
 	    	req_kv->len = 0;
@@ -639,6 +633,12 @@ int main(int argc, char * argv[]){
             printf("error (%s)!\n", argv[i]);
         }
     }
+
+    //initial Key
+    LL * key_corpus = (LL *)malloc(NUM_KEYS * sizeof(LL));
+    uint8_t * value_corpus = (uint8_t *)malloc(NUM_KEYS * VALUE_SIZE);
+    
+    gen_corpus(key_corpus, value_corpus);
 
     for(i = 0;i < client_thread_num;i++){
         cl_thread_arg[i].ip_addr = server_ip;
