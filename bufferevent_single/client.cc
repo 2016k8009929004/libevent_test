@@ -18,11 +18,11 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
 			key_i --;
 		}
 	}
-/*
+
     FILE * fp = fopen("client-input.dat", "rb");
-    fread(value_corpus, 1, NUM_KEYS * VALUE_SIZE, fp);
+    fread(value_corpus, 1, VALUE_SIZE, fp);
     fclose(fp);
-*/
+
     return;
 }
 
@@ -86,7 +86,7 @@ void * send_request(void * arg){
 
     //initial Key
     LL * key_corpus = (LL *)malloc(NUM_KEYS * sizeof(LL));
-    //uint8_t * value_corpus = (uint8_t *)malloc(NUM_KEYS * VALUE_SIZE);
+    uint8_t * value_corpus = (uint8_t *)malloc(VALUE_SIZE);
     
     gen_corpus(key_corpus, NULL);
 
@@ -336,8 +336,6 @@ void * send_request(void * arg){
     }
 */
 
-    FILE * fp = fopen("client-input.dat", "rb");
-
 //[Version 3.0 - mixed tests]
     for(iter = 0, key_i = 0, key_j = 0;iter < num_kv;iter++){
         if(iter < num_put_kv) {
@@ -348,8 +346,7 @@ void * send_request(void * arg){
 		    req_kv->len = VALUE_SIZE;
             printf("[CLIENT] PUT copy value\n");
     		//memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
-		    memset((char *)req_kv->value, 0, VALUE_SIZE);
-            fread((char *)req_kv->value, 1, VALUE_SIZE, fp);
+    		memcpy((char *)req_kv->value, (char *)value_corpus, VALUE_SIZE);   //set Value
             printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
             //printf("[CLIENT] PUT key: %llu\n", key_corpus[key_i]);
 		    key_i = (key_i + 1) % num_put_kv;
@@ -433,8 +430,6 @@ void * send_request(void * arg){
             free(req_kv);
 		}
     }
-
-    fclose(fp);
 
     printf(">>[TEST] test end\n");
     if (put_count > 0){
