@@ -4,12 +4,12 @@
 void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
 	int key_i;
 	LL temp;
-
-    srand(time(NULL));
+    
+    srand(getpid());
 
 	for(key_i = 0; key_i < NUM_KEYS; key_i ++) {
-		int rand1 = rand();
-		int rand2 = rand();
+		LL rand1 = (LL) rand();
+		LL rand2 = (LL) rand();
 		key_corpus[key_i] = (rand1 << 32) ^ rand2;
 		if((char) key_corpus[key_i] == 0) {
 			key_i --;
