@@ -624,6 +624,7 @@ int main(int argc, char * argv[]){
     };
 
     int i;
+    int client_num = 1;
 
     for (i = 0; i < argc; i++){
         double d;
@@ -658,6 +659,10 @@ int main(int argc, char * argv[]){
             hikv_thread_arg.scan_range = n;
         }else if(sscanf(argv[i], "--num_scan_all=%llu%c", &n, &junk) == 1){
             hikv_thread_arg.scan_all = n;
+        }else if(sscanf(argv[i], "--num_client=%llu%c", &n, &junk) == 1){
+            client_num = n;
+            hikv_thread_arg.num_put_kv *= n;
+            hikv_thread_arg.num_get_kv *= n;            
         }else if(i > 0){
             printf("error (%s)!\n", argv[i]);
         }
