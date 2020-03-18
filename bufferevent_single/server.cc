@@ -224,7 +224,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
 
-	len = bufferevent_read(bev, (char *)(recv_buf->buf_start + recv_buf->buf_write), ring_buff_to_write(recv_buf));
+	len = bufferevent_read(bev, (char *)recv_item, KV_ITEM_SIZE);
 
 /*
     while(1){
