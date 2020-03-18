@@ -45,7 +45,6 @@ struct send_info {
 
 #define SEND_INFO_SIZE sizeof(struct send_info)
 
-    //initial Key
 static LL * key_corpus;
 static uint8_t * value_corpus;
 
