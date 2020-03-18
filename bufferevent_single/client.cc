@@ -341,7 +341,7 @@ void * send_request(void * arg){
 		    req_kv->len = VALUE_SIZE;
     		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
             //printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
-            printf("[CLIENT] PUT key: %llu\n", key_corpus[key_i]);
+            //printf("[CLIENT] PUT key: %llu\n", key_corpus[key_i]);
 		    key_i = (key_i + 1) % num_put_kv;
 
             put_count++;
@@ -349,8 +349,33 @@ void * send_request(void * arg){
             if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
 	    		perror("[CLIENT] send failed");
 	        	exit(1);
-        	}else{
-                match_insert++;
+        	}
+
+            int recv_size, tot_recv;
+
+	        tot_recv = 0;
+
+            while(1){
+                recv_size = read(fd, req_kv, KV_ITEM_SIZE);
+
+                if(recv_size == 0){
+                    printf("[CLIENT] close connection\n");
+                    close(fd);
+                }
+
+                tot_recv += recv_size;
+
+                if(tot_recv == KV_ITEM_SIZE){
+                    if(req_kv->len == VALUE_SIZE){
+                        //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
+                        //printf("[CLIENT] PUT success! key: %.*s\n", KEY_SIZE, req_kv->key);
+                        match_insert++;
+                    }else{
+                        //printf("[CLIENT] GET failed! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
+                        //printf("[CLIENT] PUT failed! key: %.*s\n", KEY_SIZE, req_kv->key);
+                    }
+                    break;
+                }
             }
             free(req_kv);
 		} else {
@@ -385,11 +410,11 @@ void * send_request(void * arg){
                 if(tot_recv == KV_ITEM_SIZE){
                     if(req_kv->len == VALUE_SIZE && bufcmp((char *)req_kv->value, (char *)&value_corpus[key_j * VALUE_SIZE], VALUE_SIZE)){
                         //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
-                        printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
+                        //printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
                         match_search++;
                     }else{
                         //printf("[CLIENT] GET failed! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
-                        printf("[CLIENT] GET failed! key: %.*s\n", KEY_SIZE, req_kv->key);
+                        //printf("[CLIENT] GET failed! key: %.*s\n", KEY_SIZE, req_kv->key);
                     }
                     break;
                 }
