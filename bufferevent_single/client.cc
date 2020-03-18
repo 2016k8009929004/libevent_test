@@ -18,6 +18,8 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
     fread(value_corpus, 1, NUM_KEYS * VALUE_SIZE, fp);
     fclose(fp);
 
+    printf("====== gen corpus ready ======\n");
+
     return;
 }
 
