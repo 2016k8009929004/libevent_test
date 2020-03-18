@@ -8,7 +8,7 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
     srand(time(0));
 
 	for(key_i = 0; key_i < NUM_KEYS; key_i ++) {
-		key_corpus[key_i] = rand() & (LL)0xff;
+		key_corpus[key_i] = rand() & 0xffffffffffffffff;
 		if((char) key_corpus[key_i] == 0) {
 			key_i--;
 		}
