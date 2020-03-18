@@ -348,7 +348,10 @@ void * send_request(void * arg){
 		    req_kv->len = VALUE_SIZE;
             printf("[CLIENT] PUT copy value\n");
     		//memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
-    		fread((char *)req_kv->value, 1, VALUE_SIZE, fp);
+    		char * buff = (char *)malloc(VALUE_SIZE);
+		    memset(buff, 0, VALUE_SIZE);
+            fread(buff, 1, VALUE_SIZE, fp);
+            memcpy((char *)req_kv->value, buff, VALUE_SIZE);   //set Value
             printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
             //printf("[CLIENT] PUT key: %llu\n", key_corpus[key_i]);
 		    key_i = (key_i + 1) % num_put_kv;
