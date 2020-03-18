@@ -5,7 +5,7 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
 	int key_i;
 	LL temp;
     
-    srand(time(0));
+    srand(time(NULL));
 
 	for(key_i = 0; key_i < NUM_KEYS; key_i ++) {
 		LL rand1 = (LL) rand();
