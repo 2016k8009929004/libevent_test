@@ -1,3 +1,6 @@
+#define K_32 32768
+#define K_32_ 32767
+
 #define K_64 65536
 #define K_64_ 65535
 

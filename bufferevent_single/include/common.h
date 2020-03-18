@@ -35,8 +35,8 @@
 
 #define PUT_PERCENT 50			// Percentage of PUT operations
 
-#define NUM_KEYS K_64
-#define NUM_KEYS_ K_64_
+#define NUM_KEYS K_32
+#define NUM_KEYS_ K_32_
 
 #define SWAP(a,b) do{a^=b;b^=a;a^=b;}while(0)
 
