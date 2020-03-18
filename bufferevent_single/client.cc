@@ -18,11 +18,11 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
 			key_i --;
 		}
 	}
-
+/*
     FILE * fp = fopen("client-input.dat", "rb");
     fread(value_corpus, 1, NUM_KEYS * VALUE_SIZE, fp);
     fclose(fp);
-
+*/
     return;
 }
 
@@ -336,6 +336,8 @@ void * send_request(void * arg){
     }
 */
 
+    FILE * fp = fopen("client-input.dat", "rb");
+
 //[Version 3.0 - mixed tests]
     for(iter = 0, key_i = 0, key_j = 0;iter < num_kv;iter++){
         if(iter < num_put_kv) {
@@ -344,7 +346,8 @@ void * send_request(void * arg){
             //printf("[CLIENT] put KV item %d\n", iter);
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 		    req_kv->len = VALUE_SIZE;
-    		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
+    		//memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
+    		fread((char *)req_kv->value, 1, VALUE_SIZE, fp);
             //printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
             //printf("[CLIENT] PUT key: %llu\n", key_corpus[key_i]);
 		    key_i = (key_i + 1) % num_put_kv;
@@ -413,7 +416,7 @@ void * send_request(void * arg){
                 tot_recv += recv_size;
 
                 if(tot_recv == KV_ITEM_SIZE){
-                    if(req_kv->len == VALUE_SIZE && bufcmp((char *)req_kv->value, (char *)&value_corpus[key_j * VALUE_SIZE], VALUE_SIZE)){
+                    if(req_kv->len == VALUE_SIZE/* && bufcmp((char *)req_kv->value, (char *)&value_corpus[key_j * VALUE_SIZE], VALUE_SIZE)*/){
                         //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
                         //printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
                         match_search++;
@@ -428,6 +431,8 @@ void * send_request(void * arg){
             free(req_kv);
 		}
     }
+
+    fclose(fp);
 
     printf(">>[TEST] test end\n");
     if (put_count > 0){
