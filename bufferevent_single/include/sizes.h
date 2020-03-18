@@ -1,3 +1,6 @@
+#define K_16 16384
+#define K_16_ 16383
+
 #define K_32 32768
 #define K_32_ 32767
 
