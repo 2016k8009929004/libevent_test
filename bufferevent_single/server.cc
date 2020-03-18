@@ -416,6 +416,8 @@ void read_cb(struct bufferevent * bev, void * arg){
         }
     }
 
+    free(recv_item);
+
 	fclose(fp);
 /*
     int res, ret;
