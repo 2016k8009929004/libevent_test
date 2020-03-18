@@ -81,12 +81,6 @@ void * send_request(void * arg){
 
     uint64_t seed = hikv_args->seed;
 
-    //initial Key
-    LL * key_corpus = (LL *)malloc(NUM_KEYS * sizeof(LL));
-    uint8_t * value_corpus = (uint8_t *)malloc(NUM_KEYS * VALUE_SIZE);
-    
-    gen_corpus(key_corpus, value_corpus);
-
 #ifdef __TEST_FILE__
     char send_buf[buf_size];
     char recv_buf[buf_size + 1];
@@ -641,6 +635,12 @@ int main(int argc, char * argv[]){
             printf("error (%s)!\n", argv[i]);
         }
     }
+
+    //initial Key
+    key_corpus = (LL *)malloc(NUM_KEYS * sizeof(LL));
+    value_corpus = (uint8_t *)malloc(NUM_KEYS * VALUE_SIZE);
+    
+    gen_corpus(key_corpus, value_corpus);
 
     for(i = 0;i < client_thread_num;i++){
         cl_thread_arg[i].ip_addr = server_ip;
