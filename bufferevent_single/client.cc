@@ -635,8 +635,8 @@ int main(int argc, char * argv[]){
     }
 
     //initial Key
-    LL * key_corpus = (LL *)malloc(NUM_KEYS * sizeof(LL));
-    uint8_t * value_corpus = (uint8_t *)malloc(NUM_KEYS * VALUE_SIZE);
+    key_corpus = (LL *)malloc(NUM_KEYS * sizeof(LL));
+    value_corpus = (uint8_t *)malloc(NUM_KEYS * VALUE_SIZE);
     
     gen_corpus(key_corpus, value_corpus);
 
