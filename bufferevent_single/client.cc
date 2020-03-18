@@ -4,13 +4,15 @@
 void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
 	int key_i;
 	LL temp;
-
+    
     srand(time(0));
 
 	for(key_i = 0; key_i < NUM_KEYS; key_i ++) {
-		key_corpus[key_i] = rand() & 0xffffffffffffffff;
+		LL rand1 = (LL) rand();
+		LL rand2 = (LL) rand();
+		key_corpus[key_i] = (rand1 << 32) ^ rand2;
 		if((char) key_corpus[key_i] == 0) {
-			key_i--;
+			key_i --;
 		}
 	}
 
@@ -340,7 +342,7 @@ void * send_request(void * arg){
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 		    req_kv->len = VALUE_SIZE;
     		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
-            printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
+            //printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
             //printf("[CLIENT] PUT key: %llu\n", key_corpus[key_i]);
 		    key_i = (key_i + 1) % num_put_kv;
 
