@@ -211,14 +211,14 @@ void read_cb(struct bufferevent * bev, void * arg){
     int len, recv_len;
 	len = 0;
 */
-
+/*
 	FILE * fp = fopen("log.txt", "a+");
 
 	char buff[1024];
 	sprintf(buff, "===== HandleReadEvent =====\n");
 	fwrite(buff, strlen(buff), 1, fp);
 	fflush(fp);
-
+*/
     int len, recv_len;
     len = 0;
 
@@ -242,11 +242,11 @@ void read_cb(struct bufferevent * bev, void * arg){
 		fflush(fp);
     }
 */
-
+/*
     sprintf(buff, "[SERVER] recv_len: %d\n", len);
 	fwrite(buff, strlen(buff), 1, fp);
 	fflush(fp);
-
+*/
 #if 0
     int res, i;
     
@@ -385,16 +385,20 @@ void read_cb(struct bufferevent * bev, void * arg){
             //printf("[SERVER] insert success\n");
             recv_item->len = VALUE_SIZE;
             bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
+        /*
             sprintf(buff, "[SERVER] PUT success! key: %.*s\n", KEY_SIZE, recv_item->key);
 			fwrite(buff, strlen(buff), 1, fp);
 			fflush(fp);
+        */
         }else{
             //printf("[SERVER] put KV item failed\n");
             recv_item->len = -1;
             bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
+        /*
             sprintf(buff, "[SERVER] PUT failed! key: %.*s\n", KEY_SIZE, recv_item->key);
 			fwrite(buff, strlen(buff), 1, fp);
 			fflush(fp);
+        */
         }
     }else if(recv_item->len == 0){
         res = hi->search(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
@@ -403,22 +407,26 @@ void read_cb(struct bufferevent * bev, void * arg){
             // printf("[SERVER] get KV item success\n");
             recv_item->len = VALUE_SIZE;
             bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
+        /*
             sprintf(buff, "[SERVER] GET success! key: %.*s\n", KEY_SIZE, recv_item->key);
 			fwrite(buff, strlen(buff), 1, fp);
 			fflush(fp);
+        */
         }else{
             //printf("[SERVER] get KV item failed\n");
             recv_item->len = -1;
             bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
+        /*
             sprintf(buff, "[SERVER] GET failed! key: %.*s\n", KEY_SIZE, recv_item->key);
 			fwrite(buff, strlen(buff), 1, fp);
 			fflush(fp);
+        */
         }
     }
 
     free(recv_item);
 
-	fclose(fp);
+	//fclose(fp);
 /*
     int res, ret;
     if(recv_item->len > 0){
