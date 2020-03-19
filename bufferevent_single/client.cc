@@ -82,7 +82,9 @@ void * send_request(void * arg){
 
     int fd = *(info->sockfd);
     struct hikv_arg * hikv_args = info->hikv_thread_arg;
-    int thread_id = *(info->thread_id);
+    int thread_id = info->thread_id;
+
+    printf(">> send_request thread id: %d\n", thread_id);
 
     size_t pm_size = hikv_args->pm_size;
     uint64_t num_server_thread = hikv_args->num_server_thread;
