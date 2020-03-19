@@ -1,7 +1,7 @@
 #include "client.h"
 
 // Generate keys and values for client number cn
-void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
+void gen_corpus(LL * key_corpus, uint8_t * value_corpus, int num_put){
 	int key_i;
 	LL temp;
     
@@ -10,7 +10,7 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus){
 
     srand(time1.tv_sec ^ time1.tv_usec);
 
-	for(key_i = 0; key_i < NUM_KEYS; key_i ++) {
+	for(key_i = 0; key_i < num_put; key_i ++) {
 		LL rand1 = (LL) rand();
 		LL rand2 = (LL) rand();
 		key_corpus[key_i] = (rand1 << 32) ^ rand2;
@@ -85,7 +85,7 @@ void * send_request(void * arg){
     uint64_t seed = hikv_args->seed;
 
     //initial Key
-    LL * key_corpus = (LL *)malloc(NUM_KEYS * sizeof(LL));
+    LL * key_corpus = (LL *)malloc(num_put_kv * sizeof(LL));
     uint8_t * value_corpus = (uint8_t *)malloc(VALUE_SIZE);
     
     gen_corpus(key_corpus, NULL);
