@@ -2,7 +2,6 @@
 
 // Generate keys and values for client number cn
 void gen_key_corpus(LL * key_corpus, int num_put, int thread_id){
-    printf(">> thread %d generate key corpus begin\n", thread_id);
 	int key_i;
 	LL temp;
     
@@ -19,18 +18,15 @@ void gen_key_corpus(LL * key_corpus, int num_put, int thread_id){
 			key_i --;
 		}
 	}
-    printf(">> thread %d generate key corpus end\n", thread_id);
 
     return;
 }
 
 void gen_value_corpus(uint8_t * value_corpus, int num_put){
-    printf(">> generate value corpus begin\n");
 
     FILE * fp = fopen("client-input.dat", "rb");
     fread(value_corpus, 1, num_put * VALUE_SIZE, fp);
     fclose(fp);
-    printf(">> generate value corpus success\n");
 
     return;
 }
