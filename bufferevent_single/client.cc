@@ -93,6 +93,7 @@ void * send_request(void * arg){
     LL * key_corpus = (LL *)malloc(num_put_kv * sizeof(LL));
     
     gen_key_corpus(key_corpus, num_put_kv);
+    printf("[CLIENT] generate key corpus success\n");
 
 #ifdef __TEST_FILE__
     char send_buf[buf_size];
@@ -654,6 +655,7 @@ int main(int argc, char * argv[]){
 
     value_corpus = (uint8_t *)malloc(hikv_thread_arg.num_put_kv * VALUE_SIZE);
     gen_value_corpus(value_corpus, hikv_thread_arg.num_put_kv);
+    printf("[CLIENT] generate value corpus success\n");
 
     for(i = 0;i < client_thread_num;i++){
         cl_thread_arg[i].ip_addr = server_ip;
