@@ -76,6 +76,8 @@ int connect_server(char * server_ip, int port){
 }
 
 void * send_request(void * arg){
+    printf(">> start sending request\n");
+    
     struct send_info * info = (struct send_info *)arg;
 
     int fd = *(info->sockfd);
