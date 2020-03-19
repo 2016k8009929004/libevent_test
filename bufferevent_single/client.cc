@@ -2,6 +2,7 @@
 
 // Generate keys and values for client number cn
 void gen_key_corpus(LL * key_corpus, int num_put){
+    printf(">> generate key corpus begin\n");
 	int key_i;
 	LL temp;
     
@@ -18,23 +19,18 @@ void gen_key_corpus(LL * key_corpus, int num_put){
 			key_i --;
 		}
 	}
+    printf(">> generate key corpus end\n");
 
     return;
 }
 
 void gen_value_corpus(uint8_t * value_corpus, int num_put){
-    int i;
-    FILE * fp = fopen("client-input.dat", "rb");
-    
-    for(i = 0;i < num_put;i++){
-        if(feof(fp)){
-            printf("[CLIENT] client-input.dat end, num_value: %d\n", i);
-            break;
-        }
-        fread(&value_corpus[i * VALUE_SIZE], 1, VALUE_SIZE, fp);
-    }
+    printf(">> generate value corpus begin\n");
 
+    FILE * fp = fopen("client-input.dat", "rb");
+    fread(value_corpus, 1, num_put * VALUE_SIZE, fp);
     fclose(fp);
+    printf(">> generate value corpus success\n");
 
     return;
 }
@@ -101,7 +97,6 @@ void * send_request(void * arg){
     LL * key_corpus = (LL *)malloc(num_put_kv * sizeof(LL));
     
     gen_key_corpus(key_corpus, num_put_kv);
-    printf("[CLIENT] generate key corpus success\n");
 
 #ifdef __TEST_FILE__
     char send_buf[buf_size];
@@ -357,9 +352,9 @@ void * send_request(void * arg){
             //printf("[CLIENT] put KV item %d\n", iter);
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 		    req_kv->len = VALUE_SIZE;
-            //printf("[CLIENT] PUT copy value\n");
+            printf("[CLIENT] PUT copy value\n");
     		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
-    		//printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
+    		printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
             //printf("[CLIENT] PUT key: %llu\n", key_corpus[key_i]);
 		    key_i = (key_i + 1) % num_put_kv;
 
@@ -663,7 +658,6 @@ int main(int argc, char * argv[]){
 
     value_corpus = (uint8_t *)malloc(hikv_thread_arg.num_put_kv * VALUE_SIZE);
     gen_value_corpus(value_corpus, hikv_thread_arg.num_put_kv);
-    printf("[CLIENT] generate value corpus success\n");
 
     for(i = 0;i < client_thread_num;i++){
         cl_thread_arg[i].ip_addr = server_ip;
