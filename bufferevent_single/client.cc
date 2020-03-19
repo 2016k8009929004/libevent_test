@@ -350,6 +350,7 @@ void * send_request(void * arg){
     for(iter = 0, key_i = 0, key_j = 0;iter < num_kv;iter++){
         if(iter < num_put_kv) {
         //PUT
+            printf(">> PUT request\n");
             struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
             //printf("[CLIENT] put KV item %d\n", iter);
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
