@@ -41,7 +41,7 @@ struct send_info {
 //    pthread_mutex_t * recv_lock;
     int * recv_byte;
     struct hikv_arg * hikv_thread_arg;
-    int * thread_id;
+    int thread_id;
 };
 
 #define SEND_INFO_SIZE sizeof(struct send_info)

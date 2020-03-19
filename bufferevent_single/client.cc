@@ -76,7 +76,7 @@ int connect_server(char * server_ip, int port){
 }
 
 void * send_request(void * arg){
-    printf(">> start sending request\n");
+//    printf(">> start sending request\n");
     
     struct send_info * info = (struct send_info *)arg;
 
@@ -593,7 +593,9 @@ void * client_thread(void * argv){
     info->send_byte = &send_byte;
     info->recv_byte = &recv_byte;
     info->hikv_thread_arg = &server->hikv_thread_arg;
-    info->thread_id = &server->thread_id;
+    info->thread_id = server->thread_id;
+
+    printf(">> info thread_id: %d\n", info->thread_id);
 
     send_request(info);
 
