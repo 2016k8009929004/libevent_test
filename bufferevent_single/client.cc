@@ -399,6 +399,7 @@ void * send_request(void * arg){
                 }
             }
             free(req_kv);
+            printf(">> PUT end\n");
 		} else {
 		//GET
             //printf("[CLIENT] get KV item\n");
