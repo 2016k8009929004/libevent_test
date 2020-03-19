@@ -361,6 +361,8 @@ void * send_request(void * arg){
 	        	exit(1);
         	}
 
+            printf("[CLIENT] send success\n");
+
             int recv_size, tot_recv;
 
 	        tot_recv = 0;
