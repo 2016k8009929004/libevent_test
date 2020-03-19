@@ -28,8 +28,7 @@ void gen_value_corpus(uint8_t * value_corpus, int num_put){
     printf(">> generate value corpus begin\n");
 
     FILE * fp = fopen("client-input.dat", "rb");
-    int len = fread(value_corpus, 1, num_put * VALUE_SIZE, fp);
-    printf(">> fread len: %d, total: %d\n", len, num_put * VALUE_SIZE);
+    fread(value_corpus, 1, num_put * VALUE_SIZE, fp);
     fclose(fp);
     printf(">> generate value corpus success\n");
 
