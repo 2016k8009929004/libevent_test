@@ -23,9 +23,17 @@ void gen_key_corpus(LL * key_corpus, int num_put){
 }
 
 void gen_value_corpus(uint8_t * value_corpus, int num_put){
-
+    int i;
     FILE * fp = fopen("client-input.dat", "rb");
-    fread(value_corpus, 1, num_put * VALUE_SIZE, fp);
+    
+    for(i = 0;i < num_put;i++){
+        if(feof(fp)){
+            printf("[CLIENT] client-input.dat end, num_value: %d\n", i);
+            break;
+        }
+        fread(&value_corpus[i * VALUE_SIZE], 1, VALUE_SIZE, fp);
+    }
+
     fclose(fp);
 
     return;
