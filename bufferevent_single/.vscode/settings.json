@@ -3,6 +3,25 @@
         "random": "cpp",
         "locale": "cpp",
         "type_traits": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "__bit_reference": "cpp",
+        "__functional_base": "cpp",
+        "__node_handle": "cpp",
+        "algorithm": "cpp",
+        "atomic": "cpp",
+        "bitset": "cpp",
+        "chrono": "cpp",
+        "deque": "cpp",
+        "__memory": "cpp",
+        "filesystem": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp",
+        "limits": "cpp",
+        "memory": "cpp",
+        "optional": "cpp",
+        "ratio": "cpp",
+        "system_error": "cpp",
+        "tuple": "cpp",
+        "vector": "cpp"
     }
 }
