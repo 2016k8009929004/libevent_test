@@ -1,7 +1,7 @@
 #include "client.h"
 
 // Generate keys and values for client number cn
-void gen_corpus(LL * key_corpus, uint8_t * value_corpus, int num_put){
+void gen_key_corpus(LL * key_corpus, int num_put){
 	int key_i;
 	LL temp;
     
@@ -18,6 +18,11 @@ void gen_corpus(LL * key_corpus, uint8_t * value_corpus, int num_put){
 			key_i --;
 		}
 	}
+
+    return;
+}
+
+void gen_value_corpus(uint8_t * value_corpus, int num_put){
 
     FILE * fp = fopen("client-input.dat", "rb");
     fread(value_corpus, 1, num_put * VALUE_SIZE, fp);
@@ -86,9 +91,8 @@ void * send_request(void * arg){
 
     //initial Key
     LL * key_corpus = (LL *)malloc(num_put_kv * sizeof(LL));
-    uint8_t * value_corpus = (uint8_t *)malloc(num_put_kv * VALUE_SIZE);
     
-    gen_corpus(key_corpus, value_corpus, num_put_kv);
+    gen_key_corpus(key_corpus, num_put_kv);
 
 #ifdef __TEST_FILE__
     char send_buf[buf_size];
@@ -645,6 +649,9 @@ int main(int argc, char * argv[]){
             printf("error (%s)!\n", argv[i]);
         }
     }
+
+    value_corpus = (uint8_t *)malloc(hikv_thread_arg.num_put_kv * VALUE_SIZE);
+    gen_value_corpus(value_corpus, hikv_thread_arg.num_put_kv);
 
     for(i = 0;i < client_thread_num;i++){
         cl_thread_arg[i].ip_addr = server_ip;

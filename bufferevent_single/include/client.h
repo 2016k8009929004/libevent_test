@@ -55,6 +55,9 @@ void receive_response_thread(struct send_info * info);
 
 void response_process(int sock, short event, void * arg);
 
-void gen_corpus(LL * key_corpus, uint8_t * value_corpus, int num_put);
+uint8_t * value_corpus;
+
+void gen_key_corpus(LL * key_corpus, int num_put);
+void gen_value_corpus(uint8_t * value_corpus, int num_put);
 
 int bufcmp(char * a, char * b, int buf_len);
