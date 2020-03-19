@@ -597,7 +597,7 @@ void * client_thread(void * argv){
     info->hikv_thread_arg = &server->hikv_thread_arg;
     info->thread_id = server->thread_id;
 
-    printf(">> info thread_id: %d\n", info->thread_id);
+    printf(">> server thread_id: %d, info thread_id: %d\n", server->thread_id, info->thread_id);
 
     send_request(info);
 
