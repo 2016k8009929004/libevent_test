@@ -351,16 +351,16 @@ void * send_request(void * arg){
     for(iter = 0, key_i = 0, key_j = 0;iter < num_kv;iter++){
         if(iter < num_put_kv) {
         //PUT
-            printf(">> PUT request\n");
+            //printf(">> PUT request\n");
             struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
             //printf("[CLIENT] put KV item %d\n", iter);
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
 		    req_kv->len = VALUE_SIZE;
-            printf("[CLIENT] PUT copy value\n");
-            printf(">> value_corpus: %p, value: %.*s\n", &value_corpus[key_i * VALUE_SIZE], VALUE_SIZE, &value_corpus[key_i * VALUE_SIZE]);
+            //printf("[CLIENT] PUT copy value\n");
+            //printf(">> value_corpus: %p, value: %.*s\n", &value_corpus[key_i * VALUE_SIZE], VALUE_SIZE, &value_corpus[key_i * VALUE_SIZE]);
     		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
-            printf(">> req_kv->value: %p, value: %.*s\n", req_kv->value, VALUE_SIZE, req_kv->value);
-    		printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
+            //printf(">> req_kv->value: %p, value: %.*s\n", req_kv->value, VALUE_SIZE, req_kv->value);
+    		//printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
             //printf("[CLIENT] PUT key: %llu\n", key_corpus[key_i]);
 		    key_i = (key_i + 1) % num_put_kv;
 
@@ -371,7 +371,7 @@ void * send_request(void * arg){
 	        	exit(1);
         	}
 
-            printf("[CLIENT] send success\n");
+            //printf("[CLIENT] send success\n");
 
             int recv_size, tot_recv;
 
@@ -400,7 +400,7 @@ void * send_request(void * arg){
                 }
             }
             free(req_kv);
-            printf(">> PUT end\n");
+            //printf(">> PUT end\n");
 		} else {
 		//GET
             //printf("[CLIENT] get KV item\n");
