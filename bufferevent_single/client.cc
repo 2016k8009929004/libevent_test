@@ -88,7 +88,7 @@ void * send_request(void * arg){
     LL * key_corpus = (LL *)malloc(num_put_kv * sizeof(LL));
     uint8_t * value_corpus = (uint8_t *)malloc(VALUE_SIZE);
     
-    gen_corpus(key_corpus, NULL);
+    gen_corpus(key_corpus, NULL, num_put_kv);
 
 #ifdef __TEST_FILE__
     char send_buf[buf_size];
