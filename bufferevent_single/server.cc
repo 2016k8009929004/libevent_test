@@ -226,6 +226,8 @@ void read_cb(struct bufferevent * bev, void * arg){
 
 	len = bufferevent_read(bev, (char *)recv_item, KV_ITEM_SIZE);
 
+    printf("[SERVER] recv len: %d\n", len);s
+
 /*
     while(1){
 		sprintf(buff, "[SERVER] to write len: %d, read: %d, write: %d\n", ring_buff_to_write(recv_buf), recv_buf->buf_read, recv_buf->buf_write);
@@ -404,7 +406,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         res = hi->search(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
         //printf("[SERVER] GET key: %.*s\n value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
         if(res == true){
-            // printf("[SERVER] get KV item success\n");
+            //printf("[SERVER] get KV item success\n");
             recv_item->len = VALUE_SIZE;
             bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
         /*
