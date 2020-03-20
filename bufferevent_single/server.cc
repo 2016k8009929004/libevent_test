@@ -226,7 +226,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 
 	len = bufferevent_read(bev, (char *)recv_item, KV_ITEM_SIZE);
 
-    printf("[SERVER] recv len: %d\n", len);
+    //printf("[SERVER] recv len: %d\n", len);
 
 /*
     while(1){
