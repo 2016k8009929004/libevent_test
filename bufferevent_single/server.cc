@@ -454,7 +454,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 #ifdef __REAL_TIME_STATS__
     pthread_mutex_lock(&record_lock);
     request_cnt++;
-    byte_sent += len;
+    byte_sent += KV_ITEM_SIZE;
     pthread_mutex_unlock(&record_lock);
 #endif
 
