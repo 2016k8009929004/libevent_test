@@ -182,9 +182,9 @@ void read_cb(struct bufferevent * bev, void * arg){
     uint64_t num_delete_kv = hikv_args->num_delete_kv;
     uint64_t num_scan_kv = hikv_args->num_scan_kv;
     uint64_t scan_range = hikv_args->scan_range;
+
 #ifdef __EVAL_READ__
-    struct timeval start;
-    gettimeofday(&start, NULL);
+    gettimeofday(&record_start[request_cnt], NULL);
 #endif
 
 #ifdef __REAL_TIME_STATS__
@@ -499,7 +499,7 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
     fseek(fp, 0, SEEK_END);
 
     int j;
-    for(j = 0;j <= request_cnt;j++){
+    for(j = 0;j < request_cnt;j++){
         long start_time = (long)record_start[j].tv_sec * 1000000 + (long)record_start[j].tv_usec;
         long end_time = (long)record_end[j].tv_sec * 1000000 + (long)record_end[j].tv_usec;
 
