@@ -6,10 +6,9 @@ with open("read_cb.txt", "r") as f:
     total = 0.0
     count = 0
     for line in f:
-        res = line.split()
-        if len(res) == 2:
-           total += float(res[1])
-           count += 1
+        res = line.strip()
+        total += float(res)
+        count += 1
     f.close()
     avg = round(total/float(count), 4)
 
