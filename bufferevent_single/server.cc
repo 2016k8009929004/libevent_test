@@ -505,7 +505,7 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 
         char buff[1024];
 
-        sprintf(buff, "callback %.4f\n", ((double)total_time)/request_cnt);
+        sprintf(buff, "%ld\n", end_time - start_time);
         
         pthread_mutex_lock(&read_cb_lock);
 
