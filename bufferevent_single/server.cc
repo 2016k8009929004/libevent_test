@@ -166,6 +166,11 @@ void read_cb(struct bufferevent * bev, void * arg){
 
 //    printf("[read cb] pid: %d, tid:%ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
+#ifdef __EVAL_READ__
+    struct timeval start;
+    gettimeofday(&start, NULL);
+#endif
+
     struct sock_ev_read * args = (struct sock_ev_read *)arg;
 
     int thread_id = args->thread_id;
@@ -182,10 +187,6 @@ void read_cb(struct bufferevent * bev, void * arg){
     uint64_t num_delete_kv = hikv_args->num_delete_kv;
     uint64_t num_scan_kv = hikv_args->num_scan_kv;
     uint64_t scan_range = hikv_args->scan_range;
-
-#ifdef __EVAL_READ__
-    gettimeofday(&record_start[request_cnt], NULL);
-#endif
 
 #ifdef __REAL_TIME_STATS__
     pthread_mutex_lock(&start_lock);
@@ -461,9 +462,15 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
 #ifdef __EVAL_READ__
-    gettimeofday(&record_end[request_cnt], NULL);
+    struct timeval end;
+    gettimeofday(&end, NULL);
+    
+    double start_time = (double)start.tv_sec * 1000000 + (double)start.tv_usec;
+    double end_time = (double)end.tv_sec * 1000000 + (double)end.tv_usec;
+
     pthread_mutex_lock(&read_cb_lock);
     request_cnt++;
+    total_time += (int)(end_time - start_time);
     pthread_mutex_unlock(&read_cb_lock);
 #endif
 }
@@ -498,22 +505,11 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
     FILE * fp = fopen("read_cb.txt", "a+");
     fseek(fp, 0, SEEK_END);
 
-    int j;
-    for(j = 0;j < request_cnt;j++){
-        long start_time = (long)record_start[j].tv_sec * 1000000 + (long)record_start[j].tv_usec;
-        long end_time = (long)record_end[j].tv_sec * 1000000 + (long)record_end[j].tv_usec;
+    char buff[1024];
 
-        char buff[1024];
-
-        sprintf(buff, "%ld\n", end_time - start_time);
-        
-        pthread_mutex_lock(&read_cb_lock);
-
-        fwrite(buff, strlen(buff), 1, fp);
-        fflush(fp);
-
-        pthread_mutex_unlock(&read_cb_lock);
-    }
+    sprintf(buff, "callback %.4f\n", ((double)total_time)/request_cnt);
+    
+    fwrite(buff, strlen(buff), 1, fp);
 
     fclose(fp);
 #endif
@@ -575,7 +571,6 @@ void * server_thread(void * arg){
 
 #ifdef __EVAL_READ__
     pthread_mutex_init(&read_cb_lock, NULL);
-    request_cnt = 0;
 #endif
 
 #ifdef __REAL_TIME_STATS__

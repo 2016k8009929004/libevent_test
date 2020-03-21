@@ -343,6 +343,16 @@ void * send_request(void * arg){
     }
 */
 
+#ifdef __EV_RTT__
+    struct timeval record_start[250000], record_end[250000];
+
+    int request_cnt;
+    request_cnt = 0;
+    
+    FILE * fp = fopen("rtt.txt", "a+");
+    fseek(fp, 0, SEEK_END);
+#endif
+
 //[Version 3.0 - mixed tests]
     for(iter = 0, key_i = 0, key_j = 0;iter < num_kv;iter++){
         if(iter < num_put_kv) {
@@ -362,6 +372,10 @@ void * send_request(void * arg){
 
             put_count++;
 
+#ifdef __EV_RTT__
+            gettimeofday(&record_start[request_cnt], NULL);
+#endif
+
             if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
 	    		perror("[CLIENT] send failed");
 	        	exit(1);
@@ -375,6 +389,11 @@ void * send_request(void * arg){
 
             while(1){
                 recv_size = read(fd, req_kv, KV_ITEM_SIZE);
+
+#ifdef __EV_RTT__
+                gettimeofday(&record_end[request_cnt], NULL);
+                request_cnt++;
+#endif
 
                 if(recv_size == 0){
                     printf("[CLIENT] close connection\n");
@@ -405,6 +424,10 @@ void * send_request(void * arg){
 	    	req_kv->len = 0;
 		    memset((char *)req_kv->value, 0, VALUE_SIZE);
 
+#ifdef __EV_RTT__
+            gettimeofday(&record_start[request_cnt], NULL);
+#endif
+
             if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
 	    		perror("[CLIENT] send failed");
 	        	exit(1);
@@ -418,6 +441,11 @@ void * send_request(void * arg){
 
             while(1){
                 recv_size = read(fd, req_kv, KV_ITEM_SIZE);
+
+#ifdef __EV_RTT__
+                gettimeofday(&record_end[request_cnt], NULL);
+                request_cnt++;
+#endif
 
                 if(recv_size == 0){
                     printf("[CLIENT] close connection\n");
@@ -443,24 +471,9 @@ void * send_request(void * arg){
 		}
     }
 
-    printf(">>[TEST] test end\n");
-    if (put_count > 0){
-        printf("  [Result]insert match:%llu/%llu(%.2f%%)\n", match_insert, put_count, 100.0 * match_insert / put_count);
-    }
-    if (get_count > 0){
-        printf("  [Result]search match:%llu/%llu(%.2f%%)\n", match_search, get_count, 100.0 * match_search / get_count);
-    }
-    if (delete_count > 0){
-        printf("  [Result]delete match:%llu/%llu(%.2f%%)\n", match_delete, delete_count, 100.0 * match_delete / delete_count);
-    }
-    if (scan_count > 0){
-        printf("  [Result]scan match:%llu/%llu/%llu\n", scan_kv_count, scan_count, scan_kv_count / scan_count);
-    }
-#endif
-
 #ifdef __EV_RTT__
     int j;
-    for(j = 0;j <= request_cnt;j++){
+    for(j = 0;j < request_cnt;j++){
         long start_time = (long)record_start[j].tv_sec * 1000000 + (long)record_start[j].tv_usec;
         long end_time = (long)record_end[j].tv_sec * 1000000 + (long)record_end[j].tv_usec;
 
@@ -478,6 +491,23 @@ void * send_request(void * arg){
 
     fclose(fp);
 
+#endif
+
+    close(fd);
+
+    printf(">>[TEST] test end\n");
+    if (put_count > 0){
+        printf("  [Result]insert match:%llu/%llu(%.2f%%)\n", match_insert, put_count, 100.0 * match_insert / put_count);
+    }
+    if (get_count > 0){
+        printf("  [Result]search match:%llu/%llu(%.2f%%)\n", match_search, get_count, 100.0 * match_search / get_count);
+    }
+    if (delete_count > 0){
+        printf("  [Result]delete match:%llu/%llu(%.2f%%)\n", match_delete, delete_count, 100.0 * match_delete / delete_count);
+    }
+    if (scan_count > 0){
+        printf("  [Result]scan match:%llu/%llu/%llu\n", scan_kv_count, scan_count, scan_kv_count / scan_count);
+    }
 #endif
 
     return NULL;
