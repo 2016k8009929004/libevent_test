@@ -36,7 +36,7 @@ pthread_mutex_t accept_cb_lock;
 #endif
 
 #ifdef __EVAL_READ__
-struct timeval record_start[250000], record_end[250000];
+struct timeval record_start[500000], record_end[500000];
 pthread_mutex_t read_cb_lock;
 int request_cnt;
 int total_time;
