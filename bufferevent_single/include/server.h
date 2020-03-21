@@ -12,9 +12,9 @@
 //#define __GET_CORE__
 
 //#define __EVAL_CB__
-//#define __EVAL_READ__
+#define __EVAL_READ__
 
-#define __REAL_TIME_STATS__
+//#define __REAL_TIME_STATS__
 
 #ifdef __REAL_TIME_STATS__
 pthread_mutex_t record_lock;
@@ -36,6 +36,7 @@ pthread_mutex_t accept_cb_lock;
 #endif
 
 #ifdef __EVAL_READ__
+struct timeval record_start[250000], record_end[250000];
 pthread_mutex_t read_cb_lock;
 int request_cnt;
 int total_time;
