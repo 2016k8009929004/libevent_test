@@ -33,7 +33,6 @@ struct timeval g_end;
 
 #ifdef __EVAL_KV__
 pthread_mutex_t record_lock;
-int request_cnt;
 int byte_sent;
 
 pthread_mutex_t start_lock;

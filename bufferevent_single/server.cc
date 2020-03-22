@@ -479,7 +479,6 @@ void read_cb(struct bufferevent * bev, void * arg){
 
 #ifdef __EVAL_KV__
     pthread_mutex_lock(&record_lock);
-    request_cnt++;
     byte_sent += (KEY_LENGTH + VALUE_LENGTH);
     pthread_mutex_unlock(&record_lock);
 #endif
@@ -626,7 +625,7 @@ void * server_thread(void * arg){
 
 #ifdef __EVAL_KV__
     pthread_mutex_init(&record_lock, NULL);
-    request_cnt = byte_sent = 0;
+    byte_sent = 0;
 
     pthread_mutex_init(&start_lock, NULL);
     start_flag = 0;
