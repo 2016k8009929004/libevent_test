@@ -29,6 +29,21 @@ pthread_mutex_t end_lock;
 struct timeval g_end;
 #endif
 
+#define __EVAL_KV__
+
+#ifdef __EVAL_KV__
+pthread_mutex_t record_lock;
+int request_cnt;
+int byte_sent;
+
+pthread_mutex_t start_lock;
+struct timeval g_start;
+int start_flag;
+
+pthread_mutex_t end_lock;
+struct timeval g_end;
+#endif
+
 #define BUF_SIZE 4096
 
 #ifdef __EVAL_CB__

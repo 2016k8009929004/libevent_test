@@ -155,6 +155,13 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
         gettimeofday(&g_end, NULL);
         pthread_mutex_unlock(&end_lock);
 #endif
+
+#ifdef __EVAL_KV__
+        pthread_mutex_lock(&end_lock);
+        gettimeofday(&g_end, NULL);
+        pthread_mutex_unlock(&end_lock);
+#endif
+
 //        printf("====== close connection ======\n");
         bufferevent_free(bev);
 
@@ -169,6 +176,24 @@ void read_cb(struct bufferevent * bev, void * arg){
 #ifdef __EVAL_READ__
     struct timeval start;
     gettimeofday(&start, NULL);
+#endif
+
+#ifdef __REAL_TIME_STATS__
+    pthread_mutex_lock(&start_lock);
+    if(!start_flag){
+        gettimeofday(&g_start, NULL);
+        start_flag = 1;
+    }
+    pthread_mutex_unlock(&start_lock);
+#endif
+
+#ifdef __EVAL_KV__
+    pthread_mutex_lock(&start_lock);
+    if(!start_flag){
+        gettimeofday(&g_start, NULL);
+        start_flag = 1;
+    }
+    pthread_mutex_unlock(&start_lock);
 #endif
 
     struct sock_ev_read * args = (struct sock_ev_read *)arg;
@@ -187,15 +212,6 @@ void read_cb(struct bufferevent * bev, void * arg){
     uint64_t num_delete_kv = hikv_args->num_delete_kv;
     uint64_t num_scan_kv = hikv_args->num_scan_kv;
     uint64_t scan_range = hikv_args->scan_range;
-
-#ifdef __REAL_TIME_STATS__
-    pthread_mutex_lock(&start_lock);
-    if(!start_flag){
-        gettimeofday(&g_start, NULL);
-        start_flag = 1;
-    }
-    pthread_mutex_unlock(&start_lock);
-#endif
 
 /*receive
     //struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
@@ -461,6 +477,13 @@ void read_cb(struct bufferevent * bev, void * arg){
     pthread_mutex_unlock(&record_lock);
 #endif
 
+#ifdef __EVAL_KV__
+    pthread_mutex_lock(&record_lock);
+    request_cnt++;
+    byte_sent += (KEY_LENGTH + VALUE_LENGTH);
+    pthread_mutex_unlock(&record_lock);
+#endif
+
 #ifdef __EVAL_READ__
     struct timeval end;
     gettimeofday(&end, NULL);
@@ -495,6 +518,24 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 
     sprintf(buff, "rps %.4f throughput %.4f\n", 
             ((double)request_cnt)/elapsed, ((double)byte_sent)/elapsed);
+    
+    fwrite(buff, strlen(buff), 1, fp);
+
+    fclose(fp);
+#endif
+
+#ifdef __EVAL_KV__
+    double start_time = (double)g_start.tv_sec + ((double)g_start.tv_usec/(double)1000000);
+    double end_time = (double)g_end.tv_sec + ((double)g_end.tv_usec/(double)1000000);
+
+	double elapsed = end_time - start_time;
+
+	FILE * fp = fopen("kv_throughput.txt", "a+");
+    fseek(fp, 0, SEEK_END);
+
+    char buff[1024];
+
+    sprintf(buff, "%.4f\n", ((double)byte_sent)/elapsed);
     
     fwrite(buff, strlen(buff), 1, fp);
 
@@ -574,6 +615,16 @@ void * server_thread(void * arg){
 #endif
 
 #ifdef __REAL_TIME_STATS__
+    pthread_mutex_init(&record_lock, NULL);
+    request_cnt = byte_sent = 0;
+
+    pthread_mutex_init(&start_lock, NULL);
+    start_flag = 0;
+
+    pthread_mutex_init(&end_lock, NULL);
+#endif
+
+#ifdef __EVAL_KV__
     pthread_mutex_init(&record_lock, NULL);
     request_cnt = byte_sent = 0;
 
