@@ -436,20 +436,21 @@ void read_cb(struct bufferevent * bev, void * arg){
         pthread_mutex_unlock(&record_lock);
     #endif
 
-#ifdef __EVAL_KV__
+    #ifdef __EVAL_KV__
         pthread_mutex_lock(&record_lock);
         put_cnt++;
         pthread_mutex_unlock(&record_lock);
-#endif
+    #endif
+    
     }else if(recv_item->len == 0){
-#ifdef __EVAL_KV__
+    #ifdef __EVAL_KV__
         pthread_mutex_lock(&put_end_lock);
         if(!put_end_flag){
             gettimeofday(&put_end, NULL);
             put_end_flag = 1;
         }
         pthread_mutex_unlock(&put_end_lock);
-#endif
+    #endif
         res = hi->search(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
         //printf("[SERVER] GET key: %.*s\n value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
         if(res == true){
@@ -477,11 +478,12 @@ void read_cb(struct bufferevent * bev, void * arg){
         byte_sent += KV_ITEM_SIZE;
         pthread_mutex_unlock(&record_lock);
     #endif
-#ifdef __EVAL_KV__
+
+    #ifdef __EVAL_KV__
         pthread_mutex_lock(&record_lock);
         get_cnt++;
         pthread_mutex_unlock(&record_lock);
-#endif
+    #endif
     }
 
     free(recv_item);
@@ -544,8 +546,8 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 
     char buff[1024];
 
-    sprintf(buff, "rps %.4f throughput %.4f\n", 
-            ((double)request_cnt)/elapsed, ((double)byte_sent)/elapsed);
+    sprintf(buff, "rps %.4f byte_sent: %d throughput %.4f\n", 
+            ((double)request_cnt)/elapsed, byte_sent, ((double)byte_sent)/elapsed);
     
     fwrite(buff, strlen(buff), 1, fp);
 
