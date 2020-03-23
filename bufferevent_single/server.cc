@@ -759,8 +759,6 @@ int main(int argc, char * argv[]){
     uint64_t num_scan_kv = hikv_thread_arg.num_scan_kv;
     uint64_t scan_range = hikv_thread_arg.scan_range;
 
-    printf("[SERVER] pm size: %d\n", pm_size);
-
     //Initialize Key-Value storage
     char pmem[128] = "/home/pmem0/pm";
     char pmem_meta[128] = "/home/pmem0/pmMETA";
