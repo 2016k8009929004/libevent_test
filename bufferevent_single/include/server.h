@@ -14,7 +14,7 @@
 //#define __EVAL_CB__
 //#define __EVAL_READ__
 
-#define __REAL_TIME_STATS__
+//#define __REAL_TIME_STATS__
 
 #ifdef __REAL_TIME_STATS__
 pthread_mutex_t record_lock;
@@ -29,15 +29,20 @@ pthread_mutex_t end_lock;
 struct timeval g_end;
 #endif
 
-//#define __EVAL_KV__
+#define __EVAL_KV__
 
 #ifdef __EVAL_KV__
 pthread_mutex_t record_lock;
-int byte_sent;
+int put_cnt;
+int get_cnt;
 
 pthread_mutex_t start_lock;
 struct timeval g_start;
 int start_flag;
+
+pthread_mutex_t put_end_lock;
+struct timeval put_end;
+int put_end_flag;
 
 pthread_mutex_t end_lock;
 struct timeval g_end;

@@ -429,7 +429,20 @@ void read_cb(struct bufferevent * bev, void * arg){
 			fflush(fp);
         */
         }
+#ifdef __EVAL_KV__
+        pthread_mutex_lock(&record_lock);
+        put_cnt++;
+        pthread_mutex_unlock(&record_lock);
+#endif
     }else if(recv_item->len == 0){
+#ifdef __EVAL_KV__
+        pthread_mutex_lock(&put_end_lock);
+        if(!put_end_flag){
+            gettimeofday(&put_end, NULL);
+            put_end_flag = 1;
+        }
+        pthread_mutex_unlock(&put_end_lock);
+#endif
         res = hi->search(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
         //printf("[SERVER] GET key: %.*s\n value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
         if(res == true){
@@ -451,6 +464,11 @@ void read_cb(struct bufferevent * bev, void * arg){
 			fflush(fp);
         */
         }
+#ifdef __EVAL_KV__
+        pthread_mutex_lock(&record_lock);
+        get_cnt++;
+        pthread_mutex_unlock(&record_lock);
+#endif
     }
 
     free(recv_item);
@@ -484,12 +502,6 @@ void read_cb(struct bufferevent * bev, void * arg){
     pthread_mutex_lock(&record_lock);
     request_cnt++;
     byte_sent += KV_ITEM_SIZE;
-    pthread_mutex_unlock(&record_lock);
-#endif
-
-#ifdef __EVAL_KV__
-    pthread_mutex_lock(&record_lock);
-    byte_sent += (KEY_LENGTH + VALUE_LENGTH);
     pthread_mutex_unlock(&record_lock);
 #endif
 
@@ -535,16 +547,19 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 
 #ifdef __EVAL_KV__
     double start_time = (double)g_start.tv_sec + ((double)g_start.tv_usec/(double)1000000);
+    double put_end_time = (double)put_end.tv_sec + ((double)put_end.tv_usec/(double)1000000);
     double end_time = (double)g_end.tv_sec + ((double)g_end.tv_usec/(double)1000000);
 
-	double elapsed = end_time - start_time;
+    double put_exe_time = put_end_time - start_time;
+	double get_exe_time = end_time - put_end_time;
 
 	FILE * fp = fopen("kv_throughput.txt", "a+");
     fseek(fp, 0, SEEK_END);
 
     char buff[1024];
 
-    sprintf(buff, "%.4f\n", ((double)byte_sent)/elapsed);
+    sprintf(buff, "put_iops %.4f get_iops %.4f\n", 
+                    ((double)put_cnt)/put_exe_time, ((double)get_cnt)/get_exe_time);
     
     fwrite(buff, strlen(buff), 1, fp);
 
@@ -635,10 +650,13 @@ void * server_thread(void * arg){
 
 #ifdef __EVAL_KV__
     pthread_mutex_init(&record_lock, NULL);
-    byte_sent = 0;
+    put_cnt = get_cnt = 0;
 
     pthread_mutex_init(&start_lock, NULL);
     start_flag = 0;
+
+    pthread_mutex_init(&put_end_lock, NULL);
+    put_end_flag = 0;
 
     pthread_mutex_init(&end_lock, NULL);
 #endif
