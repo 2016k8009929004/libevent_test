@@ -429,6 +429,13 @@ void read_cb(struct bufferevent * bev, void * arg){
 			fflush(fp);
         */
         }
+    #ifdef __REAL_TIME_STATS__
+        pthread_mutex_lock(&record_lock);
+        request_cnt++;
+        byte_sent += REPLY_SIZE;
+        pthread_mutex_unlock(&record_lock);
+    #endif
+
 #ifdef __EVAL_KV__
         pthread_mutex_lock(&record_lock);
         put_cnt++;
@@ -464,6 +471,12 @@ void read_cb(struct bufferevent * bev, void * arg){
 			fflush(fp);
         */
         }
+    #ifdef __REAL_TIME_STATS__
+        pthread_mutex_lock(&record_lock);
+        request_cnt++;
+        byte_sent += KV_ITEM_SIZE;
+        pthread_mutex_unlock(&record_lock);
+    #endif
 #ifdef __EVAL_KV__
         pthread_mutex_lock(&record_lock);
         get_cnt++;
@@ -498,12 +511,6 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     free(recv_item);
 */
-#ifdef __REAL_TIME_STATS__
-    pthread_mutex_lock(&record_lock);
-    request_cnt++;
-    byte_sent += KV_ITEM_SIZE;
-    pthread_mutex_unlock(&record_lock);
-#endif
 
 #ifdef __EVAL_READ__
     struct timeval end;
