@@ -19,7 +19,7 @@
 #ifdef __REAL_TIME_STATS__
 pthread_mutex_t record_lock;
 int request_cnt;
-int byte_sent;
+unsigned long long byte_sent;
 
 pthread_mutex_t start_lock;
 struct timeval g_start;
