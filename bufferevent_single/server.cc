@@ -762,7 +762,7 @@ int main(int argc, char * argv[]){
     //Initialize Key-Value storage
     char pmem[128] = "/home/pmem0/pm";
     char pmem_meta[128] = "/home/pmem0/pmMETA";
-    struct hikv * hi = new hikv(pm_size * 1024 * 1024 * 1024, num_server_thread, num_backend_thread, num_server_thread * (num_put_kv + num_warm_kv), pmem, pmem_meta);
+    struct hikv * hi = new hikv(client_num * pm_size * 1024 * 1024 * 1024, num_server_thread, num_backend_thread, num_server_thread * (num_put_kv + num_warm_kv), pmem, pmem_meta);
 
     for(i = 0;i < core_limit;i++){
 		cores[i] = i;
