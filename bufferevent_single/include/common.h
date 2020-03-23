@@ -31,6 +31,8 @@
 
 #define LL long long
 
+#define REPLY_SIZE 50
+
 #define NUM_ITER 1000000000
 
 #define PUT_PERCENT 50			// Percentage of PUT operations

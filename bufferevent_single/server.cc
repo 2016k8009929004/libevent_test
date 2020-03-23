@@ -402,8 +402,13 @@ void read_cb(struct bufferevent * bev, void * arg){
         //printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
         if (res == true){
             //printf("[SERVER] insert success\n");
-            recv_item->len = VALUE_SIZE;
-            bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
+            //recv_item->len = VALUE_SIZE;
+            //bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
+            char * reply = (char *)malloc(REPLY_SIZE);
+            memset(reply, 0, REPLY_SIZE);
+            char message[] = "put success";
+            memcpy(reply, message, strlen(message));
+            bufferevent_write(bev, reply, REPLY_SIZE);
         /*
             sprintf(buff, "[SERVER] PUT success! key: %.*s\n", KEY_SIZE, recv_item->key);
 			fwrite(buff, strlen(buff), 1, fp);
@@ -411,8 +416,13 @@ void read_cb(struct bufferevent * bev, void * arg){
         */
         }else{
             //printf("[SERVER] put KV item failed\n");
-            recv_item->len = -1;
-            bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
+            //recv_item->len = -1;
+            //bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
+            char * reply = (char *)malloc(REPLY_SIZE);
+            memset(reply, 0, REPLY_SIZE);
+            char message[] = "put failed";
+            memcpy(reply, message, strlen(message));
+            bufferevent_write(bev, reply, REPLY_SIZE);
         /*
             sprintf(buff, "[SERVER] PUT failed! key: %.*s\n", KEY_SIZE, recv_item->key);
 			fwrite(buff, strlen(buff), 1, fp);
@@ -663,7 +673,7 @@ int main(int argc, char * argv[]){
     int put_percent = PUT_PERCENT;
 
     struct hikv_arg hikv_thread_arg = {
-        2,                                      //pm_size
+        10,                                      //pm_size
         1,                                      //num_server_thread
         1,                                      //num_backend_thread
         0,                                      //num_warm_kv
