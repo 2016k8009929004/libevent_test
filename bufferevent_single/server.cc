@@ -645,6 +645,7 @@ void * server_thread(void * arg){
 
 #ifdef __EVAL_READ__
     pthread_mutex_init(&read_cb_lock, NULL);
+    request_cnt = total_time = 0;
 #endif
 
 #ifdef __REAL_TIME_STATS__
