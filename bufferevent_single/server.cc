@@ -173,11 +173,6 @@ void read_cb(struct bufferevent * bev, void * arg){
 
 //    printf("[read cb] pid: %d, tid:%ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
 
-#ifdef __EVAL_READ__
-    struct timeval start;
-    gettimeofday(&start, NULL);
-#endif
-
 #ifdef __REAL_TIME_STATS__
     pthread_mutex_lock(&start_lock);
     if(!start_flag){
@@ -241,7 +236,25 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
 
+#ifdef __EVAL_READ__
+    struct timeval read_start;
+    gettimeofday(&read_start, NULL);
+#endif
+
 	len = bufferevent_read(bev, (char *)recv_item, KV_ITEM_SIZE);
+
+#ifdef __EVAL_READ__
+    struct timeval read_end;
+    gettimeofday(&read_end, NULL);
+
+    int start_time = read_start.tv_sec * 1000000 + read_start.tv_usec;
+    int end_time = read_end.tv_sec * 1000000 + read_end.tv_usec;
+
+    pthread_mutex_lock(&read_cb_lock);
+    read_cnt++;
+    read_time += (end_time - start_time);
+    pthread_mutex_unlock(&read_cb_lock);
+#endif
 
     //printf("[SERVER] recv len: %d\n", len);
 
@@ -456,7 +469,6 @@ void read_cb(struct bufferevent * bev, void * arg){
         if(res == true){
             //printf("[SERVER] get KV item success\n");
             recv_item->len = VALUE_SIZE;
-            bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
         /*
             sprintf(buff, "[SERVER] GET success! key: %.*s\n", KEY_SIZE, recv_item->key);
 			fwrite(buff, strlen(buff), 1, fp);
@@ -465,13 +477,32 @@ void read_cb(struct bufferevent * bev, void * arg){
         }else{
             //printf("[SERVER] get KV item failed\n");
             recv_item->len = -1;
-            bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
         /*
             sprintf(buff, "[SERVER] GET failed! key: %.*s\n", KEY_SIZE, recv_item->key);
 			fwrite(buff, strlen(buff), 1, fp);
 			fflush(fp);
         */
         }
+    #ifdef __EVAL_READ__
+        struct timeval write_start;
+        gettimeofday(&write_start, NULL);
+    #endif
+
+        bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
+
+    #ifdef __EVAL_READ__
+        struct timeval write_end;
+        gettimeofday(&write_end, NULL);
+
+        int start_time = write_start.tv_sec * 1000000 + write_start.tv_usec;
+        int end_time = write_end.tv_sec * 1000000 + write_end.tv_usec;
+
+        pthread_mutex_lock(&read_cb_lock);
+        write_cnt++;
+        write_time += (end_time - start_time);
+        pthread_mutex_unlock(&read_cb_lock);
+    #endif
+    
     #ifdef __REAL_TIME_STATS__
         pthread_mutex_lock(&record_lock);
         request_cnt++;
@@ -513,7 +544,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     free(recv_item);
 */
-
+/*
 #ifdef __EVAL_READ__
     struct timeval end;
     gettimeofday(&end, NULL);
@@ -526,6 +557,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     total_time += (int)(end_time - start_time);
     pthread_mutex_unlock(&read_cb_lock);
 #endif
+*/
 }
 
 static void signal_cb(evutil_socket_t sig, short events, void * arg){
@@ -581,7 +613,8 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 
     char buff[1024];
 
-    sprintf(buff, "callback %.4f\n", ((double)total_time)/request_cnt);
+    sprintf(buff, "read %.4f write %.4f\n", 
+                ((double)read_time)/read_cnt, ((double)write_time)/write_cnt);
     
     fwrite(buff, strlen(buff), 1, fp);
 
@@ -645,7 +678,8 @@ void * server_thread(void * arg){
 
 #ifdef __EVAL_READ__
     pthread_mutex_init(&read_cb_lock, NULL);
-    request_cnt = total_time = 0;
+    read_cnt = read_time = 0;
+    write_cnt = write_time = 0;
 #endif
 
 #ifdef __REAL_TIME_STATS__

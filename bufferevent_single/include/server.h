@@ -57,14 +57,10 @@ pthread_mutex_t accept_cb_lock;
 
 #ifdef __EVAL_READ__
 pthread_mutex_t read_cb_lock;
-int request_cnt;
-int total_time;
-#endif
-
-#ifdef __EVAL_WRITE__
-pthread_mutex_t write_cb_lock;
-int request_cnt;
-int total_time;
+int read_cnt;
+int read_time;
+int write_cnt;
+int write_time;
 #endif
 
 //ring buffer
