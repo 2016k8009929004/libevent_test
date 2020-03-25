@@ -96,8 +96,8 @@ static int core_limit;
 static pthread_t sv_thread[MAX_CPUS];
 static struct server_arg sv_thread_arg[MAX_CPUS];
 
-static pthread_t cl_thread[110];
-static struct client_arg cl_thread_arg[110];
+static pthread_t cl_thread[200];
+static struct client_arg cl_thread_arg[200];
 
 static int done[MAX_CPUS];
 static int cores[MAX_CPUS];
