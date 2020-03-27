@@ -361,7 +361,6 @@ void * send_request(void * arg){
             struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
             //printf("[CLIENT] put KV item %d\n", iter);
             snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
-		    req_kv->len = VALUE_SIZE;
             //printf("[CLIENT] PUT copy value\n");
             //printf(">> value_corpus: %p, value: %.*s\n", &value_corpus[key_i * VALUE_SIZE], VALUE_SIZE, &value_corpus[key_i * VALUE_SIZE]);
     		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
@@ -455,7 +454,7 @@ void * send_request(void * arg){
                     match_search++;
                 }
             }
-            
+
             key_j = (key_j + 1) % num_put_kv;
             free(req_kv);
 		}
