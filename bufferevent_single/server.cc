@@ -468,6 +468,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     free(recv_item);
 #endif
 
+    int res;
     if(len == KV_ITEM_SIZE){
         printf("[SERVER] put KV item\n");
         struct kv_trans_item * request = (struct kv_trans_item *)recv_item;
