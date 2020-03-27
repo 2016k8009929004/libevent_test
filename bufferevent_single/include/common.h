@@ -33,7 +33,7 @@
 
 #define REPLY_SIZE 50
 
-#define NUM_ITAAaER 1000000000
+#define NUM_ITER 1000000000
 
 #define PUT_PERCENT 50			// Percentage of PUT operations
 
@@ -47,9 +47,9 @@
 
 // The key-value struct in network connection
 struct __attribute__((__packed__)) kv_trans_item {
-	uint16_t len;
+//	uint16_t len;
+    uint8_t key[KEY_SIZE];
 	uint8_t value[VALUE_SIZE];
-	uint8_t key[KEY_SIZE];
 };
 
 #define KV_ITEM_SIZE sizeof(struct kv_trans_item)

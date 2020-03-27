@@ -15,7 +15,7 @@
 
 //#define __EVAL_READ__
 
-#define __REAL_TIME_STATS__
+//#define __REAL_TIME_STATS__
 
 #ifdef __REAL_TIME_STATS__
 pthread_mutex_t record_lock;

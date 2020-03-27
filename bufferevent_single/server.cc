@@ -234,14 +234,14 @@ void read_cb(struct bufferevent * bev, void * arg){
     int len, recv_len;
     len = 0;
 
-    struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
+    char * recv_item = (char *)malloc(KV_ITEM_SIZE);
 
 #ifdef __EVAL_READ__
     struct timeval read_start;
     gettimeofday(&read_start, NULL);
 #endif
 
-	len = bufferevent_read(bev, (char *)recv_item, KV_ITEM_SIZE);
+	len = bufferevent_read(bev, recv_item, KV_ITEM_SIZE);
 
 #ifdef __EVAL_READ__
     struct timeval read_end;
@@ -279,59 +279,6 @@ void read_cb(struct bufferevent * bev, void * arg){
 	fwrite(buff, strlen(buff), 1, fp);
 	fflush(fp);
 */
-#if 0
-    int res, i;
-    
-    uint8_t key[KEY_LENGTH + 10];
-    uint8_t value[VALUE_LENGTH + 10];
-    
-    uint64_t put_sequence_id = 1;
-    uint64_t get_sequence_id = 1;
-    uint64_t get_count = 0;
-    uint64_t put_count = 0;
-    uint64_t match_insert = 0;
-    uint64_t match_search = 0;
-
-    while (true)
-    {
-        bool flag = false;
-        if (put_count < num_put_kv){
-            flag = true;
-            memset(key, 0, sizeof(key));
-            memset(value, 0, sizeof(value));
-            uint64_t seed = put_sequence_id;
-            snprintf((char *)key, sizeof(key), "%016llu", seed);
-            snprintf((char *)value, sizeof(value), "%llu", seed);
-            put_sequence_id++;
-            put_count++;
-            res = hi->insert(thread_id, key, value);
-            printf("[PUT] test %d\n", put_sequence_id);
-            if (res == true){
-                printf("[PUT] test %d success\n", put_sequence_id);
-                match_insert++;
-            }
-        }
-        else if (get_count < num_get_kv){
-            flag = true;
-            memset(key, 0, sizeof(key));
-            uint64_t seed = get_sequence_id;
-            snprintf((char *)key, sizeof(key), "%016llu", seed);
-            snprintf((char *)value, sizeof(value), "%llu", seed);
-            get_sequence_id++;
-            get_count++;
-            printf("[GET] test %d\n", put_sequence_id);
-            res = hi->search(thread_id, key, value);
-            if (res == true){
-                printf("[GET] test %d success\n", get_sequence_id);
-                match_search++;
-            }
-        }
-        if (!flag){
-            printf("match_insert: %llu, match_search: %llu\n", match_insert, match_search);
-            break;
-        }
-    }
-#endif
 
 #if 0
     char msg[BUF_SIZE + 1];
@@ -408,6 +355,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 	fflush(fp);
 */
 
+#if 0
     int res;
     if(recv_item->len > 0){
         //printf("[SERVER] put KV item\n");
@@ -502,6 +450,93 @@ void read_cb(struct bufferevent * bev, void * arg){
         write_time += (end_time - start_time);
         pthread_mutex_unlock(&read_cb_lock);
     #endif
+    
+    #ifdef __REAL_TIME_STATS__
+        pthread_mutex_lock(&record_lock);
+        request_cnt++;
+        byte_sent += KV_ITEM_SIZE;
+        pthread_mutex_unlock(&record_lock);
+    #endif
+
+    #ifdef __EVAL_KV__
+        pthread_mutex_lock(&record_lock);
+        get_cnt++;
+        pthread_mutex_unlock(&record_lock);
+    #endif
+    }
+
+    free(recv_item);
+#endif
+
+    if(len == KV_ITEM_SIZE){
+        printf("[SERVER] put KV item\n");
+        struct kv_trans_item * request = (struct kv_trans_item *)recv_item;
+        res = hi->insert(thread_id, (uint8_t *)request->key, (uint8_t *)request->value);
+        //printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
+        if (res == true){
+            //printf("[SERVER] insert success\n");
+            //recv_item->len = VALUE_SIZE;
+            //bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
+            char * reply = (char *)malloc(REPLY_SIZE);
+            memset(reply, 0, REPLY_SIZE);
+            char message[] = "put success";
+            memcpy(reply, message, strlen(message));
+            bufferevent_write(bev, reply, REPLY_SIZE);
+        /*
+            sprintf(buff, "[SERVER] PUT success! key: %.*s\n", KEY_SIZE, recv_item->key);
+			fwrite(buff, strlen(buff), 1, fp);
+			fflush(fp);
+        */
+        }else{
+            //printf("[SERVER] put KV item failed\n");
+            //recv_item->len = -1;
+            //bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
+            char * reply = (char *)malloc(REPLY_SIZE);
+            memset(reply, 0, REPLY_SIZE);
+            char message[] = "put failed";
+            memcpy(reply, message, strlen(message));
+            bufferevent_write(bev, reply, REPLY_SIZE);
+        /*
+            sprintf(buff, "[SERVER] PUT failed! key: %.*s\n", KEY_SIZE, recv_item->key);
+			fwrite(buff, strlen(buff), 1, fp);
+			fflush(fp);
+        */
+        }
+    #ifdef __REAL_TIME_STATS__
+        pthread_mutex_lock(&record_lock);
+        request_cnt++;
+        byte_sent += REPLY_SIZE;
+        pthread_mutex_unlock(&record_lock);
+    #endif
+
+    #ifdef __EVAL_KV__
+        pthread_mutex_lock(&record_lock);
+        put_cnt++;
+        pthread_mutex_unlock(&record_lock);
+    #endif
+    
+    }else if(len == KEY_SIZE){
+    #ifdef __EVAL_KV__
+        pthread_mutex_lock(&put_end_lock);
+        if(!put_end_flag){
+            gettimeofday(&put_end, NULL);
+            put_end_flag = 1;
+        }
+        pthread_mutex_unlock(&put_end_lock);
+    #endif
+        printf("[SERVER] get KV item\n");
+        char * value = (char *)malloc(VALUE_SIZE);
+        res = hi->search(thread_id, (uint8_t *)recv_item, (uint8_t *)value);
+        //printf("[SERVER] GET key: %.*s\n value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
+        if(res == true){
+            bufferevent_write(bev, value, VALUE_SIZE);
+        }else{
+            char * reply = (char *)malloc(REPLY_SIZE);
+            memset(reply, 0, REPLY_SIZE);
+            char message[] = "get success";
+            memcpy(reply, message, strlen(message));
+            bufferevent_write(bev, reply, REPLY_SIZE);
+        }
     
     #ifdef __REAL_TIME_STATS__
         pthread_mutex_lock(&record_lock);
