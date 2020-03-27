@@ -470,7 +470,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     int res;
     if(len == KV_ITEM_SIZE){
-        printf("[SERVER] put KV item\n");
+        //printf("[SERVER] put KV item\n");
         struct kv_trans_item * request = (struct kv_trans_item *)recv_item;
         res = hi->insert(thread_id, (uint8_t *)request->key, (uint8_t *)request->value);
         //printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
@@ -525,7 +525,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         }
         pthread_mutex_unlock(&put_end_lock);
     #endif
-        printf("[SERVER] get KV item\n");
+        //printf("[SERVER] get KV item\n");
         char * value = (char *)malloc(VALUE_SIZE);
         res = hi->search(thread_id, (uint8_t *)recv_item, (uint8_t *)value);
         //printf("[SERVER] GET key: %.*s\n value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
