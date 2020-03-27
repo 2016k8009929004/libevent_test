@@ -473,7 +473,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         //printf("[SERVER] put KV item\n");
         struct kv_trans_item * request = (struct kv_trans_item *)recv_item;
         res = hi->insert(thread_id, (uint8_t *)request->key, (uint8_t *)request->value);
-        //printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
+        printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item->key, VALUE_SIZE, recv_item->value);
         if (res == true){
             //printf("[SERVER] insert success\n");
             //recv_item->len = VALUE_SIZE;
@@ -534,7 +534,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         }else{
             char * reply = (char *)malloc(REPLY_SIZE);
             memset(reply, 0, REPLY_SIZE);
-            char message[] = "get success";
+            char message[] = "get failed";
             memcpy(reply, message, strlen(message));
             bufferevent_write(bev, reply, REPLY_SIZE);
         }
