@@ -498,10 +498,10 @@ void read_cb(struct bufferevent * bev, void * arg){
         }
         pthread_mutex_unlock(&put_end_lock);
     #endif
-        printf("[SERVER] get KV item\n");
+        //printf("[SERVER] get KV item\n");
         char * value = (char *)malloc(VALUE_SIZE + 10);
         res = hi->search(thread_id, (uint8_t *)recv_item, (uint8_t *)value);
-        printf(" >> GET key: %.*s\n value: %.*s\n", KEY_SIZE, recv_item, VALUE_SIZE, value);
+        //printf(" >> GET key: %.*s\n value: %.*s\n", KEY_SIZE, recv_item, VALUE_SIZE, value);
         if(res == true){
             bufferevent_write(bev, value, VALUE_SIZE);
         }else{
