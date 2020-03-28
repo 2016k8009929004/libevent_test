@@ -30,7 +30,7 @@ pthread_mutex_t end_lock;
 struct timeval g_end;
 #endif
 
-//#define __EVAL_KV__
+#define __EVAL_KV__
 
 #ifdef __EVAL_KV__
 pthread_mutex_t record_lock;
@@ -52,7 +52,9 @@ struct timeval g_end;
 #define BUF_SIZE 4096
 
 #ifdef __EVAL_CB__
-pthread_mutex_t accept_cb_lock;
+pthread_mutex_t read_lock;
+int get_cnt;
+int get_time;
 #endif
 
 #ifdef __EVAL_READ__

@@ -70,10 +70,6 @@ evutil_socket_t server_init(int port, int listen_num){
 }
 
 void accept_cb(int fd, short events, void * arg){
-#ifdef __EVAL_CB__
-    struct timeval start;
-    gettimeofday(&start, NULL);
-#endif
     struct sockaddr_in client;
     socklen_t len = sizeof(client);
 
@@ -121,31 +117,8 @@ void accept_cb(int fd, short events, void * arg){
     bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
 
-    bufferevent_setwatermark(bev, EV_READ, 0, BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE - KV_ITEM_SIZE);
+    //bufferevent_setwatermark(bev, EV_READ, 0, BUF_SIZE / KV_ITEM_SIZE * KV_ITEM_SIZE - KV_ITEM_SIZE);
 
-#ifdef __EVAL_CB__
-    struct timeval end;
-    gettimeofday(&end, NULL);
-
-    double start_time = (double)start.tv_sec * 1000000 + (double)start.tv_usec;
-    double pthread_start_time = (double)pthread_start.tv_sec * 1000000 + (double)pthread_start.tv_usec;
-    double pthread_end_time = (double)pthread_end.tv_sec * 1000000 + (double)pthread_end.tv_usec;
-    double end_time = (double)end.tv_sec * 1000000 + (double)end.tv_usec;
-
-    char buff[100];
-    
-    sprintf(buff, "total_time %d pthread_create_time %d\n", 
-        (int)(end_time - start_time), (int)(pthread_end_time - pthread_start_time));
-
-    pthread_mutex_lock(&accept_cb_lock);
-    FILE * fp = fopen("accept_cb.txt", "a+");
-    fseek(fp, 0, SEEK_END);
-    
-    fwrite(buff, strlen(buff), 1, fp);
-    fclose(fp);
-    pthread_mutex_unlock(&accept_cb_lock);
-    
-#endif
 }
 
 void event_cb(struct bufferevent * bev, short event, void * arg){
@@ -708,9 +681,6 @@ void * server_thread(void * arg){
         pthread_detach(tid[i]);
     }
 */
-#ifdef __EVAL_CB__
-    pthread_mutex_init(&accept_cb_lock, NULL);
-#endif
 
 #ifdef __EVAL_READ__
     pthread_mutex_init(&read_cb_lock, NULL);
