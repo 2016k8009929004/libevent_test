@@ -37,12 +37,12 @@
 
 #define PUT_PERCENT 50			// Percentage of PUT operations
 
-#define NUM_KEYS K_256
-#define NUM_KEYS_ K_256_
+#define NUM_KEYS K_512
+#define NUM_KEYS_ K_512_
 
 #define SWAP(a,b) do{a^=b;b^=a;a^=b;}while(0)
 
-#define VALUE_SIZE 256
+#define VALUE_SIZE 1024
 #define KEY_SIZE 64
 
 // The key-value struct in network connection
