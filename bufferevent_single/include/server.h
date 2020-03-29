@@ -11,7 +11,7 @@
 //#define __BIND_CORE__
 //#define __GET_CORE__
 
-//#define __EVAL_CB__
+#define __EVAL_CB__
 
 //#define __EVAL_READ__
 
@@ -30,7 +30,7 @@ pthread_mutex_t end_lock;
 struct timeval g_end;
 #endif
 
-#define __EVAL_KV__
+//#define __EVAL_KV__
 
 #ifdef __EVAL_KV__
 pthread_mutex_t record_lock;

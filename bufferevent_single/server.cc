@@ -164,6 +164,11 @@ void read_cb(struct bufferevent * bev, void * arg){
     pthread_mutex_unlock(&start_lock);
 #endif
 
+#ifdef __EVAL_CB__
+    struct timeval start;
+    gettimeofday(&start, NULL);
+#endif
+
     struct sock_ev_read * args = (struct sock_ev_read *)arg;
 
     int thread_id = args->thread_id;
@@ -526,6 +531,18 @@ void read_cb(struct bufferevent * bev, void * arg){
     #endif
     }
 
+    #ifdef __EVAL_CB__
+        struct timeval end;
+        gettimeofday(&end, NULL);
+        double start_time = (double)start.tv_sec * 1000000 + (double)start.tv_usec;
+        double end_time = (double)end.tv_sec * 1000000 + (double)end.tv_usec;
+
+        pthread_mutex_lock(&read_lock);
+        get_cnt++;
+        get_time += (int)(end_time - start_time);
+        pthread_mutex_unlock(&read_lock);
+    #endif
+
     free(recv_item);
 
 	//fclose(fp);
@@ -574,6 +591,19 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 
     int thread_id = args->thread_id;
     struct hikv * hi = args->hi;
+
+#ifdef __EVAL_CB__
+    FILE * fp = fopen("callback.txt", "a+");
+    fseek(fp, 0, SEEK_END);
+
+    char buff[1024];
+
+    sprintf(buff, "%.4f\n", ((double)get_time)/get_cnt);
+    
+    fwrite(buff, strlen(buff), 1, fp);
+
+    fclose(fp);
+#endif
 
 //    printf("----- signal callback -----\n");
 #ifdef __REAL_TIME_STATS__
@@ -681,6 +711,11 @@ void * server_thread(void * arg){
         pthread_detach(tid[i]);
     }
 */
+
+#ifdef __EVAL_CB__
+    pthread_mutex_init(&read_lock, NULL);
+    get_cnt = get_time = 0;
+#endif
 
 #ifdef __EVAL_READ__
     pthread_mutex_init(&read_cb_lock, NULL);
