@@ -11,10 +11,6 @@
 //#define __BIND_CORE__
 //#define __GET_CORE__
 
-#define __EVAL_CB__
-
-//#define __EVAL_READ__
-
 //#define __REAL_TIME_STATS__
 
 #ifdef __REAL_TIME_STATS__
@@ -51,11 +47,15 @@ struct timeval g_end;
 
 #define BUF_SIZE 1024
 
+//#define __EVAL_CB__
+
 #ifdef __EVAL_CB__
 pthread_mutex_t read_lock;
 int get_cnt;
 int get_time;
 #endif
+
+//#define __EVAL_READ__
 
 #ifdef __EVAL_READ__
 pthread_mutex_t read_cb_lock;
