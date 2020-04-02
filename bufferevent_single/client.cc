@@ -769,7 +769,7 @@ int main(int argc, char * argv[]){
     int put_percent = PUT_PERCENT;
 
     struct hikv_arg hikv_thread_arg = {
-        2,                                      //pm_size
+        20,                                      //pm_size
         1,                                      //num_server_thread
         1,                                      //num_backend_thread
         0,                                      //num_warm_kv
