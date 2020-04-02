@@ -451,7 +451,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         //printf("[SERVER] put KV item\n");
         struct kv_trans_item * request = (struct kv_trans_item *)recv_item;
         res = hi->insert(thread_id, (uint8_t *)request->key, (uint8_t *)request->value);
-        printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, request->key, VALUE_SIZE, request->value);
+        //printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, request->key, VALUE_SIZE, request->value);
         if (res == true){
             //printf("[SERVER] insert success\n");
             //recv_item->len = VALUE_SIZE;
@@ -527,7 +527,7 @@ void read_cb(struct bufferevent * bev, void * arg){
             printf(" >> GET key: %.*s\n", KEY_SIZE, recv_item + i * KEY_SIZE);
 			res = hi->search(thread_id, (uint8_t *)(recv_item + i * KEY_SIZE), (uint8_t *)(value + i * VALUE_SIZE));
 			if(res == false){
-                printf(" >> GET failed\n");
+                //printf(" >> GET failed\n");
 	            memset((uint8_t *)(value + i * VALUE_SIZE), 0, VALUE_SIZE);
     	        char message[] = "get failed";
         	    memcpy((uint8_t *)(value + i * VALUE_SIZE), message, strlen(message));
@@ -563,6 +563,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     #endif
 
     free(recv_item);
+    free(value);
 
 	//fclose(fp);
 /*
