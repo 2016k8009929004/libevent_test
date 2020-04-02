@@ -525,7 +525,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 		for(i = 0;i < key_num;i++){
             //printf(" >> GET key: %.*s\n", KEY_SIZE, recv_item + i * KEY_SIZE);
             char * buff = (char *)malloc(1024);
-			res = hi->search(thread_id, (uint8_t *)(recv_item + i * KEY_SIZE), buff);
+			res = hi->search(thread_id, (uint8_t *)(recv_item + i * KEY_SIZE), (uint8_t *)buff);
             if(res == true){
                 memcpy(value + i * VALUE_SIZE, buff, VALUE_SIZE);
             }else{
