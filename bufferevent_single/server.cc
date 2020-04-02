@@ -524,10 +524,10 @@ void read_cb(struct bufferevent * bev, void * arg){
         int i;
 		for(i = 0;i < key_num;i++){
             //printf(" >> GET key: %.*s\n", KEY_SIZE, recv_item + i * KEY_SIZE);
-            char * buff = (char *)malloc(1024);
-			res = hi->search(thread_id, (uint8_t *)(recv_item + i * KEY_SIZE), (uint8_t *)buff);
+            //char * buff = (char *)malloc(1024);
+			res = hi->search(thread_id, (uint8_t *)(recv_item + i * KEY_SIZE), (uint8_t *)(value + i * VALUE_LENGTH));
             if(res == true){
-                memcpy(value + i * VALUE_LENGTH, buff, VALUE_LENGTH);
+                //memcpy(value + i * VALUE_LENGTH, buff, VALUE_LENGTH);
             }else{
                 //printf(" >> GET failed\n");
 	            memset(value + i * VALUE_LENGTH, 0, VALUE_LENGTH);
