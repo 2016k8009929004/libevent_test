@@ -559,7 +559,7 @@ void * send_request(void * arg){
                 printf("[CLIENT] close connection\n");
                 close(fd);
             }
-/*
+
             int recv_num = recv_size / VALUE_SIZE;
 
             int i;
@@ -574,7 +574,7 @@ void * send_request(void * arg){
                     match_search++;
                 }
             }
-*/
+
             key_j = (key_j + send_num) % num_get_kv;
             iter += send_num;
 

@@ -525,12 +525,14 @@ void read_cb(struct bufferevent * bev, void * arg){
 		for(i = 0;i < key_num;i++){
             //printf(" >> GET key: %.*s\n", KEY_SIZE, recv_item + i * KEY_SIZE);
 			res = hi->search(thread_id, (uint8_t *)(recv_item + i * KEY_SIZE), (uint8_t *)(value + i * VALUE_SIZE));
-			if(res == false){
+		/*
+            if(res == false){
                 //printf(" >> GET failed\n");
 	            memset((uint8_t *)(value + i * VALUE_SIZE), 0, VALUE_SIZE);
     	        char message[] = "get failed";
         	    memcpy((uint8_t *)(value + i * VALUE_SIZE), message, strlen(message));
 			}
+        */
 		}
 
         bufferevent_write(bev, value, key_num * VALUE_SIZE);
