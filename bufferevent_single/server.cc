@@ -452,12 +452,12 @@ void read_cb(struct bufferevent * bev, void * arg){
         struct kv_trans_item * request = (struct kv_trans_item *)recv_item;
         res = hi->insert(thread_id, (uint8_t *)request->key, (uint8_t *)request->value);
         //printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, request->key, VALUE_SIZE, request->value);
+        char * reply = (char *)malloc(REPLY_SIZE);
+        memset(reply, 0, REPLY_SIZE);
         if (res == true){
             //printf("[SERVER] insert success\n");
             //recv_item->len = VALUE_SIZE;
             //bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
-            char * reply = (char *)malloc(REPLY_SIZE);
-            memset(reply, 0, REPLY_SIZE);
             char message[] = "put success";
             memcpy(reply, message, strlen(message));
             bufferevent_write(bev, reply, REPLY_SIZE);
@@ -470,8 +470,6 @@ void read_cb(struct bufferevent * bev, void * arg){
             //printf("[SERVER] put KV item failed\n");
             //recv_item->len = -1;
             //bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
-            char * reply = (char *)malloc(REPLY_SIZE);
-            memset(reply, 0, REPLY_SIZE);
             char message[] = "put failed";
             memcpy(reply, message, strlen(message));
             bufferevent_write(bev, reply, REPLY_SIZE);
