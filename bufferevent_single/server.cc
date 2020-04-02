@@ -481,6 +481,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 			fflush(fp);
         */
         }
+        free(reply);
     #ifdef __REAL_TIME_STATS__
         pthread_mutex_lock(&record_lock);
         request_cnt++;
@@ -535,6 +536,8 @@ void read_cb(struct bufferevent * bev, void * arg){
 		}
 
         bufferevent_write(bev, value, key_num * VALUE_SIZE);
+        
+        free(value);
     
     #ifdef __REAL_TIME_STATS__
         pthread_mutex_lock(&record_lock);
@@ -563,7 +566,6 @@ void read_cb(struct bufferevent * bev, void * arg){
     #endif
 
     free(recv_item);
-    free(value);
 
 	//fclose(fp);
 /*
