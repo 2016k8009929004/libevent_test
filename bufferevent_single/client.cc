@@ -567,7 +567,7 @@ void * send_request(void * arg){
                 printf("[CLIENT] value: %.*s\n", VALUE_SIZE, req_kv->value);
                 if(strcmp("get failed", value) == 0){
                     //printf("put failed\n");
-                }else if(bufcmp(value + i * VALUE_SIZE, value_corpus + (key_j + i) * VALUE_SIZE, VALUE_SIZE)){
+                }else if(bufcmp(value + i * VALUE_SIZE, (char *)value_corpus + (key_j + i) * VALUE_SIZE, VALUE_SIZE)){
                     //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
                     //printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
                     match_search++;
