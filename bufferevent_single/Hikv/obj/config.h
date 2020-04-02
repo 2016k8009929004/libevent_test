@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #define KEY_LENGTH (64)
-#define VALUE_LENGTH (1024)
+#define VALUE_LENGTH (256)
 
 #define HIKV_ASYNC
 

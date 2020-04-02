@@ -519,7 +519,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     */
 
         int key_num = len / KEY_SIZE;
-		char * value = (char *)malloc(key_num * VALUE_SIZE);
+		char * value = (char *)malloc(key_num * VALUE_LENGTH);
 
         int i;
 		for(i = 0;i < key_num;i++){
@@ -527,16 +527,16 @@ void read_cb(struct bufferevent * bev, void * arg){
             char * buff = (char *)malloc(1024);
 			res = hi->search(thread_id, (uint8_t *)(recv_item + i * KEY_SIZE), (uint8_t *)buff);
             if(res == true){
-                memcpy(value + i * VALUE_SIZE, buff, VALUE_SIZE);
+                memcpy(value + i * VALUE_LENGTH, buff, VALUE_LENGTH);
             }else{
                 //printf(" >> GET failed\n");
-	            memset(value + i * VALUE_SIZE, 0, VALUE_SIZE);
+	            memset(value + i * VALUE_LENGTH, 0, VALUE_LENGTH);
     	        char message[] = "get failed";
-        	    memcpy(value + i * VALUE_SIZE, message, strlen(message));
+        	    memcpy(value + i * VALUE_LENGTH, message, strlen(message));
 			}
 		}
 
-        bufferevent_write(bev, value, key_num * VALUE_SIZE);
+        bufferevent_write(bev, value, key_num * VALUE_LENGTH);
         
         free(value);
     
