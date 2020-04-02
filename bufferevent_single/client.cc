@@ -531,7 +531,7 @@ void * send_request(void * arg){
 
             int send_num;
             for(send_num = 0; (key_j + send_num) % num_get_kv < num_get_kv && send_num < 4;send_num++){
-                printf(" >> GET key: %llu\n", key_corpus[key_j + send_num]);
+                printf("key_j: %d, send num: %d\n", key_j, send_num);
                 snprintf(key + send_num * KEY_SIZE, KEY_SIZE + 1, "%0llu", key_corpus[key_j + send_num]);     //set Key
             }
 
@@ -566,12 +566,12 @@ void * send_request(void * arg){
 
             int i;
             for(i = 0;i < recv_num;i++){
-                if(bufcmp(value + i * VALUE_SIZE, (char *)&value_corpus[(key_j + i) * VALUE_SIZE], VALUE_SIZE)){
+                if(strcmp("get failed", value) == 0){
+                    //printf("put failed\n");
+                }else if(bufcmp(value + i * VALUE_SIZE, (char *)&value_corpus[(key_j + i) * VALUE_SIZE], VALUE_SIZE)){
                     //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
                     //printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
                     match_search++;
-                }else{
-                    printf("[CLIENT] GET failed!");
                 }
             }
 
