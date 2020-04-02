@@ -528,6 +528,7 @@ void * send_request(void * arg){
 		//GET
             printf("[CLIENT] get KV item\n");
             char * key = (char *)malloc(4 * KEY_SIZE);
+            printf(" >> buffer set\n");
 
             int send_num;
             for(send_num = 0;key_j + send_num < num_get_kv && send_num < 4; send_num++){
