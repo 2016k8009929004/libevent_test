@@ -554,7 +554,7 @@ void * send_request(void * arg){
                 gettimeofday(&record_end[request_cnt], NULL);
                 request_cnt++;
             #endif
-
+/*
             if(recv_size == 0){
                 printf("[CLIENT] close connection\n");
                 close(fd);
@@ -574,7 +574,7 @@ void * send_request(void * arg){
                     match_search++;
                 }
             }
-
+*/
             key_j = (key_j + send_num) % num_get_kv;
             iter += send_num;
 
