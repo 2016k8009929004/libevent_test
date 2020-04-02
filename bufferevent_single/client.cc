@@ -526,7 +526,7 @@ void * send_request(void * arg){
             iter++;
 		} else {
 		//GET
-            //printf("[CLIENT] get KV item\n");
+            printf("[CLIENT] get KV item\n");
             char * key = (char *)malloc(4 * KEY_SIZE);
 
             int send_num;
