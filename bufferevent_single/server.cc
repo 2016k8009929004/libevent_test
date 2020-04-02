@@ -494,7 +494,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         pthread_mutex_unlock(&record_lock);
     #endif
     
-    }else if(len == KEY_SIZE){
+    }else{
     #ifdef __EVAL_KV__
         pthread_mutex_lock(&put_end_lock);
         if(!put_end_flag){
@@ -507,6 +507,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         char * value = (char *)malloc(BUF_SIZE);
         res = hi->search(thread_id, (uint8_t *)recv_item, (uint8_t *)value);
         //printf(" >> GET key: %.*s\n value: %.*s\n", KEY_SIZE, recv_item, VALUE_SIZE, value);
+    /*
         if(res == true){
             bufferevent_write(bev, value, VALUE_SIZE);
         }else{
@@ -516,6 +517,22 @@ void read_cb(struct bufferevent * bev, void * arg){
             memcpy(reply, message, strlen(message));
             bufferevent_write(bev, reply, REPLY_SIZE);
         }
+    */
+
+        int key_num = len / KEY_SIZE;
+		char * value = (char *)malloc(key_num * VALUE_SIZE);
+
+		int i;
+		for(i = 0;i < key_num;i++){
+			res = hi->search(thread_id, (uint8_t *)recv_item, (uint8_t *)(value + i * VALUE_SIZE));
+			if(res == false){
+	            memset((uint8_t *)(value + i * VALUE_SIZE), 0, VALUE_SIZE);
+    	        char message[] = "get failed";
+        	    memcpy((uint8_t *)(value + i * VALUE_SIZE), message, strlen(message));
+			}
+		}
+
+        bufferevent_write(bev, value, key_num * VALUE_SIZE);
     
     #ifdef __REAL_TIME_STATS__
         pthread_mutex_lock(&record_lock);
