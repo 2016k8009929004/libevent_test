@@ -531,8 +531,7 @@ void * send_request(void * arg){
 
             int send_num;
             for(send_num = 0; (key_j + send_num) % num_get_kv < num_get_kv && send_num < 4;send_num++){
-                printf(" >> key_j: %d, send_num: %d\n", key_j, send_num);
-                printf(" >> GET key: %.*s\n", KEY_SIZE, key_corpus[key_j + send_num]);
+                printf(" >> GET key: %.*s\n", KEY_SIZE, key_corpus[key_j]);
                 snprintf(key + send_num * KEY_SIZE, KEY_SIZE + 1, "%0llu", key_corpus[key_j + send_num]);     //set Key
             }
 
