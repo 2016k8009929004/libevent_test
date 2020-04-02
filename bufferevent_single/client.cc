@@ -353,7 +353,7 @@ void * send_request(void * arg){
     fseek(fp, 0, SEEK_END);
 #endif
 
-//[Version 3.0 - mixed tests]
+/*//[Version 3.0 - mixed tests]
     for(iter = 0, key_i = 0, key_j = 0;iter < num_kv;iter++){
         if(iter < num_put_kv) {
         //PUT
@@ -462,6 +462,7 @@ void * send_request(void * arg){
             free(value);
 		}
     }
+*/
 
 //[Version 4.0 - 256B batched key] 
     for(iter = 0, key_i = 0, key_j = 0;iter < num_kv;){
@@ -568,6 +569,8 @@ void * send_request(void * arg){
                     //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
                     //printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
                     match_search++;
+                }else{
+                    printf("[CLIENT] GET failed!");
                 }
             }
 
