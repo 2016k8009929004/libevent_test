@@ -528,12 +528,11 @@ void * send_request(void * arg){
 		//GET
             printf("[CLIENT] get KV item\n");
             char * key = (char *)malloc(4 * KEY_SIZE);
-            printf(" >> buffer set\n");
 
             int send_num;
-            for(send_num = 0;key_j + send_num < num_get_kv && send_num < 4; send_num++){
-                printf(" >> GET key: %.*s\n", KEY_SIZE, key_corpus[(key_j + send_num) % num_get_kv]);
-                snprintf(key + send_num * KEY_SIZE, KEY_SIZE + 1, "%0llu", key_corpus[(key_j + send_num) % num_get_kv]);     //set Key
+            for(send_num = 0; key_j + send_num < num_get_kv && send_num < 4; send_num++){
+                printf(" >> GET key: %.*s\n", KEY_SIZE, key_corpus[key_j + send_num]);
+                snprintf(key + send_num * KEY_SIZE, KEY_SIZE + 1, "%0llu", key_corpus[key_j + send_num]);     //set Key
             }
 
         #ifdef __EV_RTT__
@@ -567,7 +566,7 @@ void * send_request(void * arg){
 
             int i;
             for(i = 0;i < recv_num;i++){
-                if(bufcmp(value + i * VALUE_SIZE, (char *)&value_corpus[((key_j + i) % num_get_kv) * VALUE_SIZE], VALUE_SIZE)){
+                if(bufcmp(value + i * VALUE_SIZE, (char *)&value_corpus[(key_j + i) * VALUE_SIZE], VALUE_SIZE)){
                     //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
                     //printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
                     match_search++;
@@ -577,6 +576,7 @@ void * send_request(void * arg){
             }
 
             key_j = (key_j + send_num) % num_get_kv;
+            iter += send_num;
 
             free(key);
             free(value);
