@@ -503,7 +503,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         }
         pthread_mutex_unlock(&put_end_lock);
     #endif
-        printf("[SERVER] get KV item\n");
+        //printf("[SERVER] get KV item\n");
     /*
         char * value = (char *)malloc(BUF_SIZE);
         res = hi->search(thread_id, (uint8_t *)recv_item, (uint8_t *)value);
@@ -524,7 +524,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 
 		int i;
 		for(i = 0;i < key_num;i++){
-            printf(" >> GET key: %.*s\n", KEY_SIZE, recv_item + i * KEY_SIZE);
+            //printf(" >> GET key: %.*s\n", KEY_SIZE, recv_item + i * KEY_SIZE);
 			res = hi->search(thread_id, (uint8_t *)(recv_item + i * KEY_SIZE), (uint8_t *)(value + i * VALUE_SIZE));
 			if(res == false){
 	            memset((uint8_t *)(value + i * VALUE_SIZE), 0, VALUE_SIZE);
