@@ -520,8 +520,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 
         int key_num = len / KEY_SIZE;
 		char * value = (char *)malloc(key_num * VALUE_SIZE);
-        memset(value, 0, key_num * VALUE_SIZE);
-/*
+
         int i;
 		for(i = 0;i < key_num;i++){
             //printf(" >> GET key: %.*s\n", KEY_SIZE, recv_item + i * KEY_SIZE);
@@ -533,7 +532,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         	    memcpy((uint8_t *)(value + i * VALUE_SIZE), message, strlen(message));
 			}
 		}
-*/
+
         bufferevent_write(bev, value, key_num * VALUE_SIZE);
         
         free(value);
