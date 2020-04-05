@@ -1,0 +1,5 @@
+put_iops 171136.5568 get_iops 438307.2842
+put_iops 172113.9082 get_iops 436829.8738
+put_iops 177129.6453 get_iops 434257.8488
+put_iops 170463.5255 get_iops 436745.8941
+put_iops 171920.8868 get_iops 436556.0731
