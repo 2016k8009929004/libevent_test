@@ -550,7 +550,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     #ifdef __EVAL_KV__
         pthread_mutex_lock(&record_lock);
-        get_cnt += key_num;
+        get_cnt += 1;
         pthread_mutex_unlock(&record_lock);
     #endif
     }
