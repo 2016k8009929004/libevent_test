@@ -654,7 +654,7 @@ void * send_request(void * arg){
                 if(recv_size == 0){
                     printf("[CLIENT] close connection\n");
                     close(fd);
-                    return;
+                    return NULL;
                 }
             }
 	        
