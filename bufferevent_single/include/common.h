@@ -45,6 +45,8 @@
 #define VALUE_SIZE 256
 #define KEY_SIZE 64
 
+#define BATCHED_KEY
+
 // The key-value struct in network connection
 struct __attribute__((__packed__)) kv_trans_item {
 //	uint16_t len;

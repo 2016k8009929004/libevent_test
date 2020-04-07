@@ -352,7 +352,7 @@ void * send_request(void * arg){
     FILE * fp = fopen("rtt.txt", "a+");
     fseek(fp, 0, SEEK_END);
 #endif
-/*
+#ifndef BATCHED_KEY
 //[Version 3.0 - mixed tests]
     for(iter = 0, key_i = 0, key_j = 0;iter < num_kv;iter++){
         if(iter < num_put_kv) {
@@ -463,9 +463,7 @@ void * send_request(void * arg){
 		}
     }
 
-
-*/
-
+#else
 //[Version 4.0 - 256B batched key] 
     for(iter = 0, key_i = 0, key_j = 0;iter < num_kv;){
         if(iter < num_put_kv) {
@@ -584,6 +582,8 @@ void * send_request(void * arg){
             free(value);
 		}
     }
+
+#endif
 
 #ifdef __EV_RTT__
     int j;
