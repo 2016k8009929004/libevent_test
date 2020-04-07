@@ -344,7 +344,8 @@ void * send_request(void * arg){
 */
 
 #ifdef __EV_RTT__
-    struct timeval get_start[NUM_KEYS / 4], get_end[NUM_KEYS / 4];
+    long rtt_time[NUM_KEYS / 4];
+    struct timeval get_start, get_end;
 
     int request_cnt;
     request_cnt = 0;
@@ -516,7 +517,7 @@ void * send_request(void * arg){
             }
 
         #ifdef __EV_RTT__
-            gettimeofday(&get_start[request_cnt], NULL);
+            gettimeofday(&get_start, NULL);
         #endif
 
             if(write(fd, key, send_num * KEY_SIZE) < 0){
@@ -533,7 +534,10 @@ void * send_request(void * arg){
 	        recv_size = read(fd, value, send_num * VALUE_SIZE);
 
             #ifdef __EV_RTT__
-                gettimeofday(&get_end[request_cnt], NULL);
+                gettimeofday(&get_end, NULL);
+                long start_time = (long)get_start.tv_sec * 1000000 + (long)get_start.tv_usec;
+                long end_time = (long)get_end.tv_sec * 1000000 + (long)get_end.tv_usec;
+                rtt_time[request_cnt] = end_time - start_time;
                 request_cnt++;
             #endif
 
@@ -570,12 +574,9 @@ void * send_request(void * arg){
 #ifdef __EV_RTT__
     int j;
     for(j = 0;j < request_cnt;j++){
-        long start_time = (long)get_start[j].tv_sec * 1000000 + (long)get_start[j].tv_usec;
-        long end_time = (long)get_end[j].tv_sec * 1000000 + (long)get_end[j].tv_usec;
-
         char buff[1024];
 
-        sprintf(buff, "%ld\n", end_time - start_time);
+        sprintf(buff, "%ld\n", rtt_time[j]);
         
         pthread_mutex_lock(&rtt_lock);
 
