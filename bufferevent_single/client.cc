@@ -344,7 +344,7 @@ void * send_request(void * arg){
 */
 
 #ifdef __EV_RTT__
-    long rtt_time[NUM_KEYS / 4];
+    long * rtt_time = (long *)malloc(sizeof(long) * NUM_KEYS / 4);
     struct timeval get_start, get_end;
 
     int request_cnt;
