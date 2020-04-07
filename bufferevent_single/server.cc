@@ -504,6 +504,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     #endif
         //printf("[SERVER] get KV item\n");
     
+    /*
         char * value = (char *)malloc(BUF_SIZE);
         res = hi->search(thread_id, (uint8_t *)recv_item, (uint8_t *)value);
         //printf(" >> GET key: %.*s\n value: %.*s\n", KEY_SIZE, recv_item, VALUE_SIZE, value);
@@ -516,8 +517,8 @@ void read_cb(struct bufferevent * bev, void * arg){
             memcpy(reply, message, strlen(message));
             bufferevent_write(bev, reply, REPLY_SIZE);
         }
+    */
     
-    /*
         int key_num = len / KEY_SIZE;
 		char * value = (char *)malloc(key_num * VALUE_LENGTH);
 
@@ -537,7 +538,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 		}
 
         bufferevent_write(bev, value, key_num * VALUE_LENGTH);
-    */
+    
         
         free(value);
     
