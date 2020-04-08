@@ -46,8 +46,8 @@
 #define KEY_SIZE 64
 
 //#define INDEPENDENT_KEY
-//#define BATCHED_KEY_256B
-#define BATCHED_KEY_1KB
+#define BATCHED_KEY_256B
+//#define BATCHED_KEY_1KB
 
 // The key-value struct in network connection
 struct __attribute__((__packed__)) kv_trans_item {
