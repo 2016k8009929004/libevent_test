@@ -569,8 +569,7 @@ void * send_request(void * arg){
 		}
     }
 
-#elif defined(BATCHED_KEY_1KB)
-//[Version 5.0 - 1KB batched key] 
+
     for(iter = 0, key_i = 0, key_j = 0;iter < num_kv;){
         if(iter < num_put_kv) {
         //PUT
