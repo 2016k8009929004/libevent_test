@@ -6,7 +6,7 @@ LD = g++
 
 SERVER_CFLAGS = -Iinclude -I./Hikv/ntstore -I./Hikv/mem -I./Hikv/lib -I./Hikv/obj -I./Hikv/tbb -I./Hikv/pmdk/include 
 CLIENT_CFLAGS = -Iinclude 
-SERVER_LDFLAGS = -L/usr/local/lib/ -L/usr/bin/ -L ./third-party/jemalloc-4.2.1/lib -L ./third-party/tbb 
+SERVER_LDFLAGS = -L/usr/local/lib/ -L ./third-party/jemalloc-4.2.1/lib -L ./third-party/tbb 
 CLIENT_LDFLAGS = -L/usr/local/lib/
 
 SERVER_LIBS = -lpthread -levent -ljemalloc -ltbb -lpmem
