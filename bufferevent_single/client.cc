@@ -622,7 +622,7 @@ void * send_request(void * arg){
             iter++;
 		} else {
 		//GET
-            int batch_num = 16;
+            int batch_num = 4;
             char * key = (char *)malloc(batch_num * KEY_SIZE);
 
             int send_num;
