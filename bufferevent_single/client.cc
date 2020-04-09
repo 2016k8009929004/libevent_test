@@ -830,6 +830,7 @@ int main(int argc, char * argv[]){
         arg.sequence = i;
 #endif
         memcpy(&cl_thread_arg[i].hikv_thread_arg, &hikv_thread_arg, HIKV_ARG_SIZE);
+        printf(" >> start client thread %d\n", i);
         pthread_create(&cl_thread[i], NULL, client_thread, (void *)&cl_thread_arg[i]);
     }
 
