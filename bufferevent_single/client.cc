@@ -818,8 +818,10 @@ int main(int argc, char * argv[]){
         }
     }
 
+    printf(" >> generate value corpus\n");
     value_corpus = (uint8_t *)malloc(hikv_thread_arg.num_put_kv * VALUE_SIZE);
     gen_value_corpus(value_corpus, hikv_thread_arg.num_put_kv);
+    printf(" >> generate completed\n");
 
     for(i = 0;i < client_thread_num;i++){
         cl_thread_arg[i].thread_id = i;
