@@ -455,7 +455,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         char * reply = (char *)malloc(REPLY_SIZE);
         memset(reply, 0, REPLY_SIZE);
         if (res == true){
-            printf("[SERVER] PUT success! key: %.*s\n", KEY_SIZE, request->key);
+            //printf("[SERVER] PUT success! key: %.*s\n", KEY_SIZE, request->key);
             //recv_item->len = VALUE_SIZE;
             //bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
             char message[] = "put success";
@@ -523,11 +523,11 @@ void read_cb(struct bufferevent * bev, void * arg){
 
         int i;
 		for(i = 0;i < key_num;i++){
-            printf(" >> GET key: %.*s\n", KEY_SIZE, recv_item + i * KEY_SIZE);
+            //printf(" >> GET key: %.*s\n", KEY_SIZE, recv_item + i * KEY_SIZE);
 			res = hi->search(thread_id, (uint8_t *)(recv_item + i * KEY_SIZE), (uint8_t *)(value + i * VALUE_LENGTH));
             if(res == true){
                 //memcpy(value + i * VALUE_LENGTH, buff, VALUE_LENGTH);
-                printf(" >> GET success! value: %.*s\n", VALUE_LENGTH, value + i * VALUE_LENGTH);
+                //printf(" >> GET success! value: %.*s\n", VALUE_LENGTH, value + i * VALUE_LENGTH);
             }else{
                 printf(" >> GET failed\n");
 	            memset(value + i * VALUE_LENGTH, 0, VALUE_LENGTH);
