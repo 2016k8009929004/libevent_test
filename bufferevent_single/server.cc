@@ -520,6 +520,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     #else
         int key_num = len / KEY_SIZE;
 		char * value = (char *)malloc(key_num * VALUE_LENGTH);
+        memset(value, 0, key_num * VALUE_LENGTH);
 
         printf(" >> recv num: %d\n", key_num);
 
