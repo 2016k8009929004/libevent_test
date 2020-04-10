@@ -534,7 +534,6 @@ void read_cb(struct bufferevent * bev, void * arg){
     	        char message[] = "get failed";
         	    memcpy(value + i * VALUE_LENGTH, message, strlen(message));
 			}
-            usleep(10);
 		}
 
         bufferevent_write(bev, value, key_num * VALUE_LENGTH);
