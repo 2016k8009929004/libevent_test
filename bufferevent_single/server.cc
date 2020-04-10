@@ -212,14 +212,14 @@ void read_cb(struct bufferevent * bev, void * arg){
     int len, recv_len;
     len = 0;
 
-    char * recv_item = (char *)malloc(KV_ITEM_SIZE);
+    char * recv_item = (char *)malloc(BUF_SIZE);
 
 #ifdef __EVAL_READ__
     struct timeval read_start;
     gettimeofday(&read_start, NULL);
 #endif
 
-	len = bufferevent_read(bev, recv_item, KV_ITEM_SIZE);
+	len = bufferevent_read(bev, recv_item, BUF_SIZE);
 
 #ifdef __EVAL_READ__
     struct timeval read_end;
@@ -527,7 +527,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 			res = hi->search(thread_id, (uint8_t *)(recv_item + i * KEY_SIZE), (uint8_t *)(value + i * VALUE_LENGTH));
             if(res == true){
                 //memcpy(value + i * VALUE_LENGTH, buff, VALUE_LENGTH);
-                //printf(" >> GET success! value: %.*s\n", VALUE_LENGTH, value + i * VALUE_LENGTH);
+                printf(" >> GET success! value: %.*s\n", VALUE_LENGTH, value + i * VALUE_LENGTH);
             }else{
                 printf(" >> GET failed\n");
 	            memset(value + i * VALUE_LENGTH, 0, VALUE_LENGTH);
