@@ -24,7 +24,7 @@ server:
 		$(CC) -std=c++11 $(KV_SRCS) server.cc $(SERVER_CFLAGS) -o $@ $(SERVER_LDFLAGS) $(SERVER_LIBS)
 
 client:
-		$(CC) -std=c++11 client.cc $(SERVER_CFLAGS) -o $@ $(SERVER_LDFLAGS) $(SERVER_LIBS)
+		$(CC) -std=c++11 client.cc $(CLIENT_CFLAGS) -o $@ $(SERVER_LDFLAGS) $(SERVER_LIBS)
 
 clean:
 		rm -f *.o $(TARGET)
