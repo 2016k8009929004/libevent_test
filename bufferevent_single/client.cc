@@ -538,10 +538,19 @@ void * send_request(void * arg){
             get_count += send_num;
 
             int recv_size;
+            int recv_num = 0;
 
             char * value = (char *)malloc(send_num * VALUE_SIZE);
 
-	        recv_size = read(fd, value, send_num * VALUE_SIZE);
+            while(recv_num < send_num){
+                recv_size = read(fd, value + recv_num * VALUE_SIZE, (send_num - recv_num) * VALUE_SIZE);
+                if(recv_size == 0){
+                    printf("[CLIENT] close connection\n");
+                    close(fd);
+                }else{
+                    recv_num += recv_size / VALUE_SIZE;
+                }
+            }
 
             #ifdef __EV_RTT__
                 gettimeofday(&get_end, NULL);
@@ -550,13 +559,6 @@ void * send_request(void * arg){
                 rtt_time[request_cnt] = end_time - start_time;
                 request_cnt++;
             #endif
-
-            if(recv_size == 0){
-                printf("[CLIENT] close connection\n");
-                close(fd);
-            }
-
-            int recv_num = recv_size / VALUE_SIZE;
 
             printf("==========\n >> recv num: %d\n", recv_num);
 
