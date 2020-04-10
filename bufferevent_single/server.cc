@@ -535,7 +535,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 
         bufferevent_write(bev, value, key_num * VALUE_LENGTH);
     
-        free(value);
+        //free(value);
     
     #ifdef __REAL_TIME_STATS__
         pthread_mutex_lock(&record_lock);
