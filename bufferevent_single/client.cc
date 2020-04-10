@@ -561,7 +561,9 @@ void * send_request(void * arg){
                 request_cnt++;
             #endif
 
-            printf("==========\n >> recv num: %d\n", tot_recv / VALUE_SIZE);
+            int recv_num = tot_recv / VALUE_SIZE;
+
+            printf("==========\n >> recv num: %d\n", recv_num);
 
             int i;
             for(i = 0;i < recv_num;i++){
