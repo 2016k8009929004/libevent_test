@@ -48,6 +48,10 @@
 //#define INDEPENDENT_KEY
 #define BATCHED_KEY
 
+#ifdef BATCHED_KEY
+#define NUM_BATCH 4
+#endif
+
 // The key-value struct in network connection
 struct __attribute__((__packed__)) kv_trans_item {
 //	uint16_t len;
