@@ -523,8 +523,10 @@ void read_cb(struct bufferevent * bev, void * arg){
 
         int i;
 		for(i = 0;i < key_num;i++){
+            uint8_t key[KEY_LENGTH + 10];
             printf(" >> GET key: %.*s\n", KEY_SIZE, recv_item + i * KEY_SIZE);
-			res = hi->search(thread_id, (uint8_t *)(recv_item + i * KEY_SIZE), (uint8_t *)(value + i * VALUE_LENGTH));
+            memcpy(key, (uint8_t *)(recv_item + i * KEY_SIZE), KEY_LENGTH);
+			res = hi->search(thread_id, key, (uint8_t *)(value + i * VALUE_LENGTH));
             if(res == true){
                 //memcpy(value + i * VALUE_LENGTH, buff, VALUE_LENGTH);
                 printf(" >> GET success! value: %.*s\n", VALUE_LENGTH, value + i * VALUE_LENGTH);
