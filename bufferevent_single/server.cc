@@ -537,8 +537,6 @@ void read_cb(struct bufferevent * bev, void * arg){
 		}
 
         bufferevent_write(bev, value, key_num * VALUE_LENGTH);
-
-        printf(" >> send num: %d\n", key_num);
     
         free(value);
     #endif

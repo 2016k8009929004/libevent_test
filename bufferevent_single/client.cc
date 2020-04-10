@@ -544,7 +544,6 @@ void * send_request(void * arg){
 
             while(tot_recv < send_num * VALUE_SIZE){
                 recv_size = read(fd, value + tot_recv, send_num * VALUE_SIZE - tot_recv);
-                printf(" >> recv size: %d\n", recv_size);
                 if(recv_size == 0){
                     printf("[CLIENT] close connection\n");
                     close(fd);
