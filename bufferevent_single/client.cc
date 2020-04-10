@@ -549,6 +549,7 @@ void * send_request(void * arg){
                     close(fd);
                 }else{
                     recv_num += recv_size / VALUE_SIZE;
+                    printf(" >> recv num: %d\n", recv_num);
                 }
             }
 
