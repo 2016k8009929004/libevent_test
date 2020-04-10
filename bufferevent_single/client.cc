@@ -543,14 +543,13 @@ void * send_request(void * arg){
             char * value = (char *)malloc(send_num * VALUE_SIZE);
 
             while(tot_recv < send_num * VALUE_SIZE){
-                recv_size = read(fd, value + recv_num * VALUE_SIZE, (send_num - recv_num) * VALUE_SIZE);
+                recv_size = read(fd, value + tot_recv, send_num * VALUE_SIZE - tot_recv);
                 printf(" >> recv size: %d\n", recv_size);
                 if(recv_size == 0){
                     printf("[CLIENT] close connection\n");
                     close(fd);
                 }else{
                     tot_recv += recv_size;
-                    printf(" >> recv num: %d\n", recv_num);
                 }
             }
 
