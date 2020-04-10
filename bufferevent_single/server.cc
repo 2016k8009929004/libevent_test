@@ -455,7 +455,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         char * reply = (char *)malloc(REPLY_SIZE);
         memset(reply, 0, REPLY_SIZE);
         if (res == true){
-            //printf("[SERVER] insert success\n");
+            printf("[SERVER] PUT success! key: %.*s\n", KEY_SIZE, request->key);
             //recv_item->len = VALUE_SIZE;
             //bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
             char message[] = "put success";
