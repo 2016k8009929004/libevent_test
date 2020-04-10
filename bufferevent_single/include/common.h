@@ -49,7 +49,7 @@
 #define BATCHED_KEY
 
 #ifdef BATCHED_KEY
-#define NUM_BATCH 16
+#define NUM_BATCH 4
 #endif
 
 // The key-value struct in network connection
