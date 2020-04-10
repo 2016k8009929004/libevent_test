@@ -10,7 +10,7 @@ SERVER_LDFLAGS = -L/usr/local/lib/ -L ./third-party/jemalloc-4.2.1/lib -L ./thir
 CLIENT_LDFLAGS = -L/usr/local/lib/
 
 SERVER_LIBS = -lpthread -levent -ljemalloc -ltbb -lpmem
-CLIENT_LIBS = -lpthread 
+CLIENT_LIBS = -lpthread -ljemalloc -ltbb -lpmem
 
 HDRS = ./include/*.h 
 
@@ -24,7 +24,7 @@ server:
 		$(CC) -std=c++11 $(KV_SRCS) server.cc $(SERVER_CFLAGS) -o $@ $(SERVER_LDFLAGS) $(SERVER_LIBS)
 
 client:
-		$(CC) -std=c++11 client.cc $(CLIENT_CFLAGS) -o $@ $(SERVER_LDFLAGS) $(SERVER_LIBS)
+		$(CC) -std=c++11 client.cc $(CLIENT_CFLAGS) -o $@ $(SERVER_LDFLAGS) $(CLIENT_LIBS)
 
 clean:
 		rm -f *.o $(TARGET)
