@@ -520,13 +520,11 @@ void read_cb(struct bufferevent * bev, void * arg){
     #else
         int key_num = len / KEY_SIZE;
 		char * value = (char *)malloc(key_num * VALUE_LENGTH);
-
+/*
         int i;
 		for(i = 0;i < key_num;i++){
-            uint8_t key[KEY_LENGTH + 10];
             printf(" >> GET key: %.*s\n", KEY_SIZE, recv_item + i * KEY_SIZE);
-            memcpy(key, (uint8_t *)(recv_item + i * KEY_SIZE), KEY_LENGTH);
-			res = hi->search(thread_id, key, (uint8_t *)(value + i * VALUE_LENGTH));
+			res = hi->search(thread_id, (uint8_t *)(recv_item + i * KEY_SIZE), (uint8_t *)(value + i * VALUE_LENGTH));
             if(res == true){
                 //memcpy(value + i * VALUE_LENGTH, buff, VALUE_LENGTH);
                 printf(" >> GET success! value: %.*s\n", VALUE_LENGTH, value + i * VALUE_LENGTH);
@@ -536,6 +534,28 @@ void read_cb(struct bufferevent * bev, void * arg){
     	        char message[] = "get failed";
         	    memcpy(value + i * VALUE_LENGTH, message, strlen(message));
 			}
+		}
+*/
+        res = hi->search(thread_id, (uint8_t *)recv_item, (uint8_t *)value);
+        if(res == true){
+            //memcpy(value + i * VALUE_LENGTH, buff, VALUE_LENGTH);
+            printf(" >> GET success! value: %.*s\n", VALUE_LENGTH, value);
+        }else{
+            printf(" >> GET failed\n");
+            memset(value, 0, VALUE_LENGTH);
+    	    char message[] = "get failed";
+            memcpy(value, message, strlen(message));
+		}
+
+        res = hi->search(thread_id, (uint8_t *)(recv_item + KEY_SIZE), (uint8_t *)(value + VALUE_LENGTH));
+        if(res == true){
+            //memcpy(value + i * VALUE_LENGTH, buff, VALUE_LENGTH);
+            printf(" >> GET success! value: %.*s\n", VALUE_LENGTH, value + VALUE_LENGTH);
+        }else{
+            printf(" >> GET failed\n");
+            memset(value + VALUE_LENGTH, 0, VALUE_LENGTH);
+    	    char message[] = "get failed";
+            memcpy(value + VALUE_LENGTH, message, strlen(message));
 		}
 
         bufferevent_write(bev, value, key_num * VALUE_LENGTH);
