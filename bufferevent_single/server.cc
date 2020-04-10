@@ -521,13 +521,15 @@ void read_cb(struct bufferevent * bev, void * arg){
         int key_num = len / KEY_SIZE;
 		char * value = (char *)malloc(key_num * VALUE_LENGTH);
 
+        printf(" >> recv num: %d\n", key_num);
+
         int i;
 		for(i = 0;i < key_num;i++){
             //printf(" >> GET key: %.*s\n", KEY_SIZE, recv_item + i * KEY_SIZE);
 			res = hi->search(thread_id, (uint8_t *)(recv_item + i * KEY_SIZE), (uint8_t *)(value + i * VALUE_LENGTH));
             if(res == true){
                 //memcpy(value + i * VALUE_LENGTH, buff, VALUE_LENGTH);
-                printf(" >> GET success! value: %.*s\n", VALUE_LENGTH, value + i * VALUE_LENGTH);
+                //printf(" >> GET success! value: %.*s\n", VALUE_LENGTH, value + i * VALUE_LENGTH);
             }else{
                 printf(" >> GET failed\n");
 	            memset(value + i * VALUE_LENGTH, 0, VALUE_LENGTH);
