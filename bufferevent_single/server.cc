@@ -503,7 +503,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         pthread_mutex_unlock(&put_end_lock);
     #endif
         //printf("[SERVER] get KV item\n");
-    #ifdef INDEPENDENT_KEY
+    #ifndef BATCHED_KEY
         char * value = (char *)malloc(BUF_SIZE);
         res = hi->search(thread_id, (uint8_t *)recv_item, (uint8_t *)value);
         //printf(" >> GET key: %.*s\n value: %.*s\n", KEY_SIZE, recv_item, VALUE_SIZE, value);
@@ -516,7 +516,7 @@ void read_cb(struct bufferevent * bev, void * arg){
             memcpy(reply, message, strlen(message));
             bufferevent_write(bev, reply, REPLY_SIZE);
         }
-    #elif defined(BATCHED_KEY_256B)
+    #else
         int key_num = len / KEY_SIZE;
 		char * value = (char *)malloc(key_num * VALUE_LENGTH);
 
