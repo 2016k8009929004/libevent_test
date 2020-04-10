@@ -538,18 +538,18 @@ void * send_request(void * arg){
             get_count += send_num;
 
             int recv_size;
-            int recv_num = 0;
+            int tot_recv = 0;
 
             char * value = (char *)malloc(send_num * VALUE_SIZE);
 
-            while(recv_num < send_num){
+            while(tot_recv < send_num * VALUE_SIZE){
                 recv_size = read(fd, value + recv_num * VALUE_SIZE, (send_num - recv_num) * VALUE_SIZE);
                 printf(" >> recv size: %d\n", recv_size);
                 if(recv_size == 0){
                     printf("[CLIENT] close connection\n");
                     close(fd);
                 }else{
-                    recv_num += recv_size / VALUE_SIZE;
+                    tot_recv += recv_size;
                     printf(" >> recv num: %d\n", recv_num);
                 }
             }
