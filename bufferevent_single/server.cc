@@ -775,7 +775,7 @@ void * server_thread(void * arg){
     pthread_mutex_init(&connect_lock, NULL);
 
     evutil_socket_t sock;
-    if((sock = server_init(1234, 100)) < 0){
+    if((sock = server_init(12345, 100)) < 0){
         perror("[SERVER] server init error");
         exit(1);
     }
