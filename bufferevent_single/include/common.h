@@ -37,8 +37,8 @@
 
 #define PUT_PERCENT 50			// Percentage of PUT operations
 
-#define NUM_KEYS M_1
-#define NUM_KEYS_ M_1_
+#define NUM_KEYS M_2
+#define NUM_KEYS_ M_2_
 
 #define SWAP(a,b) do{a^=b;b^=a;a^=b;}while(0)
 
@@ -49,7 +49,7 @@
 #define BATCHED_KEY
 
 #ifdef BATCHED_KEY
-#define NUM_BATCH 8
+#define NUM_BATCH 4
 #endif
 
 // The key-value struct in network connection
