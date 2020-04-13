@@ -219,7 +219,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     struct timeval read_start;
     gettimeofday(&read_start, NULL);
 #endif
-
+/*
     while(len < args->packet_size){
 		int recv_size = bufferevent_read(bev, recv_item + len, args->packet_size - len);
 		if(strcmp("put request end", recv_item) == 0){
@@ -233,8 +233,8 @@ void read_cb(struct bufferevent * bev, void * arg){
         }
         len += recv_size;
     }
-
-	//len = bufferevent_read(bev, recv_item, BUF_SIZE);
+*/
+	len = bufferevent_read(bev, recv_item, BUF_SIZE);
 
 #ifdef __EVAL_READ__
     struct timeval read_end;
