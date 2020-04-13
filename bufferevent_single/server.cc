@@ -299,7 +299,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         pthread_mutex_unlock(&record_lock);
     #endif
     
-    }else{
+    }else if(len == NUM_BATCH * KEY_SIZE){
     #ifdef __EVAL_KV__
         pthread_mutex_lock(&put_end_lock);
         if(!put_end_flag){
