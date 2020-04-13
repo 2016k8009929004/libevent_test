@@ -517,7 +517,7 @@ void * send_request(void * arg){
             free(req_kv);
 
             iter++;
-
+        /*
             if(iter == num_put_kv){
                 char * message = (char *)malloc(KV_ITEM_SIZE);
                 memset(message, 0, KV_ITEM_SIZE);
@@ -542,6 +542,7 @@ void * send_request(void * arg){
                     printf("put end failed\n");
                 }
             }
+        */
 		} else {
 		//GET
             char * key = (char *)malloc(NUM_BATCH * KEY_SIZE);
