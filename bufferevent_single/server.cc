@@ -222,18 +222,15 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     while(len < args->packet_size){
 		int recv_size = bufferevent_read(bev, recv_item + len, args->packet_size - len);
-		if(recv_size == 0){
-			return recv_size;
-		}
 		if(strcmp("put request end", recv_item) == 0){
 			//printf("[SERVER %d] put request end\n", sockid);
 			char * reply = (char *)malloc(REPLY_SIZE);
 			memset(reply, 0, REPLY_SIZE);
             char message[] = "received";
             memcpy(reply, message, strlen(message));
-			sent = write(sockid, reply, REPLY_SIZE);
+			bufferevent_write(bev, reply, REPLY_SIZE);
 			args->packet_size = KEY_SIZE;
-			return recv_size;
+			return;
         }
         len += recv_size;
     }
