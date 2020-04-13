@@ -234,7 +234,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     pthread_mutex_unlock(&read_cb_lock);
 #endif
 
-    //printf("[SERVER] recv len: %d\n", len);
+    printf("[SERVER] recv len: %d\n", len);
 
     int res;
     if(len == KV_ITEM_SIZE){
