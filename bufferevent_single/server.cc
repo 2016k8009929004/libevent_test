@@ -223,7 +223,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     while(len < args->packet_size){
 		int recv_size = bufferevent_read(bev, recv_item + len, args->packet_size - len);
 		if(strcmp("put request end", recv_item) == 0){
-			printf("[SERVER %d] put request end\n", sockid);
+			printf("[SERVER] put request end\n");
 			char * reply = (char *)malloc(REPLY_SIZE);
 			memset(reply, 0, REPLY_SIZE);
             char message[] = "received";
