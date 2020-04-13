@@ -113,7 +113,6 @@ void accept_cb(int fd, short events, void * arg){
     read_arg->hi = hi; 
     read_arg->hikv_args = hikv_args;
     read_arg->recv_buf = recv_buf;
-    read_arg->packet_size = KV_ITEM_SIZE;
 
     bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
@@ -219,21 +218,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     struct timeval read_start;
     gettimeofday(&read_start, NULL);
 #endif
-/*
-    while(len < args->packet_size){
-		int recv_size = bufferevent_read(bev, recv_item + len, args->packet_size - len);
-		if(strcmp("put request end", recv_item) == 0){
-			char * reply = (char *)malloc(REPLY_SIZE);
-			memset(reply, 0, REPLY_SIZE);
-            char message[] = "received";
-            memcpy(reply, message, strlen(message));
-			bufferevent_write(bev, reply, REPLY_SIZE);
-			args->packet_size = NUM_BATCH * KEY_SIZE;
-			return;
-        }
-        len += recv_size;
-    }
-*/
+
 	len = bufferevent_read(bev, recv_item, BUF_SIZE);
 
 #ifdef __EVAL_READ__
@@ -257,12 +242,10 @@ void read_cb(struct bufferevent * bev, void * arg){
         struct kv_trans_item * request = (struct kv_trans_item *)recv_item;
         res = hi->insert(thread_id, (uint8_t *)request->key, (uint8_t *)request->value);
         //printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, request->key, VALUE_SIZE, request->value);
-        printf("[SERVER] put key: %.*s\n", KEY_SIZE, request->key);
         char * reply = (char *)malloc(REPLY_SIZE);
         memset(reply, 0, REPLY_SIZE);
         if (res == true){
             //printf("[SERVER] PUT success! key: %.*s\n", KEY_SIZE, request->key);
-            printf(" >> PUT success!\n");
             //recv_item->len = VALUE_SIZE;
             //bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
             char message[] = "put success";
@@ -300,7 +283,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         pthread_mutex_unlock(&record_lock);
     #endif
     
-    }else if(len == NUM_BATCH * KEY_SIZE){
+    }else{
     #ifdef __EVAL_KV__
         pthread_mutex_lock(&put_end_lock);
         if(!put_end_flag){
