@@ -113,6 +113,7 @@ void accept_cb(int fd, short events, void * arg){
     read_arg->hi = hi; 
     read_arg->hikv_args = hikv_args;
     read_arg->recv_buf = recv_buf;
+    read_arg->packet_size = KV_ITEM_SIZE;
 
     bufferevent_setcb(bev, read_cb , NULL, event_cb, read_arg);
     bufferevent_enable(bev, EV_READ | EV_PERSIST);
@@ -219,7 +220,25 @@ void read_cb(struct bufferevent * bev, void * arg){
     gettimeofday(&read_start, NULL);
 #endif
 
-	len = bufferevent_read(bev, recv_item, BUF_SIZE);
+    while(len < args->packet_size){
+		int recv_size = bufferevent_read(bev, recv_item + len, args->packet_size - len);
+		if(recv_size == 0){
+			return recv_size;
+		}
+		if(strcmp("put request end", recv_item) == 0){
+			//printf("[SERVER %d] put request end\n", sockid);
+			char * reply = (char *)malloc(REPLY_SIZE);
+			memset(reply, 0, REPLY_SIZE);
+            char message[] = "received";
+            memcpy(reply, message, strlen(message));
+			sent = write(sockid, reply, REPLY_SIZE);
+			args->packet_size = KEY_SIZE;
+			return recv_size;
+        }
+        len += recv_size;
+    }
+
+	//len = bufferevent_read(bev, recv_item, BUF_SIZE);
 
 #ifdef __EVAL_READ__
     struct timeval read_end;

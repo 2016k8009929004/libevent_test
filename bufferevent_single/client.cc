@@ -517,6 +517,31 @@ void * send_request(void * arg){
             free(req_kv);
 
             iter++;
+
+            if(iter == num_put_kv){
+                char * message = (char *)malloc(KV_ITEM_SIZE);
+                memset(message, 0, KV_ITEM_SIZE);
+                char put_end_msg[] = "put request end";
+                memcpy(message, put_end_msg, strlen(put_end_msg));
+                if(write(fd, message, KV_ITEM_SIZE) < 0){
+    	    		perror("[CLIENT] end put request failed");
+	            	exit(1);
+            	}
+
+                char * reply = (char *)malloc(REPLY_SIZE);
+                memset(reply, 0, REPLY_SIZE);
+
+                int recv_size = read(fd, reply, REPLY_SIZE);
+
+                if(recv_size == 0){
+                    printf("[CLIENT] close connection\n");
+                    close(fd);
+                }
+
+                if(strcmp("received", reply) != 0){
+                    printf("put end failed\n");
+                }
+            }
 		} else {
 		//GET
             char * key = (char *)malloc(NUM_BATCH * KEY_SIZE);
@@ -534,6 +559,8 @@ void * send_request(void * arg){
 	    		perror("[CLIENT] send failed");
 	        	exit(1);
     	    }
+            
+            //printf(" >> send num: %d\n", send_num);
 
             get_count += send_num;
 
@@ -550,6 +577,7 @@ void * send_request(void * arg){
                 }else{
                     tot_recv += recv_size;
                 }
+                //printf(" >> recv num: %d\n", tot_recv / VALUE_SIZE);
             }
 
             #ifdef __EV_RTT__

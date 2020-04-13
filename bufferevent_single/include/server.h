@@ -96,6 +96,8 @@ struct sock_ev_read {
     struct hikv * hi;
     struct hikv_arg * hikv_args;
     struct ring_buf * recv_buf;
+
+    int packet_size;
 };
 
 struct accept_args {
