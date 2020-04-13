@@ -223,13 +223,12 @@ void read_cb(struct bufferevent * bev, void * arg){
     while(len < args->packet_size){
 		int recv_size = bufferevent_read(bev, recv_item + len, args->packet_size - len);
 		if(strcmp("put request end", recv_item) == 0){
-			printf("[SERVER] put request end\n");
 			char * reply = (char *)malloc(REPLY_SIZE);
 			memset(reply, 0, REPLY_SIZE);
             char message[] = "received";
             memcpy(reply, message, strlen(message));
 			bufferevent_write(bev, reply, REPLY_SIZE);
-			args->packet_size = KEY_SIZE;
+			args->packet_size = NUM_BATCH * KEY_SIZE;
 			return;
         }
         len += recv_size;
