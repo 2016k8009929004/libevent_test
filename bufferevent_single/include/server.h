@@ -45,7 +45,7 @@ pthread_mutex_t end_lock;
 struct timeval g_end;
 #endif
 
-#define BUF_SIZE 1024
+#define BUF_SIZE 2048
 
 //#define __EVAL_CB__
 
