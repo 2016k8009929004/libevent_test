@@ -597,6 +597,8 @@ void * send_request(void * arg){
         	exit(1);
     	}
 
+    	printf(" >> SCAN key 1: %llu, key 2: %llu\n", key_corpus[key_k], key_corpus[key_k + scan_range]);
+
         scan_count ++;
 
         int recv_size;
@@ -626,7 +628,7 @@ void * send_request(void * arg){
 
         int i;
         for(i = 0;i < recv_num;i++){
-            printf("[CLIENT] key: %lld\n", key_corpus[key_k + i]);
+            printf("[SCAN] key: %lld\n", key_corpus[key_k + i]);
             if(strcmp("get failed", value + i * VALUE_SIZE) == 0){
                 //printf(" >> GET failed\n");
                 break;
