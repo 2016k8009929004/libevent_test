@@ -24,7 +24,7 @@ void gen_key_corpus(LL * key_corpus, int num_put, int thread_id){
     //sequence key
     LL rand1 = (LL) rand();
 	LL rand2 = (LL) rand();
-	long long sequence = (rand1 << 32) ^ rand2;
+	long long sequence = (thread_id << 20) ^ rand2;
     for(key_i = 0; key_i < num_put; key_i ++) {
 		key_corpus[key_i] = sequence + key_i;
 		if(key_corpus[key_i] == 0) {
