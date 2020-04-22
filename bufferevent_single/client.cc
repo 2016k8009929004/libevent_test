@@ -478,120 +478,170 @@ void * send_request(void * arg){
 #else
 
 //[Version 4.0 - 256B batched key] 
-    for(iter = 0, key_i = 0, key_j = 0;iter < num_kv;){
-        if(iter < num_put_kv) {
-        //PUT
-            //printf(">> PUT request\n");
-            struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
-            //printf("[CLIENT] put KV item %d\n", iter);
-            snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
-            //printf("[CLIENT] PUT copy value\n");
-            //printf(">> value_corpus: %p, value: %.*s\n", &value_corpus[key_i * VALUE_SIZE], VALUE_SIZE, &value_corpus[key_i * VALUE_SIZE]);
-    		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
-            //printf(">> req_kv->value: %p, value: %.*s\n", req_kv->value, VALUE_SIZE, req_kv->value);
-    		//printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
-            //printf("[CLIENT] PUT key: %llu\n", key_corpus[key_i]);
-		    key_i = (key_i + 1) % num_put_kv;
+    for(key_i = 0;key_i < num_put_kv;key_i++){
+        //printf(">> PUT request\n");
+        struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
+        //printf("[CLIENT] put KV item %d\n", iter);
+        snprintf((char *)req_kv->key, KEY_SIZE + 1, "%0llu", key_corpus[key_i]);     //set Key
+        //printf("[CLIENT] PUT copy value\n");
+        //printf(">> value_corpus: %p, value: %.*s\n", &value_corpus[key_i * VALUE_SIZE], VALUE_SIZE, &value_corpus[key_i * VALUE_SIZE]);
+		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
+        printf(" >> PUT req_kv->value: %p, value: %.*s\n", req_kv->value, VALUE_SIZE, req_kv->value);
+    	//printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
+        //printf("[CLIENT] PUT key: %llu\n", key_corpus[key_i]);
+        put_count++;
 
-            put_count++;
+        if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
+			perror("[CLIENT] send failed");
+        	exit(1);
+        }
 
-            if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
-	    		perror("[CLIENT] send failed");
-	        	exit(1);
-        	}
+        //printf("[CLIENT] send success\n");
 
-            //printf("[CLIENT] send success\n");
+        int recv_size, tot_recv;
 
-            int recv_size, tot_recv;
+        tot_recv = 0;
 
-	        tot_recv = 0;
+        char * reply = (char *)malloc(REPLY_SIZE);
+        memset(reply, 0, REPLY_SIZE);
 
-            char * reply = (char *)malloc(REPLY_SIZE);
-            memset(reply, 0, REPLY_SIZE);
+        recv_size = read(fd, reply, REPLY_SIZE);
 
-            recv_size = read(fd, reply, REPLY_SIZE);
+        if(recv_size == 0){
+            printf("[CLIENT] close connection\n");
+            close(fd);
+        }
 
+        if(strcmp("put success", reply) == 0){
+            //printf("put success\n");
+            match_insert++;
+        }else if(strcmp("put failed", reply) == 0){
+            //printf("put failed\n");
+        }else{
+            //printf("unknown result\n");
+        }
+
+        free(req_kv);
+    }
+
+    for(key_j = 0;key_j < num_get_kv;){
+        char * key = (char *)malloc(NUM_BATCH * KEY_SIZE);
+
+        int send_num;
+        for(send_num = 0; (key_j + send_num < num_get_kv) && (send_num < NUM_BATCH);send_num++){
+            snprintf(key + send_num * KEY_SIZE, KEY_SIZE + 1, "%0llu", key_corpus[key_j + send_num]);     //set Key
+        }
+
+    #ifdef __EV_RTT__
+        gettimeofday(&get_start, NULL);
+    #endif
+
+        if(write(fd, key, send_num * KEY_SIZE) < 0){
+			perror("[CLIENT] send failed");
+        	exit(1);
+    	}
+
+        get_count += send_num;
+
+        int recv_size;
+        int tot_recv = 0;
+
+        char * value = (char *)malloc(send_num * VALUE_SIZE);
+
+        while(tot_recv < send_num * VALUE_SIZE){
+            recv_size = read(fd, value + tot_recv, send_num * VALUE_SIZE - tot_recv);
             if(recv_size == 0){
                 printf("[CLIENT] close connection\n");
                 close(fd);
-            }
-
-            if(strcmp("put success", reply) == 0){
-                //printf("put success\n");
-                match_insert++;
-            }else if(strcmp("put failed", reply) == 0){
-                //printf("put failed\n");
             }else{
-                //printf("unknown result\n");
+                tot_recv += recv_size;
             }
-
-            free(req_kv);
-
-            iter++;
-		} else {
-		//GET
-            char * key = (char *)malloc(NUM_BATCH * KEY_SIZE);
-
-            int send_num;
-            for(send_num = 0; (key_j + send_num < num_get_kv) && (send_num < NUM_BATCH);send_num++){
-                snprintf(key + send_num * KEY_SIZE, KEY_SIZE + 1, "%0llu", key_corpus[key_j + send_num]);     //set Key
-            }
+        }
 
         #ifdef __EV_RTT__
-            gettimeofday(&get_start, NULL);
+            gettimeofday(&get_end, NULL);
+            long start_time = (long)get_start.tv_sec * 1000000 + (long)get_start.tv_usec;
+            long end_time = (long)get_end.tv_sec * 1000000 + (long)get_end.tv_usec;
+            rtt_time[request_cnt] = end_time - start_time;
+            request_cnt++;
         #endif
 
-            if(write(fd, key, send_num * KEY_SIZE) < 0){
-	    		perror("[CLIENT] send failed");
-	        	exit(1);
-    	    }
+        int recv_num = tot_recv / VALUE_SIZE;
 
-            get_count += send_num;
-
-            int recv_size;
-            int tot_recv = 0;
-
-            char * value = (char *)malloc(send_num * VALUE_SIZE);
-
-            while(tot_recv < send_num * VALUE_SIZE){
-                recv_size = read(fd, value + tot_recv, send_num * VALUE_SIZE - tot_recv);
-                if(recv_size == 0){
-                    printf("[CLIENT] close connection\n");
-                    close(fd);
-                }else{
-                    tot_recv += recv_size;
-                }
+        int i;
+        for(i = 0;i < recv_num;i++){
+            //printf("[CLIENT] key: %lld, value: %.*s\n", key_corpus[key_j + i], VALUE_SIZE, value + i * VALUE_SIZE);
+            if(strcmp("get failed", value + i * VALUE_SIZE) == 0){
+                //printf(" >> GET failed\n");
+            }else if(bufcmp(value + i * VALUE_SIZE, (char *)value_corpus + (key_j + i) * VALUE_SIZE, VALUE_SIZE)){
+                //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
+                //printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
+                //printf(" >> GET success\n");
+                match_search++;
             }
+        }
 
-            #ifdef __EV_RTT__
-                gettimeofday(&get_end, NULL);
-                long start_time = (long)get_start.tv_sec * 1000000 + (long)get_start.tv_usec;
-                long end_time = (long)get_end.tv_sec * 1000000 + (long)get_end.tv_usec;
-                rtt_time[request_cnt] = end_time - start_time;
-                request_cnt++;
-            #endif
+        key_j = key_j + send_num;
 
-            int recv_num = tot_recv / VALUE_SIZE;
+        free(key);
+        free(value);
+    }
 
-            int i;
-            for(i = 0;i < recv_num;i++){
-                //printf("[CLIENT] key: %lld, value: %.*s\n", key_corpus[key_j + i], VALUE_SIZE, value + i * VALUE_SIZE);
-                if(strncmp("get failed", value + i * VALUE_SIZE, strlen("get failed")) == 0){
-                    //printf(" >> GET failed\n");
-                }else if(bufcmp(value + i * VALUE_SIZE, (char *)value_corpus + (key_j + i) * VALUE_SIZE, VALUE_SIZE)){
-                    //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
-                    //printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
-                    //printf(" >> GET success\n");
-                    match_search++;
-                }
+    for(key_k = 0;key_k < num_scan_kv;){
+        char * key = (char *)malloc(2 * KEY_SIZE);
+
+        snprintf(key, KEY_SIZE + 1, "%0llu", key_corpus[key_j]);     //set Key
+        snprintf(key + KEY_SIZE, KEY_SIZE + 1, "%0llu", key_corpus[key_j + scan_range]);
+
+        if(write(fd, key, 2 * KEY_SIZE) < 0){
+			perror("[CLIENT] send failed");
+        	exit(1);
+    	}
+
+        scan_count ++;
+
+        int recv_size;
+        int tot_recv = 0;
+
+        char * value = (char *)malloc(scan_range * VALUE_SIZE);
+
+        while(tot_recv < scan_range * VALUE_SIZE){
+            recv_size = read(fd, value + tot_recv, scan_range * VALUE_SIZE - tot_recv);
+            if(recv_size == 0){
+                printf("[CLIENT] close connection\n");
+                close(fd);
+            }else{
+                tot_recv += recv_size;
             }
+        }
 
-            key_j = (key_j + send_num) % num_get_kv;
-            iter += send_num;
+        #ifdef __EV_RTT__
+            gettimeofday(&get_end, NULL);
+            long start_time = (long)get_start.tv_sec * 1000000 + (long)get_start.tv_usec;
+            long end_time = (long)get_end.tv_sec * 1000000 + (long)get_end.tv_usec;
+            rtt_time[request_cnt] = end_time - start_time;
+            request_cnt++;
+        #endif
 
-            free(key);
-            free(value);
-		}
+        int recv_num = tot_recv / VALUE_SIZE;
+
+        int i;
+        for(i = 0;i < recv_num;i++){
+            printf("[CLIENT] key: %lld, value: %.*s\n", key_corpus[key_k + i], VALUE_SIZE, value + i * VALUE_SIZE);
+            if(strcmp("get failed", value + i * VALUE_SIZE) == 0){
+                //printf(" >> GET failed\n");
+            }else if(bufcmp(value + i * VALUE_SIZE, (char *)value_corpus + (key_k + i) * VALUE_SIZE, VALUE_SIZE)){
+                //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
+                //printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
+                //printf(" >> GET success\n");
+                match_search++;
+            }
+        }
+
+        key_k = key_k + scan_range;
+
+        free(key);
+        free(value);
     }
 #endif
 
