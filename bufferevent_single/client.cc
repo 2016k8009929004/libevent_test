@@ -630,11 +630,10 @@ void * send_request(void * arg){
         int i;
         for(i = 0;i < recv_num;i++){
             printf("[SCAN] value: %.*s\n", VALUE_SIZE, value + i * VALUE_SIZE);
-            if(bufcmp(value + i * VALUE_SIZE, (char *)value_corpus + (key_k + i) * VALUE_SIZE, VALUE_SIZE)){
+            if(bufcmp(value + i * VALUE_SIZE, (char *)value_corpus + (key_k + 1 + i) * VALUE_SIZE, VALUE_SIZE)){
                 //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
                 //printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
                 //printf(" >> GET success\n");
-                break;
             }
         }
 
