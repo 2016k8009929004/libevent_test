@@ -102,6 +102,8 @@ void * send_request(void * arg){
 
     uint64_t seed = hikv_args->seed;
 
+    printf("PUT test: %d, thread_id %d\n", num_put_kv, thread_id);
+
     //initial Key
     printf(" >> generate key...\n");
 
@@ -217,6 +219,9 @@ void * send_request(void * arg){
     fclose(send_fp);
 #elif defined(__TEST_KV__)
     //printf("===== start real work ======\n");
+    printf(">>[TEST] test start\n");
+    printf("   PUT test: %d, GET test: %d, SCAN test: %d\n", num_put_kv, num_get_kv, num_scan_kv);
+
     int i, iter, key_i, key_j, key_k;
     
     struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
@@ -479,9 +484,6 @@ void * send_request(void * arg){
     }
 
 #else
-
-    printf(">>[TEST] test end\n");
-    printf("   PUT test: %d, GET test: %d, SCAN test: %d\n", num_put_kv, num_get_kv, num_scan_kv);
 
 //[Version 4.0 - 256B batched key] 
     for(key_i = 0;key_i < num_put_kv;key_i++){
