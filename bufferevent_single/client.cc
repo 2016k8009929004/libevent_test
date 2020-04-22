@@ -103,6 +103,8 @@ void * send_request(void * arg){
     uint64_t seed = hikv_args->seed;
 
     //initial Key
+    printf(" >> generate key...\n");
+
     LL * key_corpus = (LL *)malloc(num_put_kv * sizeof(LL));
     
     gen_key_corpus(key_corpus, num_put_kv, thread_id);
@@ -880,6 +882,8 @@ int main(int argc, char * argv[]){
             printf("error (%s)!\n", argv[i]);
         }
     }
+
+    printf(" >> generate value...\n");
 
     value_corpus = (uint8_t *)malloc(hikv_thread_arg.num_put_kv * VALUE_SIZE);
     gen_value_corpus(value_corpus, hikv_thread_arg.num_put_kv);
