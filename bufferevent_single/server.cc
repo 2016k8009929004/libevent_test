@@ -343,7 +343,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         get_cnt += key_num;
         pthread_mutex_unlock(&record_lock);
     #endif
-    }/*else if(len == 2 * KEY_SIZE){
+    }else if(len == 2 * KEY_SIZE){
         printf(" >> SCAN key: %.*s, %.*s\n", KEY_SIZE, recv_item, recv_item + KEY_SIZE);
         
         char * scan_buff = (char *)malloc(scan_range * VALUE_LENGTH);
@@ -353,7 +353,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         bufferevent_write(bev, scan_buff, total_scan_count * VALUE_LENGTH);
     
         free(scan_buff);
-    }*/
+    }
 
     #ifdef __EVAL_CB__
         struct timeval end;

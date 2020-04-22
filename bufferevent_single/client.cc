@@ -586,7 +586,7 @@ void * send_request(void * arg){
         free(value);
     }
 
-    for(key_k = 0;key_k < num_scan_kv;){
+    for(key_k = 1;key_k < num_scan_kv;){
         char * key = (char *)malloc(2 * KEY_SIZE);
 
         snprintf(key, KEY_SIZE + 1, "%0llu", key_corpus[key_j]);     //set Key
@@ -626,15 +626,20 @@ void * send_request(void * arg){
 
         int i;
         for(i = 0;i < recv_num;i++){
-            printf("[CLIENT] key: %lld, value: %.*s\n", key_corpus[key_k + i], VALUE_SIZE, value + i * VALUE_SIZE);
+            printf("[CLIENT] key: %lld\n", key_corpus[key_k + i]);
             if(strcmp("get failed", value + i * VALUE_SIZE) == 0){
                 //printf(" >> GET failed\n");
+                break;
             }else if(bufcmp(value + i * VALUE_SIZE, (char *)value_corpus + (key_k + i) * VALUE_SIZE, VALUE_SIZE)){
                 //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
                 //printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
                 //printf(" >> GET success\n");
-                match_search++;
+                break;
             }
+        }
+
+        if(i == recv_num){
+            scan_kv_count++;
         }
 
         key_k = key_k + scan_range;
