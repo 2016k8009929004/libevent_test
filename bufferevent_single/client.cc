@@ -22,13 +22,18 @@ void gen_key_corpus(LL * key_corpus, int num_put, int thread_id){
 */
 
     //sequence key
+    LL rand1 = (LL) rand();
+	LL rand2 = (LL) rand();
+	long long sequence = (rand1 << 32) ^ rand2;
     for(key_i = 0; key_i < num_put; key_i ++) {
-		key_corpus[key_i] = (thread_id << 20) + key_i;
+		key_corpus[key_i] = sequence + key_i;
 		if(key_corpus[key_i] == 0) {
+            rand1 = (LL) rand();
+        	rand2 = (LL) rand();
+	        sequence = (rand1 << 32) ^ rand2;
 			key_i --;
 		}
 	}
-    //printf(" >> key: %llu\n", key_corpus[0]);
 
     return;
 }
@@ -594,7 +599,7 @@ void * send_request(void * arg){
         char * key = (char *)malloc(2 * KEY_SIZE);
 
         snprintf(key, KEY_SIZE, "%0llu", key_corpus[4 * key_k]);     //set Key
-        snprintf(key + KEY_SIZE, KEY_SIZE, "%0llu", key_corpus[4 * key_k + scan_range]);
+        snprintf(key + KEY_SIZE, KEY_SIZE, "%0llu", key_corpus[4 * key_k] + scan_range);
 
         if(write(fd, key, 2 * KEY_SIZE) < 0){
 			perror("[CLIENT] send failed");

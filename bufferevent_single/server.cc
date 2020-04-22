@@ -360,7 +360,8 @@ void read_cb(struct bufferevent * bev, void * arg){
         }
         //printf(" >> SCAN total count: %d\n", total_scan_count);
 
-        char * value = (char *)malloc(total_scan_count * VALUE_LENGTH);
+        char * value = (char *)malloc((scan_range - 1) * VALUE_LENGTH);
+        memset(value, 0, (scan_range - 1) * VALUE_LENGTH);
         
         int i;
         for(i = 0;i < total_scan_count;i++){
@@ -370,7 +371,7 @@ void read_cb(struct bufferevent * bev, void * arg){
             //printf(" >> SCAN value: %.*s\n", VALUE_LENGTH, value + i * VALUE_LENGTH);
         }
 
-        bufferevent_write(bev, value, total_scan_count * VALUE_LENGTH);
+        bufferevent_write(bev, value, (scan_range - 1) * VALUE_LENGTH);
     
         free(scan_buff);
     }
