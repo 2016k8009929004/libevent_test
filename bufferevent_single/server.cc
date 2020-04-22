@@ -346,19 +346,9 @@ void read_cb(struct bufferevent * bev, void * arg){
     }else if(len == 2 * KEY_SIZE){
         char * scan_buff = (char *)malloc(scan_range * VALUE_LENGTH);
 
-        snprintf((char *)key, sizeof(key), "%016llu", seed);
-        snprintf((char *)value, sizeof(value), "%016llu", seed + scan_range);
-        if (memcmp(key, value, KEY_LENGTH) > 0){
-            memset(key, 0, sizeof(key));     // lower key
-            memset(value, 0, sizeof(value)); // upper key
-            snprintf((char *)key, sizeof(key), "%016llu", seed);
-            snprintf((char *)value, sizeof(key), "%016llu", seed + scan_range);
-        }
-        scan_count++;
+        int total_scan_count = hi->range_scan((uint8_t *)recv_item, (uint8_t *)(recv_item + KEY_SIZE), scan_buff);
 
-        total_scan_count = hi->range_scan((uint8_t *)recv_item, (uint8_t *)(recv_item + KEY_SIZE), scan_buff);
-
-        bufferevent_write(bev, value, scan_range * VALUE_LENGTH);
+        bufferevent_write(bev, value, total_scan_count * VALUE_LENGTH);
     
         free(scan_buff);
     }
