@@ -348,7 +348,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 
         int total_scan_count = hi->range_scan((uint8_t *)recv_item, (uint8_t *)(recv_item + KEY_SIZE), scan_buff);
 
-        bufferevent_write(bev, value, total_scan_count * VALUE_LENGTH);
+        bufferevent_write(bev, scan_buff, total_scan_count * VALUE_LENGTH);
     
         free(scan_buff);
     }
