@@ -607,7 +607,7 @@ void * send_request(void * arg){
         char * value = (char *)malloc(scan_range * VALUE_SIZE);
 
         while(tot_recv < scan_range * VALUE_SIZE){
-            recv_size = read(fd, value + tot_recv, send_num * VALUE_SIZE - tot_recv);
+            recv_size = read(fd, value + tot_recv, scan_range * VALUE_SIZE - tot_recv);
             if(recv_size == 0){
                 printf("[CLIENT] close connection\n");
                 close(fd);
@@ -825,8 +825,10 @@ void * client_thread(void * argv){
 }
 
 int main(int argc, char * argv[]){
-    int put_test, get_test, scan_test;
-    put_test = get_test = scan_test = NUM_KEYS;
+    int put_test, get_test, scan_test, scan_range;
+    scan_range = 8;
+    put_test = get_test = NUM_KEYS;
+    scan_test = NUM_KEYS - scan_range;
 
     struct hikv_arg hikv_thread_arg = {
         20,                                      //pm_size
