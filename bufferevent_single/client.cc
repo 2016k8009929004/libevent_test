@@ -606,7 +606,7 @@ void * send_request(void * arg){
 
         char * value = (char *)malloc((scan_range - 1) * VALUE_SIZE);
 
-        while(tot_recv < scan_range * VALUE_SIZE){
+        while(tot_recv < (scan_range - 1) * VALUE_SIZE){
             recv_size = read(fd, value + tot_recv, scan_range * VALUE_SIZE - tot_recv);
             if(recv_size == 0){
                 printf("[CLIENT] close connection\n");
