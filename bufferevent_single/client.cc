@@ -614,6 +614,7 @@ void * send_request(void * arg){
             }else{
                 tot_recv += recv_size;
             }
+            printf(" >> recv len: %d\n", tot_recv);
         }
 
         #ifdef __EV_RTT__
