@@ -347,9 +347,12 @@ void read_cb(struct bufferevent * bev, void * arg){
     }else if(len == 2 * KEY_SIZE){
         printf(" >> SCAN key: %.*s, %.*s\n", KEY_SIZE, recv_item, KEY_SIZE, recv_item + KEY_SIZE);
         
-        char * scan_buff = (char *)malloc(scan_range * VALUE_LENGTH);
+        //char * scan_buff = (char *)malloc(scan_range * VALUE_LENGTH);
+        char *scan_buff = (char *)malloc(sizeof(unsigned long *) * scan_range);
 
         int total_scan_count = hi->range_scan((uint8_t *)recv_item, (uint8_t *)(recv_item + KEY_SIZE), scan_buff);
+
+        printf(" >> SCAN total count: %d\n", total_scan_count);
 
         bufferevent_write(bev, scan_buff, total_scan_count * VALUE_LENGTH);
     
