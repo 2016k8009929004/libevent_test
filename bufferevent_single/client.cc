@@ -29,7 +29,7 @@ void gen_key_corpus(LL * key_corpus, int num_put, int thread_id){
 		}
 	}
 
-    printf(" >> key: %llu\n", key_corpus[0]);
+    printf(" >> key from %llu to %llu\n", key_corpus[0], key_corpus[num_put-1]);
 
     return;
 }
