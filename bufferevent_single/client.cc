@@ -109,6 +109,8 @@ void * send_request(void * arg){
     
     gen_key_corpus(key_corpus, num_put_kv, thread_id);
 
+    printf(" >> generate key complete\n");
+
 #ifdef __TEST_FILE__
     char send_buf[buf_size];
     char recv_buf[buf_size + 1];
