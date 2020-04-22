@@ -589,8 +589,8 @@ void * send_request(void * arg){
     for(key_k = 0;key_k < num_scan_kv;){
         char * key = (char *)malloc(2 * KEY_SIZE);
 
-        snprintf(key, KEY_SIZE + 1, "%0llu", key_corpus[key_k]);     //set Key
-        snprintf(key + KEY_SIZE, KEY_SIZE + 1, "%0llu", key_corpus[key_k + scan_range]);
+        snprintf(key, KEY_SIZE, "%0llu", key_corpus[key_k]);     //set Key
+        snprintf(key + KEY_SIZE, KEY_SIZE, "%0llu", key_corpus[key_k + scan_range]);
 
         if(write(fd, key, 2 * KEY_SIZE) < 0){
 			perror("[CLIENT] send failed");
