@@ -24,7 +24,6 @@ void gen_key_corpus(LL * key_corpus, int num_put, int thread_id){
     //sequence key
     for(key_i = 0; key_i < num_put; key_i ++) {
 		key_corpus[key_i] = (thread_id << 32) | (key_i + 1);
-        printf(" >> %llu\n", key_corpus[key_i]);
 		if((char) key_corpus[key_i] == 0) {
 			key_i --;
 		}
@@ -103,16 +102,11 @@ void * send_request(void * arg){
 
     uint64_t seed = hikv_args->seed;
 
-    printf("PUT test: %d, thread_id %d\n", num_put_kv, thread_id);
-
     //initial Key
-    printf(" >> generate key...\n");
 
     LL * key_corpus = (LL *)malloc(num_put_kv * sizeof(LL));
     
     gen_key_corpus(key_corpus, num_put_kv, thread_id);
-
-    printf(" >> generate key complete\n");
 
 #ifdef __TEST_FILE__
     char send_buf[buf_size];
@@ -220,9 +214,6 @@ void * send_request(void * arg){
     fclose(send_fp);
 #elif defined(__TEST_KV__)
     //printf("===== start real work ======\n");
-    printf(">>[TEST] test start\n");
-    printf("   PUT test: %d, GET test: %d, SCAN test: %d\n", num_put_kv, num_get_kv, num_scan_kv);
-
     int i, iter, key_i, key_j, key_k;
     
     struct kv_trans_item * req_kv = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
@@ -498,8 +489,6 @@ void * send_request(void * arg){
         printf(" >> PUT req_kv->value: %p, value: %.*s\n", req_kv->value, VALUE_SIZE, req_kv->value);
     	//printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
         //printf("[CLIENT] PUT key: %llu\n", key_corpus[key_i]);
-		key_i = (key_i + 1) % num_put_kv;
-
         put_count++;
 
         if(write(fd, req_kv, KV_ITEM_SIZE) < 0){
@@ -592,7 +581,7 @@ void * send_request(void * arg){
             }
         }
 
-        key_j = (key_j + send_num) % num_get_kv;
+        key_j = key_j + send_num;
 
         free(key);
         free(value);
@@ -649,7 +638,7 @@ void * send_request(void * arg){
             }
         }
 
-        key_k = (key_k + scan_range) % num_scan_kv;
+        key_k = key_k + scan_range;
 
         free(key);
         free(value);
