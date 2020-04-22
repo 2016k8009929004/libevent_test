@@ -350,8 +350,14 @@ void read_cb(struct bufferevent * bev, void * arg){
         //char * scan_buff = (char *)malloc(scan_range * VALUE_LENGTH);
         char * scan_buff = (char *)malloc(sizeof(unsigned long *) * scan_range);
 
-        int total_scan_count = hi->range_scan((uint8_t *)recv_item, (uint8_t *)(recv_item + KEY_SIZE), scan_buff);
-
+        int total_scan_count;
+        if (memcmp(recv_item, recv_item + KEY_SIZE, KEY_LENGTH) > 0){
+            //key1 > key2
+            total_scan_count = hi->range_scan((uint8_t *)(recv_item + KEY_SIZE), (uint8_t *)recv_item, scan_buff);
+        }else{
+            //key1 < key2
+            total_scan_count = hi->range_scan((uint8_t *)recv_item, (uint8_t *)(recv_item + KEY_SIZE), scan_buff);
+        }
         //printf(" >> SCAN total count: %d\n", total_scan_count);
 
         char * value = (char *)malloc(total_scan_count * VALUE_LENGTH);
