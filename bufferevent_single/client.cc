@@ -826,7 +826,9 @@ void * client_thread(void * argv){
 
 int main(int argc, char * argv[]){
     int put_test, get_test, scan_test, scan_range;
-    put_test = get_test = scan_test = NUM_KEYS;
+    scan_range = 4;
+    put_test = get_test = NUM_KEYS;
+    scan_test = NUM_KEYS - scan_range;
 
     struct hikv_arg hikv_thread_arg = {
         20,                                      //pm_size
@@ -837,7 +839,7 @@ int main(int argc, char * argv[]){
         get_test,                               //num_get_kv
         0,                                      //num_delete_kv
         scan_test,                              //num_scan_kv
-        4,                                     //scan_range
+        scan_range,                             //scan_range
         1234,                                   //seed
         0                                       //scan_all
     };
