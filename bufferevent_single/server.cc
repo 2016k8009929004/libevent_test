@@ -345,7 +345,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         pthread_mutex_unlock(&record_lock);
     #endif
     }else if(len == 2 * KEY_SIZE){
-        printf(" >> SCAN key: %.*s, %.*s\n", KEY_SIZE, recv_item, recv_item + KEY_SIZE);
+        printf(" >> SCAN key: %.*s, %.*s\n", KEY_SIZE, recv_item, KEY_SIZE, recv_item + KEY_SIZE);
         
         char * scan_buff = (char *)malloc(scan_range * VALUE_LENGTH);
 
