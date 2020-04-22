@@ -361,6 +361,7 @@ void read_cb(struct bufferevent * bev, void * arg){
             unsigned long * ptr = (unsigned long *)scan_buff;
             struct kv_item * item = (struct kv_item *)ptr[i];
             memcpy(value + i * VALUE_LENGTH, item->value, VALUE_LENGTH);
+            printf(" >> SCAN value: %.*s\n", VALUE_LENGTH, value);
         }
 
         bufferevent_write(bev, value, total_scan_count * VALUE_LENGTH);
