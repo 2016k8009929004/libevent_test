@@ -486,7 +486,7 @@ void * send_request(void * arg){
         //printf("[CLIENT] PUT copy value\n");
         //printf(">> value_corpus: %p, value: %.*s\n", &value_corpus[key_i * VALUE_SIZE], VALUE_SIZE, &value_corpus[key_i * VALUE_SIZE]);
 		memcpy((char *)req_kv->value, (char *)&value_corpus[key_i * VALUE_SIZE], VALUE_SIZE);   //set Value
-    	printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
+    	//printf("[CLIENT] PUT key: %llu, value: %.*s\n", key_corpus[key_i], VALUE_SIZE, req_kv->value);
         //printf("[CLIENT] PUT key: %llu\n", key_corpus[key_i]);
         put_count++;
 
@@ -569,12 +569,12 @@ void * send_request(void * arg){
 
         int i;
         for(i = 0;i < recv_num;i++){
-            printf("[CLIENT] key: %lld\n", key_corpus[key_j + i]);
+            //printf("[CLIENT] key: %lld\n", key_corpus[key_j + i]);
             if(strcmp("get failed", value + i * VALUE_SIZE) == 0){
-                printf(" >> GET failed\n");
+                //printf(" >> GET failed\n");
             }else if(bufcmp(value + i * VALUE_SIZE, (char *)value_corpus + (key_j + i) * VALUE_SIZE, VALUE_SIZE)){
                 //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
-                printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
+                //printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
                 //printf(" >> GET success\n");
                 match_search++;
             }
@@ -596,9 +596,7 @@ void * send_request(void * arg){
 			perror("[CLIENT] send failed");
         	exit(1);
     	}
-
-    	printf(" >> SCAN key 1: %llu, key 2: %llu\n", key_corpus[key_k], key_corpus[key_k + scan_range]);
-
+        
         scan_count ++;
 
         int recv_size;
@@ -614,7 +612,6 @@ void * send_request(void * arg){
             }else{
                 tot_recv += recv_size;
             }
-            printf(" >> recv len: %d\n", tot_recv);
         }
 
         #ifdef __EV_RTT__
@@ -629,11 +626,12 @@ void * send_request(void * arg){
 
         int i;
         for(i = 0;i < recv_num;i++){
-            printf("[SCAN] value: %.*s\n", VALUE_SIZE, value + i * VALUE_SIZE);
             if(bufcmp(value + i * VALUE_SIZE, (char *)value_corpus + (key_k + 1 + i) * VALUE_SIZE, VALUE_SIZE)){
                 //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
                 //printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
                 //printf(" >> GET success\n");
+            }else{
+                break;
             }
         }
 

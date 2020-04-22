@@ -345,14 +345,14 @@ void read_cb(struct bufferevent * bev, void * arg){
         pthread_mutex_unlock(&record_lock);
     #endif
     }else if(len == 2 * KEY_SIZE){
-        printf(" >> SCAN key: %.*s, %.*s\n", KEY_SIZE, recv_item, KEY_SIZE, recv_item + KEY_SIZE);
+        //printf(" >> SCAN key: %.*s, %.*s\n", KEY_SIZE, recv_item, KEY_SIZE, recv_item + KEY_SIZE);
         
         //char * scan_buff = (char *)malloc(scan_range * VALUE_LENGTH);
         char * scan_buff = (char *)malloc(sizeof(unsigned long *) * scan_range);
 
         int total_scan_count = hi->range_scan((uint8_t *)recv_item, (uint8_t *)(recv_item + KEY_SIZE), scan_buff);
 
-        printf(" >> SCAN total count: %d\n", total_scan_count);
+        //printf(" >> SCAN total count: %d\n", total_scan_count);
 
         char * value = (char *)malloc(total_scan_count * VALUE_LENGTH);
         
@@ -361,7 +361,7 @@ void read_cb(struct bufferevent * bev, void * arg){
             unsigned long * ptr = (unsigned long *)scan_buff;
             struct kv_item * item = (struct kv_item *)ptr[i];
             memcpy(value + i * VALUE_LENGTH, item->value, VALUE_LENGTH);
-            printf(" >> SCAN value: %.*s\n", VALUE_LENGTH, value + i * VALUE_LENGTH);
+            //printf(" >> SCAN value: %.*s\n", VALUE_LENGTH, value + i * VALUE_LENGTH);
         }
 
         bufferevent_write(bev, value, total_scan_count * VALUE_LENGTH);
