@@ -23,7 +23,7 @@ void gen_key_corpus(LL * key_corpus, int num_put, int thread_id){
 
     //sequence key
     for(key_i = 0; key_i < num_put; key_i ++) {
-		key_corpus[key_i] = (thread_id << 30) | (key_i + 1);
+		key_corpus[key_i] = (thread_id << 28) | (key_i + 1);
 		if((char) key_corpus[key_i] == 0) {
 			key_i --;
 		}
