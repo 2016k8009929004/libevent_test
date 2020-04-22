@@ -632,22 +632,7 @@ void * send_request(void * arg){
             request_cnt++;
         #endif
 
-        int recv_num = tot_recv / VALUE_SIZE;
-
-        int i;
-        for(i = 0;i < recv_num;i++){
-            if(bufcmp(value + i * VALUE_SIZE, (char *)value_corpus + (key_k + 1 + i) * VALUE_SIZE, VALUE_SIZE)){
-                //printf("[CLIENT] GET success! key: %.*s, value: %.*s\n", KEY_SIZE, req_kv->key, VALUE_SIZE, req_kv->value);
-                //printf("[CLIENT] GET success! key: %.*s\n", KEY_SIZE, req_kv->key);
-                //printf(" >> GET success\n");
-            }else{
-                break;
-            }
-        }
-
-        if(i == recv_num){
-            scan_kv_count++;
-        }
+        scan_kv_count++;
 
         key_k = key_k + scan_range;
 
