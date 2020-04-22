@@ -11,10 +11,19 @@ void gen_key_corpus(LL * key_corpus, int num_put, int thread_id){
     srand(time1.tv_sec ^ time1.tv_usec);
 
     //random key
-	for(key_i = 0; key_i < num_put; key_i ++) {
+/*	for(key_i = 0; key_i < num_put; key_i ++) {
 		LL rand1 = (LL) rand();
 		LL rand2 = (LL) rand();
 		key_corpus[key_i] = (rand1 << 32) ^ rand2;
+		if((char) key_corpus[key_i] == 0) {
+			key_i --;
+		}
+	}
+*/
+
+    //sequence key
+    for(key_i = 0; key_i < num_put; key_i ++) {
+		key_corpus[key_i] = (thread_id << 16) + key_i;
 		if(key_corpus[key_i] == 0) {
 			key_i --;
 		}
