@@ -355,7 +355,8 @@ void read_cb(struct bufferevent * bev, void * arg){
         printf(" >> SCAN total count: %d\n", total_scan_count);
         int i;
         for(i = 0;i < total_scan_count;i++){
-            printf(" >> SCAN value: %.*s\n", VALUE_LENGTH, ((struct kv_item *)scan_buff[i])->value);
+            struct kv_item * item = (struct kv_item *)scan_buff[i];
+            printf(" >> SCAN value: %.*s\n", VALUE_LENGTH, item->value);
         }
 
         bufferevent_write(bev, scan_buff, total_scan_count * VALUE_LENGTH);
