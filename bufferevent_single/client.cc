@@ -29,6 +29,8 @@ void gen_key_corpus(LL * key_corpus, int num_put, int thread_id){
 		}
 	}
 
+    printf(" >> key: %llu\n", key_corpus[0]);
+
     return;
 }
 
