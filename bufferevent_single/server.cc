@@ -220,7 +220,7 @@ void read_cb(struct bufferevent * bev, void * arg){
 #endif
 
 	len = bufferevent_read(bev, recv_item, BUF_SIZE);
-    printf(" >> recv len: %d\n", len);
+    //printf(" >> recv len: %d\n", len);
 
 #ifdef __EVAL_READ__
     struct timeval read_end;
