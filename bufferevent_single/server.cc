@@ -283,7 +283,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         pthread_mutex_unlock(&record_lock);
     #endif
     
-    }else{
+    }else if(len == NUM_BATCH * KEY_SIZE){
     #ifdef __EVAL_KV__
         pthread_mutex_lock(&put_end_lock);
         if(!put_end_flag){
@@ -343,6 +343,24 @@ void read_cb(struct bufferevent * bev, void * arg){
         get_cnt += key_num;
         pthread_mutex_unlock(&record_lock);
     #endif
+    }else if(len == 2 * KEY_SIZE){
+        char * scan_buff = (char *)malloc(scan_range * VALUE_LENGTH);
+
+        snprintf((char *)key, sizeof(key), "%016llu", seed);
+        snprintf((char *)value, sizeof(value), "%016llu", seed + scan_range);
+        if (memcmp(key, value, KEY_LENGTH) > 0){
+            memset(key, 0, sizeof(key));     // lower key
+            memset(value, 0, sizeof(value)); // upper key
+            snprintf((char *)key, sizeof(key), "%016llu", seed);
+            snprintf((char *)value, sizeof(key), "%016llu", seed + scan_range);
+        }
+        scan_count++;
+
+        total_scan_count = hi->range_scan((uint8_t *)recv_item, (uint8_t *)(recv_item + KEY_SIZE), scan_buff);
+
+        bufferevent_write(bev, value, scan_range * VALUE_LENGTH);
+    
+        free(scan_buff);
     }
 
     #ifdef __EVAL_CB__
