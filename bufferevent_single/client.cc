@@ -633,7 +633,7 @@ void * send_request(void * arg){
 
         scan_kv_count++;
 
-        key_k = key_k + scan_range;
+        key_k = key_k + 1;
 
         free(key);
         free(value);
@@ -821,7 +821,8 @@ void * client_thread(void * argv){
 int main(int argc, char * argv[]){
     int put_test, get_test, scan_test, scan_range;
     scan_range = 4;
-    put_test = get_test = scan_test = NUM_KEYS;
+    put_test = get_test = NUM_KEYS;
+    scan_test = NUM_KEYS - 1；
 
     struct hikv_arg hikv_thread_arg = {
         20,                                      //pm_size
