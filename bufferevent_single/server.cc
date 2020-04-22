@@ -353,16 +353,17 @@ void read_cb(struct bufferevent * bev, void * arg){
         int total_scan_count = hi->range_scan((uint8_t *)recv_item, (uint8_t *)(recv_item + KEY_SIZE), scan_buff);
 
         printf(" >> SCAN total count: %d\n", total_scan_count);
+
+        char * value = (char *)malloc(total_scan_count * VALUE_LENGTH);
+        
         int i;
         for(i = 0;i < total_scan_count;i++){
-            uint8_t value[VALUE_LENGTH];
             unsigned long * ptr = (unsigned long *)scan_buff;
             struct kv_item * item = (struct kv_item *)ptr[i];
-            memcpy(value, item->value, VALUE_LENGTH);
-            printf(" >> SCAN value: %.*s\n", VALUE_LENGTH, value);
+            memcpy(value + i * VALUE_LENGTH, item->value, VALUE_LENGTH);
         }
 
-        bufferevent_write(bev, scan_buff, total_scan_count * VALUE_LENGTH);
+        bufferevent_write(bev, value, total_scan_count * VALUE_LENGTH);
     
         free(scan_buff);
     }
