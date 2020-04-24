@@ -153,9 +153,45 @@ void read_cb(struct bufferevent * bev, void * arg){
 
     char * recv_item = (char *)malloc(BUF_SIZE);
 
+#ifdef __EVAL_READ__
+    struct timeval read_start;
+    gettimeofday(&read_start, NULL);
+#endif
+
 	len = bufferevent_read(bev, recv_item, BUF_SIZE);
 
+#ifdef __EVAL_READ__
+    struct timeval read_end;
+    gettimeofday(&read_end, NULL);
+
+    int start_time = read_start.tv_sec * 1000000 + read_start.tv_usec;
+    int end_time = read_end.tv_sec * 1000000 + read_end.tv_usec;
+
+    pthread_mutex_lock(&read_cb_lock);
+    read_cnt++;
+    read_time += (end_time - start_time);
+    pthread_mutex_unlock(&read_cb_lock);
+#endif
+
+#ifdef __EVAL_READ__
+    struct timeval write_start;
+    gettimeofday(&write_start, NULL);
+#endif
+
 	bufferevent_write(bev, recv_item, len);
+
+#ifdef __EVAL_READ__
+    struct timeval write_end;
+    gettimeofday(&write_end, NULL);
+
+    start_time = write_start.tv_sec * 1000000 + write_start.tv_usec;
+    end_time = write_end.tv_sec * 1000000 + write_end.tv_usec;
+
+    pthread_mutex_lock(&read_cb_lock);
+    write_cnt++;
+    write_time += (end_time - start_time);
+    pthread_mutex_unlock(&read_cb_lock);
+#endif
 
 #ifdef __REAL_TIME__
     pthread_mutex_lock(&record_lock);
