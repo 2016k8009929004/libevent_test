@@ -142,10 +142,42 @@ void event_cb(struct bufferevent * bev, short event, void * arg){
 }
 
 void read_cb(struct bufferevent * bev, void * arg){
-//    printf("====== read_cb ======\n");
+#ifdef __TEST_FILE__
+#ifdef __EVAL_CB__
+    struct timeval start;
+    gettimeofday(&start, NULL);
+#endif
 
-//    printf("[read cb] pid: %d, tid:%ld, self: %ld\n", getpid(), (long int)syscall(__NR_gettid), pthread_self());
+	int len, sent, recv_len;
+	len = sent = 0;
 
+    char * recv_item = (char *)malloc(BUF_SIZE);
+
+	len = bufferevent_read(bev, recv_item, BUF_SIZE);
+
+	bufferevent_write(bev, recv_item, len);
+
+#ifdef __REAL_TIME__
+    pthread_mutex_lock(&record_lock);
+    request_cnt++;
+    byte_sent += sent;
+    pthread_mutex_unlock(&record_lock);
+#endif
+
+#ifdef __EVAL_CB__
+        struct timeval end;
+        gettimeofday(&end, NULL);
+        double start_time = (double)start.tv_sec * 1000000 + (double)start.tv_usec;
+        double end_time = (double)end.tv_sec * 1000000 + (double)end.tv_usec;
+
+        pthread_mutex_lock(&read_lock);
+        get_cnt++;
+        get_time += (int)(end_time - start_time);
+        pthread_mutex_unlock(&read_lock);
+    #endif
+
+	free(recv_item);
+#else
 #ifdef __REAL_TIME_STATS__
     pthread_mutex_lock(&start_lock);
     if(!start_flag){
@@ -186,29 +218,6 @@ void read_cb(struct bufferevent * bev, void * arg){
     uint64_t num_scan_kv = hikv_args->num_scan_kv;
     uint64_t scan_range = hikv_args->scan_range;
 
-/*receive
-    //struct kv_trans_item * recv_item = (struct kv_trans_item *)malloc(KV_ITEM_SIZE);
-    //int len = bufferevent_read(bev, (char *)recv_item, KV_ITEM_SIZE);
-
-    //size_t len = bufferevent_read(bev, (char *)(recv_buf->buf_start + recv_buf->buf_write), ring_buff_free(recv_buf));
-    //recv_buf->buf_write = (recv_buf->buf_write + len) % recv_buf->buf_len;
-
-    //printf("[SERVER] read: %d, write: %d, recv len: %d\n", recv_buf->buf_read, recv_buf->buf_write, len);
-    //int recv_num = len / KV_ITEM_SIZE;
-    
-    //printf("[SERVER] recv len: %d\n", len);
-
-    int len, recv_len;
-	len = 0;
-*/
-/*
-	FILE * fp = fopen("log.txt", "a+");
-
-	char buff[1024];
-	sprintf(buff, "===== HandleReadEvent =====\n");
-	fwrite(buff, strlen(buff), 1, fp);
-	fflush(fp);
-*/
     int len, recv_len;
     len = 0;
 
@@ -389,46 +398,7 @@ void read_cb(struct bufferevent * bev, void * arg){
     #endif
 
     free(recv_item);
-
-	//fclose(fp);
-/*
-    int res, ret;
-    if(recv_item->len > 0){
-        //printf("[SERVER] put KV item\n");
-        res = hi->insert(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
-        //printf("[SERVER] put key: %.*s\nput value: %.*s\n", KEY_SIZE, recv_item[i].key, VALUE_SIZE, recv_item[i].value);
-        if (res == true){
-            //printf("[SERVER] insert success\n");
-        }
-    }else if(recv_item->len == 0){
-        res = hi->search(thread_id, (uint8_t *)recv_item->key, (uint8_t *)recv_item->value);
-        if(res == true){
-            //printf("[SERVER] search success\n");
-            recv_item->len = VALUE_SIZE;
-            bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
-        }else{
-            //printf("[SERVER] search failed\n");
-            recv_item->len = -1;
-            bufferevent_write(bev, (char *)recv_item, KV_ITEM_SIZE);
-        }
-    }
-
-    free(recv_item);
-*/
-/*
-#ifdef __EVAL_READ__
-    struct timeval end;
-    gettimeofday(&end, NULL);
-    
-    double start_time = (double)start.tv_sec * 1000000 + (double)start.tv_usec;
-    double end_time = (double)end.tv_sec * 1000000 + (double)end.tv_usec;
-
-    pthread_mutex_lock(&read_cb_lock);
-    request_cnt++;
-    total_time += (int)(end_time - start_time);
-    pthread_mutex_unlock(&read_cb_lock);
 #endif
-*/
 }
 
 static void signal_cb(evutil_socket_t sig, short events, void * arg){
