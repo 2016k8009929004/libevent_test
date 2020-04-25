@@ -641,19 +641,21 @@ void * server_thread(void * arg){
 }
 
 int main(int argc, char * argv[]){
-    int tot_test = NUM_KEYS;
-    int put_percent = PUT_PERCENT;
+    int put_test, get_test, scan_test, scan_range;
+    scan_range = 4;
+    put_test = get_test = NUM_KEYS;
+    scan_test = NUM_KEYS - scan_range;
 
     struct hikv_arg hikv_thread_arg = {
         20,                                      //pm_size
         1,                                      //num_server_thread
         1,                                      //num_backend_thread
         0,                                      //num_warm_kv
-        tot_test * put_percent / 100,           //num_put_kv
-        tot_test * (100 - put_percent) / 100,   //num_get_kv
+        put_test,                               //num_put_kv
+        get_test,                               //num_get_kv
         0,                                      //num_delete_kv
-        0,                                      //num_scan_kv
-        100,                                    //scan_range
+        scan_test,                              //num_scan_kv
+        scan_range,                             //scan_range
         1234,                                   //seed
         0                                       //scan_all
     };
@@ -675,15 +677,8 @@ int main(int argc, char * argv[]){
             hikv_thread_arg.num_backend_thread = n;
         }else if(sscanf(argv[i], "--num_warm=%llu%c", &n, &junk) == 1){
             hikv_thread_arg.num_warm_kv = n;
-        }else if(sscanf(argv[i], "--num_test=%llu%c", &n, &junk) == 1){
-            tot_test = n;
         }else if(sscanf(argv[i], "--num_put=%llu%c", &n, &junk) == 1){
             hikv_thread_arg.num_put_kv = n;
-        }else if(sscanf(argv[i], "--put_percent=%d%c", &n, &junk) == 1){
-//            hikv_thread_arg.num_get_kv = hikv_thread_arg.num_put_kv * (100 - n) / n;
-//            printf("[CLIENT] [PUT]: %llu [GET]: %llu\n", hikv_thread_arg.num_put_kv, hikv_thread_arg.num_get_kv);
-            hikv_thread_arg.num_put_kv = tot_test * put_percent / 100;
-            hikv_thread_arg.num_get_kv = tot_test * (100 - put_percent) / 100;            
         }else if(sscanf(argv[i], "--num_get=%llu%c", &n, &junk) == 1){
             hikv_thread_arg.num_get_kv = n;
         }else if(sscanf(argv[i], "--num_delete=%llu%c", &n, &junk) == 1){
