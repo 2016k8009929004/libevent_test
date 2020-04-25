@@ -589,7 +589,7 @@ void * send_request(void * arg){
         free(value);
     }
 
-    for(key_k = 4;key_k < num_scan_kv;){
+    for(key_k = 1;key_k < num_scan_kv;){
         char * key = (char *)malloc(2 * KEY_SIZE);
 
         snprintf(key, KEY_SIZE, "%0llu", key_corpus[key_k]);     //set Key
