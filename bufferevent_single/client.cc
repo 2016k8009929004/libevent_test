@@ -816,7 +816,7 @@ int main(int argc, char * argv[]){
     int put_test, get_test, scan_test, scan_range;
     scan_range = 4;
     put_test = get_test = NUM_KEYS;
-    scan_test = NUM_KEYS - 1;
+    scan_test = NUM_KEYS - scan_range;
 
     struct hikv_arg hikv_thread_arg = {
         20,                                      //pm_size
