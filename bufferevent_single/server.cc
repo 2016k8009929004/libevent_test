@@ -427,6 +427,7 @@ void read_cb(struct bufferevent * bev, void * arg){
         bufferevent_write(bev, value, (scan_range - 1) * VALUE_LENGTH);
     
         free(scan_buff);
+        free(value);
     #ifdef __EVAL_KV__
         pthread_mutex_lock(&record_lock);
         scan_cnt += 1;
