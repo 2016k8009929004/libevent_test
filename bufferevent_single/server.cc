@@ -416,6 +416,10 @@ void read_cb(struct bufferevent * bev, void * arg){
         char * value = (char *)malloc((scan_range - 1) * VALUE_LENGTH);
         memset(value, 0, (scan_range - 1) * VALUE_LENGTH);
         
+        if(total_scan_count >= scan_range){
+            goto done;
+        }
+
         int i;
         for(i = 0;i < total_scan_count;i++){
             unsigned long * ptr = (unsigned long *)scan_buff;
@@ -423,7 +427,8 @@ void read_cb(struct bufferevent * bev, void * arg){
             memcpy(value + i * VALUE_LENGTH, item->value, VALUE_LENGTH);
             //printf(" >> SCAN value: %.*s\n", VALUE_LENGTH, value + i * VALUE_LENGTH);
         }
-
+        
+done:
         bufferevent_write(bev, value, (scan_range - 1) * VALUE_LENGTH);
     
         free(scan_buff);
