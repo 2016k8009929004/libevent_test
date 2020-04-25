@@ -390,6 +390,14 @@ void read_cb(struct bufferevent * bev, void * arg){
         pthread_mutex_unlock(&record_lock);
     #endif
     }else if(len == 2 * KEY_SIZE){
+    #ifdef __EVAL_KV__
+        pthread_mutex_lock(&get_end_lock);
+        if(!get_end_flag){
+            gettimeofday(&get_end, NULL);
+            get_end_flag = 1;
+        }
+        pthread_mutex_unlock(&get_end_lock);
+    #endif
         //printf(" >> SCAN key: %.*s, %.*s\n", KEY_SIZE, recv_item, KEY_SIZE, recv_item + KEY_SIZE);
         
         //char * scan_buff = (char *)malloc(scan_range * VALUE_LENGTH);
@@ -419,6 +427,11 @@ void read_cb(struct bufferevent * bev, void * arg){
         bufferevent_write(bev, value, (scan_range - 1) * VALUE_LENGTH);
     
         free(scan_buff);
+    #ifdef __EVAL_KV__
+        pthread_mutex_lock(&record_lock);
+        scan_cnt += 1;
+        pthread_mutex_unlock(&record_lock);
+    #endif
     }
 
     #ifdef __EVAL_CB__
@@ -479,18 +492,20 @@ static void signal_cb(evutil_socket_t sig, short events, void * arg){
 #ifdef __EVAL_KV__
     double start_time = (double)g_start.tv_sec + ((double)g_start.tv_usec/(double)1000000);
     double put_end_time = (double)put_end.tv_sec + ((double)put_end.tv_usec/(double)1000000);
+    double get_end_time = (double)get_end.tv_sec + ((double)get_end.tv_usec/(double)1000000);
     double end_time = (double)g_end.tv_sec + ((double)g_end.tv_usec/(double)1000000);
 
     double put_exe_time = put_end_time - start_time;
-	double get_exe_time = end_time - put_end_time;
+	double get_exe_time = get_end_time - put_end_time;
+	double scan_exe_time = end_time - get_end_time;
 
 	FILE * fp = fopen("kv_throughput.txt", "a+");
     fseek(fp, 0, SEEK_END);
 
     char buff[1024];
 
-    sprintf(buff, "put_iops %.4f get_iops %.4f\n", 
-                    ((double)put_cnt)/put_exe_time, ((double)get_cnt)/get_exe_time);
+    sprintf(buff, "put_iops %.4f get_iops %.4f scan_iops %.4f\n", 
+                    ((double)put_cnt)/put_exe_time, ((double)get_cnt)/get_exe_time, ((double)scan_cnt)/scan_exe_time);
     
     fwrite(buff, strlen(buff), 1, fp);
 
@@ -593,6 +608,9 @@ void * server_thread(void * arg){
 
     pthread_mutex_init(&put_end_lock, NULL);
     put_end_flag = 0;
+
+    pthread_mutex_init(&get_end_lock, NULL);
+    get_end_flag = 0;
 
     pthread_mutex_init(&end_lock, NULL);
 #endif

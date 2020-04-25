@@ -29,7 +29,7 @@
 
 //#define BUF_SIZE 256
 
-#define __TEST_FILE__
+//#define __TEST_FILE__
 #define __TEST_KV__
 
 #define LL long long
