@@ -589,6 +589,10 @@ void * send_request(void * arg){
         free(value);
     }
 
+    if(match_insert != num_put_kv){
+        goto done;
+    }
+
     for(key_k = 0;key_k < num_scan_kv;){
         char * key = (char *)malloc(2 * KEY_SIZE);
 
@@ -652,6 +656,8 @@ void * send_request(void * arg){
     fclose(fp);
 
 #endif
+
+done:
 
     close(fd);
 
