@@ -60,7 +60,7 @@ int get_cnt;
 int get_time;
 #endif
 
-#define __EVAL_READ__
+//#define __EVAL_READ__
 
 #ifdef __EVAL_READ__
 pthread_mutex_t read_cb_lock;
