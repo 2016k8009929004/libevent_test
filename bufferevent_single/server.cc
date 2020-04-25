@@ -706,7 +706,6 @@ int main(int argc, char * argv[]){
     uint64_t num_get_kv = hikv_thread_arg.num_get_kv;
     uint64_t num_delete_kv = hikv_thread_arg.num_delete_kv;
     uint64_t num_scan_kv = hikv_thread_arg.num_scan_kv;
-    uint64_t scan_range = hikv_thread_arg.scan_range;
 
     //Initialize Key-Value storage
     char pmem[128] = "/home/pmem0/pm";
