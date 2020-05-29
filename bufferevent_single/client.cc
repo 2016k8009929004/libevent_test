@@ -682,103 +682,8 @@ done:
     return NULL;
 }
 
-#if 0
-void response_process(int sock, short event, void * arg){
-#ifdef RECEIVE_DEBUG
-    struct debug_response_arg * debug_arg = (struct debug_response_arg *)arg;
-
-    struct event * read_ev = debug_arg->read_ev;
-    struct send_info * info = debug_arg->info;
-    FILE * fp = debug_arg->fp;
-#else
-    struct response_arg * response_process_arg = (struct response_arg *)arg;
-
-    struct event * read_ev = response_process_arg->read_ev;
-    struct send_info * info = response_process_arg->info;
-#endif
-
-    int * recv_byte = info->recv_byte;
-    int * send_byte = info->send_byte;
-
-    char recv_buf[buf_size + 1];
-    memset(recv_buf, 0, sizeof(recv_buf));
-
-    int recv_size = read(sock, recv_buf, buf_size);
-
-    if(recv_size == 0){
-        printf("[CLIENT] close connection\n");
-        close(sock);
-    }
-
-#ifdef RECEIVE_DEBUG
-    fwrite(recv_buf, recv_size, 1, fp);
-    fflush(fp);
-#endif
-
-    (*recv_byte) += recv_size;
-    
-//    printf("[CLIENT %d] receive reply: %s\n", sock, recv_buf);
-
-    if((*recv_byte) == (*send_byte)){
-        printf("[CLIENT %d] receive reply complete, close connection\n", sock);
-
-        work_done_flag = 1;
-
-        event_del(read_ev);
-
-#ifdef RECEIVE_DEBUG
-        fclose(fp);
-#endif
-        close(sock);
-    }
-}
-
-void * create_response_process(void * arg){
-    struct send_info * info = (struct send_info *)arg;
-
-    int fd = *(info->sockfd);
-
-    struct event_base * base = event_base_new();
-
-    struct event * read_ev = (struct event *)malloc(sizeof(struct event));
-
-#ifdef RECEIVE_DEBUG
-    FILE * recv_fp = fopen("server-ouput.dat", "wb");
-
-    struct debug_response_arg * debug_arg = (struct debug_response_arg *)malloc(sizeof(struct debug_response_arg));
-    debug_arg->read_ev = read_ev;
-    debug_arg->info = info;
-    debug_arg->fp = recv_fp;
-
-    event_set(read_ev, fd, EV_READ|EV_PERSIST, response_process, debug_arg);
-#else
-    struct response_arg * response_process_arg = (struct response_arg *)malloc(RESPONSE_ARG_SIZE);
-    response_process_arg->read_ev = read_ev;
-    response_process_arg->info = info;
-
-    event_set(read_ev, fd, EV_READ|EV_PERSIST, response_process, response_process_arg);
-#endif
-
-    event_base_set(base, read_ev);
-
-    event_add(read_ev, NULL);
-
-    event_base_dispatch(base);
-}
-
-void receive_response_thread(struct send_info * info){
-    pthread_t thread;
-    pthread_create(&thread, NULL, create_response_process, (void *)info);
-    pthread_detach(thread);
-}
-
-void send_request_thread(struct send_info * info){
-    pthread_t thread;
-    pthread_create(&thread, NULL, send_request, (void *)info);
-    pthread_detach(thread);
-}
-#endif
 void * client_thread(void * argv){
+    //将当前线程绑定到0号CPU上
     cpu_set_t core_set;
 
     CPU_ZERO(&core_set);
@@ -789,8 +694,6 @@ void * client_thread(void * argv){
     }
 
     struct client_arg * server = (struct client_arg *)argv;
-
-//    buf_size = server->buf_size;
     
     int send_byte, recv_byte;
     send_byte = recv_byte = 0;
@@ -813,8 +716,6 @@ void * client_thread(void * argv){
     info->thread_id = server->thread_id;
 
     send_request(info);
-
-//    while(!work_done_flag);
 
     free(info);
 
@@ -850,32 +751,44 @@ int main(int argc, char * argv[]){
         uint64_t n;
         char junk;
         if(sscanf(argv[i], "--num_thread=%llu%c", &n, &junk) == 1){
+            //客户端线程数
             client_thread_num = n;
         }else if(sscanf(argv[i], "--num_warm=%llu%c", &n, &junk) == 1){
+            //不用
             hikv_thread_arg.num_warm_kv = n;
         }else if(sscanf(argv[i], "--num_put=%llu%c", &n, &junk) == 1){
+            //PUT请求数
             hikv_thread_arg.num_put_kv = n;
         }else if(sscanf(argv[i], "--num_get=%llu%c", &n, &junk) == 1){
+            //GET请求数
             hikv_thread_arg.num_get_kv = n;
         }else if(sscanf(argv[i], "--num_delete=%llu%c", &n, &junk) == 1){
+            //不用
             hikv_thread_arg.num_delete_kv = n;
         }else if(sscanf(argv[i], "--num_scan=%llu%c", &n, &junk) == 1){
+            //SCAN请求数
             hikv_thread_arg.num_scan_kv = n;
         }else if(sscanf(argv[i], "--scan_range=%llu%c", &n, &junk) == 1){
+            //SCAN范围
             hikv_thread_arg.scan_range = n;
         }else if(sscanf(argv[i], "--num_scan_all=%llu%c", &n, &junk) == 1){
+            //不用
             hikv_thread_arg.scan_all = n;
         }else if(sscanf(argv[i], "--server_ip=%s%c", server_ip, &junk) == 1){
+            //服务器ip地址
             printf("[CLIENT] server ip: %s\n", server_ip);
         }else if(sscanf(argv[i], "--server_port=%d%c", &server_port, &junk) == 1){
+            //服务器端口
             printf("[CLIENT] server port: %d\n", server_port);
         }else if(sscanf(argv[i], "--buf_size=%d%c", &n, &junk) == 1){
+            //文件测试中缓冲区大小
             buf_size = n;
         }else if(i > 0){
             printf("error (%s)!\n", argv[i]);
         }
     }
 
+    //生成HiKV测试的VALUE
     //printf(" >> generate value...\n");
 
     value_corpus = (uint8_t *)malloc(hikv_thread_arg.num_put_kv * VALUE_SIZE);
